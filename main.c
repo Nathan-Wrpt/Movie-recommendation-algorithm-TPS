@@ -141,7 +141,7 @@ int main(int argc, char* argv[]){
             bad_reviewers_parsed[i] = (char*)malloc(1000*sizeof(char));
             i++;
         }
-        bad_reviewers_parsed = bad_reviewers_parsing(bad_reviewers, numbadreviewers);
+        bad_reviewers_parsed = bad_reviewers_parsing(bad_reviewers, bad_reviewers_parsed, numbadreviewers);
     }
     //Si l'option -c est activée, on parse les deux clients et on les stocke dans deux variables
     if(coption == true){
