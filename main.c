@@ -32,12 +32,6 @@ int num_bad_reviewers(char* bad_reviewers){
 //Parse les mauvais reviewers après l'options -b et les stocke dans un tableau
 
 char** bad_reviewers_parsing(char* bad_reviewers, char** bad_reviewers_parsed, int numbadreviewers){ 
-        char** bad_reviewers_parsed = (char**)malloc(1000*sizeof(char*));
-        int i = 0;
-        while(i < numbadreviewers){
-                bad_reviewers_parsed[i] = (char*)malloc(1000*sizeof(char));
-                i++;
-        }
         char* token = strtok(bad_reviewers, ",");
         int i = 0;
         while(token != NULL){
@@ -124,6 +118,8 @@ int main(int argc, char* argv[]){
     bool boption = false;
     char* bad_reviewers = (char*)malloc(10000*sizeof(char));
     bad_reviewers = "";
+    int numbadreviewers = 0;
+    char** bad_reviewers_parsed = (char**)malloc(1000*sizeof(char*));
     //Quand les arguments auront été traités, on stockera dans le tableau bad_reviewers_parsed les mauvais reviewers, et dans numbadreviewers le nombre de mauvais reviewers
     //c'est fait en-dessous mais je le mets ici pour qu'on sache dans quelle variables c'est stocké
 
@@ -139,8 +135,13 @@ int main(int argc, char* argv[]){
 
     //Si l'option -b est activée, on parse les mauvais reviewers et on les stocke dans un tableau
     if(boption == true){
-        int numbadreviewers = num_bad_reviewers(bad_reviewers);
-        char** bad_reviewers_parsed = bad_reviewers_parsing(bad_reviewers, bad_reviewers_parsed, numbadreviewers);
+        numbadreviewers = num_bad_reviewers(bad_reviewers);
+        int i = 0;
+        while(i < numbadreviewers){
+            bad_reviewers_parsed[i] = (char*)malloc(1000*sizeof(char));
+            i++;
+        }
+        bad_reviewers_parsed = bad_reviewers_parsing(bad_reviewers, numbadreviewers);
     }
     //Si l'option -c est activée, on parse les deux clients et on les stocke dans deux variables
     if(coption == true){
@@ -161,7 +162,13 @@ int main(int argc, char* argv[]){
     free(client1);
     free(client2);
     free(bad_reviewers);
+    int i = 0;
+    while(i < numbadreviewers){
+        free(bad_reviewers_parsed[i]);
+        i++;
+    }
     free(bad_reviewers_parsed);
+
     return 0;
 }
 
