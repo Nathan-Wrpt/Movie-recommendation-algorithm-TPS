@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#define NB_FILMS 17770
+
 void print_usage(){
         printf("Usage: ./main -f <folderpath> -l <num> -s <film_id> -c <client1,client2> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n");
         printf("Note : toutes les options sont optionnelles\n");
