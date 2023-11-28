@@ -13,7 +13,7 @@ void print_usage(){
         printf("-c <client1,client2> : permet de ne prendre en compte que les notes des clients <client1> et <client2>\n");
         printf("-b <bad_reviewer1,bad_reviewer2,...> : permet de ne pas prendre en compte les notes des reviewers <bad_reviewer1>, <bad_reviewer2> ...\n");
         printf("-e <minmoviesreviewed> : ermettra de ne prendre en compte que les clients d'élite ayant vu un minimum de <minmoviesreviewed> films\n"); 
-        printf("-t : précise le temps d'exécution de l'algorithme");
+        printf("-t : précise le temps d'exécution de l'algorithme\n");
 }
 
 //Compte le nombre de mauvais reviewers après l'options -b, séparés par des ','
@@ -44,7 +44,7 @@ char** bad_reviewers_parsing(char* bad_reviewers, char** bad_reviewers_parsed, i
 
 
 
-void parse_args(int argc, char* argv[], bool foption, char* folderpath, bool loption, int num, bool soption, char* film_id, bool coption, char* clients, bool boption, char* bad_reviewers, bool eoption, int minmoviesreviewed, bool toption){
+void parse_args(int argc, char* argv[], bool* foption, char** folderpath, bool* loption, int* num, bool* soption, char** film_id, bool* coption, char** clients, bool* boption, char** bad_reviewers, bool* eoption, int* minmoviesreviewed, bool* toption){
         int i = 0;
         if(argv[1] == "-h"){
             print_usage();
@@ -52,35 +52,35 @@ void parse_args(int argc, char* argv[], bool foption, char* folderpath, bool lop
         }
         while(i < argc){
                 if(strcmp(argv[i], "-f") == 0){
-                        foption = true;
-                        folderpath = argv[i+1];
+                        *foption = true;
+                        *folderpath = argv[i+1];
                         i++;
                 }
                 else if(strcmp(argv[i], "-l") == 0){
-                        loption = true;
-                        num = atoi(argv[i+1]);
+                        *loption = true;
+                        *num = atoi(argv[i+1]);
                         i++;
                 }
                 else if(strcmp(argv[i], "-s") == 0){
-                        soption = true;
-                        film_id = argv[i+1];
+                        *soption = true;
+                        *film_id = argv[i+1];
                         i++;
                 }
                 else if(strcmp(argv[i], "-c") == 0){
-                        coption = true;
-                        clients = argv[i+1];
+                        *coption = true;
+                        *clients = argv[i+1];
                         i++;
                 }
                 else if(strcmp(argv[i], "-b") == 0){
-                        boption = true;
+                        *boption = true;
                 }
                 else if(strcmp(argv[i], "-e") == 0){
-                        eoption = true;
-                        minmoviesreviewed = atoi(argv[i+1]);
+                        *eoption = true;
+                        *minmoviesreviewed = atoi(argv[i+1]);
                         i++;
                 }
                 else if(strcmp(argv[i], "-t") == 0){
-                        toption = true;
+                        *toption = true;
                 }
                 i++;
         }
@@ -90,14 +90,17 @@ int main(int argc, char* argv[]){
     //----------------------------------------------------------------------------------------------
     //-----------------------------------TRAITEMENT DES ARGUMENTS-----------------------------------
     //----------------------------------------------------------------------------------------------
-    if(argv[1] == "-h"){
+    if((argc > 1) && (strcmp(argv[1], "-h") == 0)){
         print_usage();
         exit(0);
     }
     //option -f
     bool foption = false;
     char* folderpath = (char*)malloc(1000*sizeof(char));
-    folderpath = "";
+    if(folderpath == NULL){
+        printf("Erreur d'allocation mémoire");
+        exit(1);
+    }
 
     //option -l
     bool loption = false;
@@ -106,20 +109,43 @@ int main(int argc, char* argv[]){
     //option -s
     bool soption = false;
     char* film_id = (char*)malloc(1000*sizeof(char));
-    film_id = "";
+    if (film_id == NULL){
+        printf("Erreur d'allocation mémoire");
+        exit(1);
+    }
+    
 
     //option -c
     bool coption = false;
     char* clients = (char*)malloc(1000*sizeof(char));
+    if(clients == NULL){
+        printf("Erreur d'allocation mémoire");
+        exit(1);
+    }
     char* client1 = (char*)malloc(1000*sizeof(char));
+    if(client1 == NULL){
+        printf("Erreur d'allocation mémoire");
+        exit(1);
+    }
     char* client2 = (char*)malloc(1000*sizeof(char));
+    if(client2 == NULL){
+        printf("Erreur d'allocation mémoire");
+        exit(1);
+    }
 
     //option -b
     bool boption = false;
     char* bad_reviewers = (char*)malloc(10000*sizeof(char));
-    bad_reviewers = "";
+    if(bad_reviewers == NULL){
+        printf("Erreur d'allocation mémoire");
+        exit(1);
+    }
     int numbadreviewers = 0;
     char** bad_reviewers_parsed = (char**)malloc(1000*sizeof(char*));
+    if(bad_reviewers_parsed == NULL){
+        printf("Erreur d'allocation mémoire");
+        exit(1);
+    }
     //Quand les arguments auront été traités, on stockera dans le tableau bad_reviewers_parsed les mauvais reviewers, et dans numbadreviewers le nombre de mauvais reviewers
     //c'est fait en-dessous mais je le mets ici pour qu'on sache dans quelle variables c'est stocké
 
@@ -131,7 +157,7 @@ int main(int argc, char* argv[]){
     bool toption = false;
 
     //On parse les arguments de la ligne de commande et stocke les valeurs dans les variables définies ci-dessus
-    parse_args(argc, argv, foption, folderpath, loption, num, soption, film_id, coption, clients, boption, bad_reviewers, eoption, minmoviesreviewed, toption);
+    parse_args(argc, argv, &foption, &folderpath, &loption, &num, &soption, &film_id, &coption, &clients, &boption, &bad_reviewers, &eoption, &minmoviesreviewed, &toption);
 
     //Si l'option -b est activée, on parse les mauvais reviewers et on les stocke dans un tableau
     if(boption == true){
@@ -139,6 +165,10 @@ int main(int argc, char* argv[]){
         int i = 0;
         while(i < numbadreviewers){
             bad_reviewers_parsed[i] = (char*)malloc(1000*sizeof(char));
+            if(bad_reviewers_parsed[i] == NULL){
+                printf("Erreur d'allocation mémoire");
+                exit(1);
+            }
             i++;
         }
         bad_reviewers_parsed = bad_reviewers_parsing(bad_reviewers, bad_reviewers_parsed, numbadreviewers);
@@ -153,7 +183,8 @@ int main(int argc, char* argv[]){
     //-----------------------------------------------------------------------------------------------------
     //-----------------------------------FIN DE TRAITEMENT DES ARGUMENTS-----------------------------------
     //-----------------------------------------------------------------------------------------------------
-
+    //Test des arguments
+    printf("folderpath : %s, num : %d, film_id : %s, client1 : %s, client2 : %s, bad_reviewers : %s, numbadreviewers : %d, minmoviesreviewed : %d\n", folderpath, num, film_id, client1, client2, bad_reviewers, numbadreviewers, minmoviesreviewed);
 
     //free de toutes les variables allouées
     free(folderpath);
@@ -168,6 +199,7 @@ int main(int argc, char* argv[]){
         i++;
     }
     free(bad_reviewers_parsed);
+    
 
     return 0;
 }
