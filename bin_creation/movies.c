@@ -1,4 +1,5 @@
 #include "movies.h"
+#include <time.h>
 
 //Function to count the lines of a file
 int countLines(const char* filename){
@@ -190,6 +191,12 @@ void freeMovies(movie* movies, int numMovies) {
 }
 
 // int main(){
+//     //Initialisation of the clock to calculate the execution time
+//     clock_t start_time, end_time;
+//     double cpu_time_used;
+
+//     start_time = clock();
+
 
 //     //Tests to see if the serialization works properly
 //     // movie* movies = createMovieTable("../../movie_titles.txt", "../../training_set3");
@@ -201,6 +208,11 @@ void freeMovies(movie* movies, int numMovies) {
 
 //     printf("Movie 1 has %d ratings\n", moviesDeserialised[9].nb_ratings);
 //     // freeMovies(moviesDeserialised, NBMOVIES);
+
+//     //calculate the execution time
+//     end_time = clock();
+//     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+//     printf("Execution time of the program is : %f secondes.\n", cpu_time_used);
 
 //     return 0;
 // }
