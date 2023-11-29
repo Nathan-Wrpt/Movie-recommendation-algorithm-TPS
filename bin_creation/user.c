@@ -63,32 +63,77 @@ user* createUsersTable(movie* moviesTable) {
 
 // Function to serialize the user array into a binary file
 void serializeUsers(user* users, int numUsers, const char* filename) {
-    FILE* file = fopen(filename, "wb"); // Open the file in write mode (binary)
+    FILE* file = fopen(filename, "wb");
     if (file != NULL) {
         fwrite(&numUsers, sizeof(int), 1, file); // Write number of users first
-        fwrite(users, sizeof(user), numUsers, file); // Write users data
-        fclose(file); // Close the file
+
+        for (int i = 0; i < numUsers; ++i) {
+            fwrite(&(users[i].id), sizeof(int), 1, file);
+            fwrite(&(users[i].nb_ratings), sizeof(int), 1, file);
+
+            // Serialize each rating within the user
+            for (int j = 0; j < users[i].nb_ratings; ++j) {
+                fwrite(&(users[i].ratings[j].id_user), sizeof(int), 1, file);
+                fwrite(&(users[i].ratings[j].id_film), sizeof(int), 1, file);
+                fwrite(&(users[i].ratings[j].year), sizeof(int), 1, file);
+                fwrite(&(users[i].ratings[j].day), sizeof(int), 1, file);
+                fwrite(&(users[i].ratings[j].month), sizeof(int), 1, file);
+                fwrite(&(users[i].ratings[j].star), sizeof(int), 1, file);
+            }
+        }
+        fclose(file);
     } else {
         printf("Failed to open the file for writing.\n");
     }
 }
 
+
 // Function to deserialize the user array from a binary file
 user* deserializeUsers(const char* filename, int* numUsers) {
-    FILE* file = fopen(filename, "rb"); // Open the file in read mode (binary)
-    user* users = NULL;
-
+    FILE* file = fopen(filename, "rb");
     if (file != NULL) {
-        fread(numUsers, sizeof(int), 1, file); // Read number of users first
-        users = (user*)malloc(sizeof(user) * (*numUsers)); // Allocate memory for users
-        fread(users, sizeof(user), *numUsers, file); // Read users data
-        fclose(file); // Close the file
+        fread(numUsers, sizeof(int), 1, file); // Read the number of users
+
+        user* users = (user*)malloc((*numUsers) * sizeof(user));
+        if (users == NULL) {
+            fclose(file);
+            return NULL; // Memory allocation failed
+        }
+
+        for (int i = 0; i < *numUsers; ++i) {
+            fread(&(users[i].id), sizeof(int), 1, file);
+            fread(&(users[i].nb_ratings), sizeof(int), 1, file);
+
+            users[i].ratings = (rating*)malloc(users[i].nb_ratings * sizeof(rating));
+            if (users[i].ratings == NULL) {
+                // Handle memory allocation failure
+                fclose(file);
+                for (int j = 0; j < i; ++j) {
+                    free(users[j].ratings);
+                }
+                free(users);
+                return NULL;
+            }
+
+            // Deserialize each rating for the user
+            for (int j = 0; j < users[i].nb_ratings; ++j) {
+                fread(&(users[i].ratings[j].id_user), sizeof(int), 1, file);
+                fread(&(users[i].ratings[j].id_film), sizeof(int), 1, file);
+                fread(&(users[i].ratings[j].year), sizeof(int), 1, file);
+                fread(&(users[i].ratings[j].day), sizeof(int), 1, file);
+                fread(&(users[i].ratings[j].month), sizeof(int), 1, file);
+                fread(&(users[i].ratings[j].star), sizeof(int), 1, file);
+            }
+        }
+
+        fclose(file);
+        return users;
     } else {
         printf("Failed to open the file for reading.\n");
+        return NULL;
     }
-
-    return users;
 }
+
 
 void freeUsers(user* users, int numUsers) {
     for (int i = 0; i < numUsers; i++) {
