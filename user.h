@@ -1,4 +1,8 @@
-#define NBFILMS 17100
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define NBFILMS 17770
+#define NBUSERS 480189
 
 typedef struct rating_temp{
      int id_film;
@@ -20,9 +24,9 @@ user* createUsersTable(char* folderpath);
 // Function to free the table of users
 void freeUsersTable(user* users);
 
-// Function to save the table of users in a file
-void saveUsersTable(user* users, char* folderpath);
+// Function to serialize the user array into a binary file
+void serializeUsers(user* users, int numUsers, const char* filename);
 
-// Function to load the table of users from a file
-user* loadUsersTable(char* filepath);
+// Function to deserialize the user array from a binary file
+user* deserializeUsers(const char* filename, int* numUsers);
 
