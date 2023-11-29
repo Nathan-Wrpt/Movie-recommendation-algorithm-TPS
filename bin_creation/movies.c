@@ -64,13 +64,14 @@ movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
     sprintf(filepath, "%s/mv_%07d.txt", trainingsetpath, id);
     m->nb_ratings = countLines(filepath) - 1;
 
-    //allocate memory for ratings tab
+    //allocate memory for ratings array
     m->ratings = (rating*)malloc(sizeof(rating) * m->nb_ratings);
 
     FILE* fileRating = fopen(filepath, "r");
     if (fileRating == NULL) {
         printf("Can't open file.\n");
         free(m);
+        free(m->ratings);
         return NULL;
     }
 
