@@ -18,6 +18,8 @@ typedef struct user_temp{
     rating* ratings;
 } user;
 
+
+
 // Function to create a table of all the users having the path of the training_set folder
 user* createUsersTable(char* folderpath);
 
