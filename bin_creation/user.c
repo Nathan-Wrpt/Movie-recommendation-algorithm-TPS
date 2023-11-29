@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "user.h"
 #include "movies.h"
+#include "movies.c"
 
 user* initUser(int id) {
     user* u = (user*) malloc(sizeof(user));
@@ -11,8 +12,8 @@ user* initUser(int id) {
     return u;
 }
 
-user* createUsersTable(char* folderpath, movie* moviesTable) {
-    user usersTable[NBUSERS];
+user* createUsersTable(movie* moviesTable) {
+    user* usersTable = (user*) malloc(NBUSERS * sizeof(user));
     int nbUserSeen = 0;
 
     // struct to know in o(1) if an user is already seen
@@ -27,9 +28,11 @@ user* createUsersTable(char* folderpath, movie* moviesTable) {
     // for each film, check the id of reviewers and group the review
     // per reviewers
     for (int movie_id = 0; movie_id < NBMOVIES; movie_id++) {
+        // printf("Movie %d : %s\n", movie_id, moviesTable[movie_id].title);
+
         int nb_ratings = moviesTable[movie_id].nb_ratings;
 
-        for (int num_rating; num_rating < nb_ratings; num_rating)
+        for (int num_rating = 0; num_rating < nb_ratings - 1; num_rating++)
         {
             int id_user = moviesTable[movie_id].ratings[num_rating].id_user;
 
@@ -38,7 +41,8 @@ user* createUsersTable(char* folderpath, movie* moviesTable) {
 
             int placeInTable;
             if (seenUserTable[id_user] == -1) {
-                placeInTable = ++nbUserSeen;
+                placeInTable = nbUserSeen;
+                nbUserSeen++;
                 seenUserTable[id_user] = placeInTable;
                 usersTable[placeInTable] = *initUser(id_user);
             } else {
@@ -48,7 +52,7 @@ user* createUsersTable(char* folderpath, movie* moviesTable) {
             int newNbRatings = usersTable[placeInTable].nb_ratings + 1;
             usersTable[placeInTable].nb_ratings = newNbRatings;
 
-            realloc(usersTable[placeInTable].ratings, newNbRatings * sizeof(rating));
+            usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, newNbRatings * sizeof(rating));
             usersTable[placeInTable].ratings[newNbRatings - 1] = moviesTable[movie_id].ratings[num_rating];
         }
     }
@@ -86,6 +90,29 @@ user* deserializeUsers(const char* filename, int* numUsers) {
     return users;
 }
 
+void freeUsers(user* users, int numUsers) {
+    for (int i = 0; i < numUsers; i++) {
+        free(users[i].ratings);
+    }
+    free(users);
+}
+
 int main() {
+    movie* moviesDeserialised = deserializeMovies("movies.bin");
+    
+    user* userTable = createUsersTable(moviesDeserialised);
+
+    int numUser = 169307;
+
+    printf("User with id : %d has %d ratings :\n", userTable[numUser].id, userTable[numUser].nb_ratings);
+    for(int i = 0; i < userTable[numUser].nb_ratings; i++) {
+        printf("--------------------\n");
+        printf("Id film rated : %d\n", userTable[numUser].ratings[i].id_film);
+        printf("Rating date : %02d-%02d-%02d\n", userTable[numUser].ratings[i].day, userTable[numUser].ratings[i].month, userTable[numUser].ratings[i].year);
+        printf("Star(s) : %d\n", userTable[numUser].ratings[i].star);
+    }
+
+    freeMovies(moviesDeserialised, NBMOVIES);
+    freeUsers(userTable, NBUSERS);
     return 0;
 }
