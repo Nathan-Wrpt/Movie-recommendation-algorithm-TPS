@@ -3,7 +3,7 @@
 
 #include "user.h"
 
-#define NBMOVIES 17770
+#define NBMOVIES 14000
 
 //This file contains the structure of a movie and the functions to initialize it
 //Moreover, the functions to convert the full movie table into a binary file and to convert it back are in this file
