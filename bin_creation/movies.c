@@ -190,29 +190,29 @@ void freeMovies(movie* movies, int numMovies) {
     free(movies);
 }
 
-// int main(){
-//     //Initialisation of the clock to calculate the execution time
-//     clock_t start_time, end_time;
-//     double cpu_time_used;
+int main(){
+    //Initialisation of the clock to calculate the execution time
+    clock_t start_time, end_time;
+    double cpu_time_used;
 
-//     start_time = clock();
+    start_time = clock();
 
 
-//     //Tests to see if the serialization works properly
-//     // movie* movies = createMovieTable("../../movie_titles.txt", "../../training_set3");
-//     // serializeMovies(movies, NBMOVIES, "movies10.bin");
-//     // freeMovies(movies, NBMOVIES);
+    //Tests to see if the serialization works properly
+    movie* movies = createMovieTable("../../nf_prize_dataset/download/movie_titles.txt", "../../nf_prize_dataset/download/training_set2");
+    // serializeMovies(movies, NBMOVIES, "movies10.bin");
+    // freeMovies(movies, NBMOVIES);
 
-//     //Tests to see if the deserialization works properly
-//     movie* moviesDeserialised = deserializeMovies("movies10.bin");
+    //Tests to see if the deserialization works properly
+    // movie* moviesDeserialised = deserializeMovies("movies10.bin");
 
-//     printf("Movie 1 has %d ratings\n", moviesDeserialised[9].nb_ratings);
-//     // freeMovies(moviesDeserialised, NBMOVIES);
+    // printf("Movie 1 has %d ratings\n", moviesDeserialised[9].nb_ratings);
+    // freeMovies(moviesDeserialised, NBMOVIES);
 
-//     //calculate the execution time
-//     end_time = clock();
-//     cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
-//     printf("Execution time of the program is : %f secondes.\n", cpu_time_used);
+    //calculate the execution time
+    end_time = clock();
+    cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("Execution time of the program is : %f secondes.\n", cpu_time_used);
 
-//     return 0;
-// }
+    return 0;
+}
