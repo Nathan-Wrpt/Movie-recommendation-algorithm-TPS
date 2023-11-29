@@ -6,7 +6,7 @@
 #include <string.h>
 // #include "movies.h"
 
-#define NBUSERS 17770
+#define NBUSERS 480189
 #define IDMAXUSER 2649429
 
 typedef struct rating_temp{
