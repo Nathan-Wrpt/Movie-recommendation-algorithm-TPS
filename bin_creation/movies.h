@@ -1,21 +1,17 @@
-#define NBUSER 480189
+#ifndef MOVIES_H
+#define MOVIES_H
+
+#include "user.h"
+
 #define NBMOVIES 17770
 
 // Structure of a movie (Not sure for the moment, prolly gon be modified)
 typedef struct movie_temp{
     int id;
     int release_date;
-    char title[100];
+    char title[300];
+    int nb_ratings;
+    rating* ratings;
 } movie;
 
-
-
-movie* initMovie(int id, char* movietitlespath){
-    FILE* file = fopen(movietitlespath, "r");
-    movie* m = (movie*)malloc(sizeof(movie));
-    m->id = 0;
-    m->release_date = 0;
-    char title[100] = "";
-
-    return m;
-}
+#endif
