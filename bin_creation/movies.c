@@ -190,44 +190,17 @@ void freeMovies(movie* movies, int numMovies) {
 }
 
 // int main(){
-//     //Tests to see if the creation of the movie table works properly
-//     // movie* movies = createMovieTable("../../nf_prize_dataset/download/movie_titles.txt", "../../nf_prize_dataset/download/training_set");
-//     // printf("Movie 17770 id: %d\n", movies[17769].id);
-//     // printf("Movie 17770 release date: %d\n", movies[17769].release_date);
-//     // printf("Movie 17770 title: %s\n", movies[17769].title);
-//     // printf("Movie 17770 nb_ratings: %d\n", movies[17769].nb_ratings);
-//     // printf("Movie 17770 ratings: \n");
-//     // for (int j = 0; j < movies[17769].nb_ratings; j++) {
-//     //     printf("Rating %d id_user: %d\n", j, movies[17769].ratings[j].id_user);
-//     //     printf("Rating %d id_film: %d\n", j, movies[17769].ratings[j].id_film);
-//     //     printf("Rating %d year: %d\n", j, movies[17769].ratings[j].year);
-//     //     printf("Rating %d month: %d\n", j, movies[17769].ratings[j].month);
-//     //     printf("Rating %d day: %d\n", j, movies[17769].ratings[j].day);
-//     //     printf("Rating %d rating: %d\n", j, movies[17769].ratings[j].star);
-//     // }
-//     // freeMovies(movies, NBMOVIES);
 
 //     //Tests to see if the serialization works properly
-//     // movie* movies = createMovieTable("../../nf_prize_dataset/download/movie_titles.txt", "../../nf_prize_dataset/download/training_set");
-//     // serializeMovies(movies, NBMOVIES, "movies.bin");
+//     // movie* movies = createMovieTable("../../movie_titles.txt", "../../training_set3");
+//     // serializeMovies(movies, NBMOVIES, "movies10.bin");
 //     // freeMovies(movies, NBMOVIES);
 
-//     //
 //     //Tests to see if the deserialization works properly
-//     //
-//     // movie* movies = deserializeMovies("movies.bin");
-//     // printf("Movie 17770 id: %d\n", movies[17769].id);
-//     // printf("Movie 17770 release date: %d\n", movies[17769].release_date);
-//     // printf("Movie 17770 title: %s\n", movies[17769].title);
-//     // printf("Movie 17770 nb_ratings: %d\n", movies[17769].nb_ratings);
-//     // printf("Movie 17770 ratings: \n");
-//     // for (int j = 0; j < movies[17769].nb_ratings; j++) {
-//     //     printf("Rating %d id_user: %d\n", j, movies[17769].ratings[j].id_user);
-//     //     printf("Rating %d id_film: %d\n", j, movies[17769].ratings[j].id_film);
-//     //     printf("Rating %d year: %d\n", j, movies[17769].ratings[j].year);
-//     //     printf("Rating %d month: %d\n", j, movies[17769].ratings[j].month);
-//     //     printf("Rating %d day: %d\n", j, movies[17769].ratings[j].day);
-//     //     printf("Rating %d rating: %d\n", j, movies[17769].ratings[j].star);
-//     // }
+//     movie* moviesDeserialised = deserializeMovies("movies10.bin");
+
+//     printf("Movie 1 has %d ratings\n", moviesDeserialised[9].nb_ratings);
+//     // freeMovies(moviesDeserialised, NBMOVIES);
+
 //     return 0;
 // }
