@@ -39,8 +39,8 @@ float updateWeight(int rating1, int rating2) {
 }
 
 void updateGraphuser(user user, float** graph, int dateLimit){
-    for(int i = 0; i < user.nb_ratings; i++){
-        for(int j = i + 1; j < user.nb_ratings; j++){
+    for(int i = 0; i < user.nb_ratings && i<50; i++){
+        for(int j = i + 1; j < user.nb_ratings && j<50; j++){
             if(user.ratings[i].year < dateLimit && user.ratings[j].year < dateLimit){
                 float updatedweight = updateWeight(user.ratings[i].star, user.ratings[j].star);
                 graph[user.ratings[i].id_film - 1][user.ratings[j].id_film - 1] += updatedweight;
@@ -146,6 +146,61 @@ void freeUsers(user* users, int numUsers) {
     free(users);
 }
 
+int meanreviewsperuser(user* users, int nbUsers){
+    int sum = 0;
+    for(int i = 0; i < nbUsers; i++){
+        sum += users[i].nb_ratings;
+    }
+    return sum/nbUsers;
+}
+
+void serializeGraph(const char* filename, float** graph, int nbMovies) {
+    FILE* file = fopen(filename, "wb"); // Open the file in binary write mode
+
+    if (file != NULL) {
+        // Write the entire matrix data into the file
+        fwrite(*graph, sizeof(float), nbMovies * nbMovies, file);
+
+        fclose(file); // Close the file after writing
+    } else {
+        printf("Unable to open the file for writing.\n");
+    }
+}
+
+float** deserializeGraph(const char* filename, int nbMovies) {
+    FILE* file = fopen(filename, "rb"); // Open the file in binary read mode
+
+    if (file != NULL) {
+        // Allocate memory for the matrix
+        float** graph = (float**)malloc(nbMovies * sizeof(float*));
+        for (int i = 0; i < nbMovies; i++) {
+            graph[i] = (float*)malloc(nbMovies * sizeof(float));
+        }
+
+        // Read the entire matrix data from the file
+        fread(*graph, sizeof(float), nbMovies * nbMovies, file);
+
+        fclose(file); // Close the file after reading
+
+        return graph;
+    } else {
+        printf("Unable to open the file for reading.\n");
+        return NULL;
+    }
+}
+
+//Returns the index of the minimum value of the array
+int min(float* array, int size){
+    int min = 0;
+    for(int i = 1; i < size; i++){
+        if(array[i] < array[min]){
+            min = i;
+        }
+    }
+    return min;
+}
+
+
 int main(){
     int nbUsers;
     user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
@@ -159,12 +214,18 @@ int main(){
     fflush(stdout);
 
     clock_t begin = clock();
-    int nbUsersTest = 50;
+    int nbUsersTest = NBUSERS - 5;
     updateGraph(graph, users, nbUsersTest, NULL, 0, 2010, -1, -1, 0);
     clock_t end = clock();
 
     printf("Graph updated\n");
-    fflush(stdout);
+    // printf("distance ADC - STW1 : %f\n", graph[16264][9885]);
+    // printf("distance ADC - STW6 : %f\n", graph[16264][9627]);
+    // printf("distance ADC - STW2 : %f\n", graph[16264][8686]);
+    // printf("distance ADC - STW5 : %f\n", graph[16264][5581]);
+
+    // serializeGraph("graph.bin", graph, NBMOVIES);
+    // printf("Graph serialized\n");
 
     freeGraph(graph, NBMOVIES);
     freeUsers(users, nbUsers);
@@ -174,5 +235,7 @@ int main(){
 
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     printf("The graph took %f seconds to be updated with %d users.\n", time_spent, nbUsersTest);
+
+    return 0;
     
 }

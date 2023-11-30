@@ -1,6 +1,6 @@
 #include "../bin_creation/user.h"
 #include "../bin_creation/movies.h"
-#define NB_MAX_REVIEWS 232943
+#define NB_MAX_REVIEWS 0 //noramlly 232943
 #include <stdbool.h>
 
 
