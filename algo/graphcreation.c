@@ -1,6 +1,8 @@
 #include "graphcreation.h"
 #include <time.h>
 
+#define MAXRATED 50
+
 float** initGraph(int nbMovies, int initWeight){
     float** graph = malloc(nbMovies*sizeof(float*));
     for(int i = 0; i < nbMovies; i++){
@@ -39,8 +41,8 @@ float updateWeight(int rating1, int rating2) {
 }
 
 void updateGraphuser(user user, float** graph, int dateLimit){
-    for(int i = 0; i < user.nb_ratings && i<50; i++){
-        for(int j = i + 1; j < user.nb_ratings && j<50; j++){
+    for(int i = 0; i < user.nb_ratings && i < MAXRATED; i++){
+        for(int j = i + 1; j < user.nb_ratings && j < MAXRATED; j++){
             if(user.ratings[i].year < dateLimit && user.ratings[j].year < dateLimit){
                 float updatedweight = updateWeight(user.ratings[i].star, user.ratings[j].star);
                 graph[user.ratings[i].id_film - 1][user.ratings[j].id_film - 1] += updatedweight;
@@ -226,6 +228,7 @@ int main(){
 
     // serializeGraph("graph.bin", graph, NBMOVIES);
     // printf("Graph serialized\n");
+
 
     freeGraph(graph, NBMOVIES);
     freeUsers(users, nbUsers);
