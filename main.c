@@ -3,8 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define NB_FILMS 17770
-
 void print_usage(){
         printf("Usage: ./main -f <folderpath> -l <num> -s <film_id> -c <client1,client2> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n");
         printf("Note : toutes les options sont optionnelles\n");
@@ -12,7 +10,7 @@ void print_usage(){
         printf("-f <folderpath> : chemin du dossier où seront sauvegardés les fichiers correspondants aux résultats demandés\n");
         printf("-l <num> : permet de ne pas prendre en compte les fils dont la date est supérieure à <num>\n");
         printf("-s <film_id> : donne des statistiques sur le film d'identifiant <film_id> (nombre de notes, note moyenne ...\n");
-        printf("-c <client1,client2> : permet de ne prendre en compte que les notes des clients <client1> et <client2>\n");
+        printf("-c <client1,client2...> : permet de ne prendre en compte que les notes des clients <client1>, <client2>...\n");
         printf("-b <bad_reviewer1,bad_reviewer2,...> : permet de ne pas prendre en compte les notes des reviewers <bad_reviewer1>, <bad_reviewer2> ...\n");
         printf("-e <minmoviesreviewed> : ermettra de ne prendre en compte que les clients d'élite ayant vu un minimum de <minmoviesreviewed> films\n"); 
         printf("-t : précise le temps d'exécution de l'algorithme\n");

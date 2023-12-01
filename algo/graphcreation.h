@@ -7,7 +7,7 @@
 #include <time.h>
 
 #define INIT_WEIGHT 0
-#define RATINGS_CONSIDERED 50
+#define RATINGS_CONSIDERED 20
 
 float** initGraph(int nbMovies);
 void freeGraph(float** graph, int nbMovies);
