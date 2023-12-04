@@ -162,21 +162,16 @@ int main(int argc, char* argv[]){
     clock_t begin = clock();
     //Deserialization of the users and movies
     int nbUsers;
-    clock_t begin1 = clock();
     user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
-    clock_t end1 = clock();
-    double time_spent1 = (double)(end1 - begin1) / CLOCKS_PER_SEC;
-    clock_t begin3 = clock();
+    clock_t timer1 = clock();
+    double time_spent1 = (double)(timer1 - begin) / CLOCKS_PER_SEC;
     movie* movies = deserializeMovies("../bin_creation/movies.bin");
-    clock_t end3 = clock();
+    clock_t timer3 = clock();
     //Creation of the graph
-    clock_t begin4 = clock();
     float** graph = initGraph(NBMOVIES);
-    clock_t end4 = clock();
-    
-    clock_t begin2 = clock();
+    clock_t timer4 = clock();
     updateGraph(graph, users, NBUSERS - 5, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
-    clock_t end2 = clock();
+    clock_t timer2 = clock();
     //Determining the movies to recommend
     int* recommendedmMovies1 = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
     int* recommendedMovies2 = getNClosestMovies2(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
@@ -184,15 +179,15 @@ int main(int argc, char* argv[]){
 
     //Calculate the execution time of the program
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    double time_spent2 = (double)(end2 - begin2) / CLOCKS_PER_SEC;
-    double time_spent3 = (double)(end3 - begin3) / CLOCKS_PER_SEC;
-    double time_spent4 = (double)(end4 - begin4) / CLOCKS_PER_SEC;
+    double time_spent2 = (double)(timer2 - timer4) / CLOCKS_PER_SEC;
+    double time_spent3 = (double)(timer3 - timer1) / CLOCKS_PER_SEC;
+    double time_spent4 = (double)(timer4 - timer3) / CLOCKS_PER_SEC;
     if(toption){
         printf("Total execution time of the program was : %f seconds.\n", time_spent);
         printf("Time passed in the users deserialization process : %f seconds.\n", time_spent1);
         printf("Time passed in the movies deserialization process : %f seconds.\n", time_spent3);
         printf("Time passed in the graph creation process : %f seconds.\n", time_spent4);
-        printf("Time passed in the graph update process : %f seconds.\n", time_spent2);
+        printf("Time passed in the graph update process : %f seconds.\n\n", time_spent2);
     }
 
     //Print the movies recommended
@@ -211,9 +206,6 @@ int main(int argc, char* argv[]){
     for(int i = 0; i < numMoviesRecommended; i++){
         printf("%d-%s\n", i+1, movies[recommendedmMovies1[i] - 1].title);
     }
-
-    
-
     freeGraph(graph, NBMOVIES);
     free(recommendedmMovies1);
     free(recommendedMovies2);
@@ -222,6 +214,10 @@ int main(int argc, char* argv[]){
     free(badReviewersParsed);
     freeUsers(users, NBUSERS);
     freeMovies(movies, NBMOVIES);
+    free(folderpath);
+    free(moviesLiked);
+    free(clients);
+    free(bad_reviewers);
     return 0;
 
 }
