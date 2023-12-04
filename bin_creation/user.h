@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "movies.h"
 
 #define NBUSERS 480189
 #define IDMAXUSER 2649429

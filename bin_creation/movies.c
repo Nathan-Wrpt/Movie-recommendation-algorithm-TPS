@@ -1,25 +1,5 @@
 #include "movies.h"
-#include <time.h>
-
-//Function to count the lines of a file
-int countLines(const char* filename){
-    FILE* file = fopen(filename, "r");
-    int count = 0;
-
-    if (file != NULL) {
-        char buffer[1024]; // Buffer to store the line
-
-        while (fgets(buffer, sizeof(buffer), file) != NULL) {
-            count++; // Increment the counter for each line
-        }
-
-        fclose(file);
-    } else {
-        printf("Impossible d'ouvrir le fichier %s\n", filename);
-    }
-
-    return count;
-}
+#include "../all.h"
 
 
 movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
@@ -189,31 +169,4 @@ void freeMovies(movie* movies, int numMovies) {
         free(movies[i].ratings);
     }
     free(movies);
-}
-
-int main(){
-    //Initialisation of the clock to calculate the execution time
-    clock_t start_time, end_time;
-    double cpu_time_used;
-
-    start_time = clock();
-
-
-    //Tests to see if the serialization works properly
-    movie* movies = createMovieTable("../../nf_prize_dataset/download/movie_titles.txt", "../../nf_prize_dataset/download/training_set2");
-    // serializeMovies(movies, NBMOVIES, "movies10.bin");
-    // freeMovies(movies, NBMOVIES);
-
-    //Tests to see if the deserialization works properly
-    // movie* moviesDeserialised = deserializeMovies("movies10.bin");
-
-    // printf("Movie 1 has %d ratings\n", moviesDeserialised[9].nb_ratings);
-    // freeMovies(moviesDeserialised, NBMOVIES);
-
-    //calculate the execution time
-    end_time = clock();
-    cpu_time_used = ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
-    printf("Execution time of the program is : %f secondes.\n", cpu_time_used);
-
-    return 0;
 }
