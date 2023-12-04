@@ -1,15 +1,9 @@
 #include "graphcreation.h"
-#include <time.h>
 
-#define MAXRATED 50
-
-float** initGraph(int nbMovies, int initWeight){
-    float** graph = malloc(nbMovies*sizeof(float*));
+float** initGraph(int nbMovies){
+    float** graph = malloc(nbMovies * sizeof(float*));
     for(int i = 0; i < nbMovies; i++){
-        graph[i] = malloc(nbMovies*sizeof(float));
-        for(int j = 0; j < nbMovies; j++){
-            graph[i][j] = initWeight;
-        }
+        graph[i] = calloc(nbMovies, sizeof(float));
     }
     return graph;
 }
@@ -21,30 +15,23 @@ void freeGraph(float** graph, int nbMovies){
     free(graph);
 }
 
-float updateWeight(int rating1, int rating2) {
-
-    // Weight matrix (explanation in the readme)
-
-    float weights[5][5] = {
-        {-0.25, -0.17,  0.0,   0.46,  1.0},
-        {-0.17, -0.62, -0.46,  0.0,   0.5},
-        { 0.0,  -0.46, -1.0,  -0.5,   0.0},
-        { 0.46,  0.0,  -0.5,   1.0,  -0.5},
-        { 1.0,   0.5,   0.0,  -0.5,  -1.0}
-    };
-
+float updateWeight(int rating1, int rating2, float weights[5][5]) {
     if (rating1 >= 1 && rating1 <= 5 && rating2 >= 1 && rating2 <= 5) {
         return weights[rating1 - 1][rating2 - 1];
     } else {
-        return 0.0; //Default value
+        return 0; //Default value
     }
 }
 
-void updateGraphuser(user user, float** graph, int dateLimit){
-    for(int i = 0; i < user.nb_ratings && i < MAXRATED; i++){
-        for(int j = i + 1; j < user.nb_ratings && j < MAXRATED; j++){
-            if(user.ratings[i].year < dateLimit && user.ratings[j].year < dateLimit){
-                float updatedweight = updateWeight(user.ratings[i].star, user.ratings[j].star);
+void updateGraphUser(user user, float** graph, int limitDate, float weights[5][5]){
+
+    // For each different couple (i, j) of user ratings we update the graph
+    for(int i = 0; i < user.nb_ratings && i < RATINGS_CONSIDERED; i++){
+        for(int j = i + 1; j < user.nb_ratings && j < RATINGS_CONSIDERED; j++){
+
+            // If the two ratings are before the limit date, we update the graph
+            if(user.ratings[i].year < limitDate && user.ratings[j].year < limitDate){
+                float updatedweight = updateWeight(user.ratings[i].star, user.ratings[j].star, weights);
                 graph[user.ratings[i].id_film - 1][user.ratings[j].id_film - 1] += updatedweight;
                 graph[user.ratings[j].id_film - 1][user.ratings[i].id_film - 1] += updatedweight;
             }
@@ -52,50 +39,224 @@ void updateGraphuser(user user, float** graph, int dateLimit){
     }
 }
 
-bool userinarray(user* users, int nbUsers, user user){
-    if(users == NULL){
-        return false;
-    }
-    for(int i = 0; i < nbUsers; i++){
-        if(users[i].id == user.id){
+bool isUserIgnored(int* ignoredUsers, int nbIgnoredUsers, int userId) {
+    for (int i = 0; i < nbIgnoredUsers; i++){
+        if(ignoredUsers[i] == userId){
             return true;
         }
     }
     return false;
 }
 
-void updateGraph(float** graph, user* users, int nbUsers, user* toBeIgnoredUsers, int nbIgnoredUsers, int dateLimit, int id_privilegeduser1, int id_privilegeduser2, int min_ratings_to_be_considered_a_good_reviewer){
-    if(id_privilegeduser1 != -1 && id_privilegeduser2 != -1){
-        int i = 0;
-        while(i < nbUsers && users[i].id != id_privilegeduser1){
-            i++;
-        }
-        int j = 0;
-        while(j < nbUsers && users[j].id != id_privilegeduser2){
-            j++;
-        }
-        updateGraphuser(users[i], graph, dateLimit);
-        updateGraphuser(users[j], graph, dateLimit);
-    }
+int findIdUser(user* users, int nbUsers, int idUser){
     for(int i = 0; i < nbUsers; i++){
-        if(userinarray(toBeIgnoredUsers, nbIgnoredUsers, users[i])){
+        if(users[i].id == idUser){
+            return i;
+        }
+    }
+    return -1;
+}
+
+void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int nbIgnoredUsers, int* privilegedUser, int nbPrivilegedUser, int minRatings, int limitDate, float weights[5][5]){
+    
+    // We update the graph only taking in consideration the ratings of the privileged users
+    if(privilegedUser != NULL){
+        for(int i = 0; i < nbPrivilegedUser; i++){
+            int idUser = findIdUser(users, nbUsers, privilegedUser[i]);
+            if(idUser != -1){
+                updateGraphUser(users[idUser], graph, limitDate, weights);
+            }
+        }
+        return;
+    }
+
+    // We update the graph for each user that has enough ratings and is not in the ignoredUsers array
+    for(int i = 0; i < nbUsers; i++){
+        if(isUserIgnored(ignoredUsers, nbIgnoredUsers, users[i].id)){
             continue;
-        }else{
-            if(users[i].nb_ratings >= min_ratings_to_be_considered_a_good_reviewer){
-                updateGraphuser(users[i], graph, dateLimit);
+        }
+        
+        else {
+            if(users[i].nb_ratings >= minRatings){
+                updateGraphUser(users[i], graph, limitDate, weights);
             }
         }
     }
 }
 
-//Given a film id, returns an array of the n ids of the n most close movies to the given one in the graph
-int* getNClosestMovies(int filmid, float** graph, int n){
-    //TO BE CODED
-    return NULL;
+int min(float* array, int size){
+    int min = 0;
+    for(int i = 1; i < size; i++){
+        if(array[i] < array[min]){
+            min = i;
+        }
+    }
+    return min;
+}
+
+int max (float* array, int size){
+    int max = 0;
+    for(int i = 1; i < size; i++){
+        if(array[i] > array[max]){
+            max = i;
+        }
+    }
+    return max;
+}
+
+int* getNClosestMovies(int* moviesIDs, int numFilmsID, float** graph, int n){
+    int* closestMoviesID = malloc(n * sizeof(int));
+    float* minWeights = malloc(n * sizeof(float));
+    for (int i = 0; i < n; i++) minWeights[i] = 1000;
+
+    for (int nbMovieInTab = 0; nbMovieInTab < numFilmsID; nbMovieInTab++) {
+        for(int movieID = 0; movieID < NBMOVIES; movieID++) {
+
+            // if the movie is already in the moviesIDs array we continue
+            bool isMovieInTab = false;
+            for (int i = 0; i < numFilmsID; i++) {
+                if (movieID + 1 == moviesIDs[i]) {
+                    isMovieInTab = true;
+                    break;
+                }
+            }
+
+            // if the movie is already in the closestMoviesID array we update its weight if
+            // the weight is lower than the current weight associated to the movie
+            bool isMovieInClosest = false;
+            for (int i = 0; i < n; i++) {
+                if (movieID + 1 == closestMoviesID[i]) {
+                    if (graph[moviesIDs[nbMovieInTab] - 1][movieID] < minWeights[i]) {
+                        minWeights[i] = graph[moviesIDs[nbMovieInTab] - 1][movieID];
+                        isMovieInClosest = true;
+                    }
+                    break;
+                }
+            }
+
+            if (isMovieInTab || isMovieInClosest) {
+                continue;
+            }
+
+            // Otherwise, if the weight is lower than the max weight in the array we update the array
+            int idMax = max(minWeights, n);
+            if (graph[moviesIDs[nbMovieInTab] - 1][movieID] < minWeights[idMax]) {
+                minWeights[idMax] = graph[moviesIDs[nbMovieInTab] - 1][movieID];
+                closestMoviesID[idMax] = movieID + 1;
+            }
+        }
+    }
+
+    // sort the array
+    for (int i = 0; i < n; i++) {
+        int min = i;
+        for (int j = i + 1; j < n; j++) {
+            if (minWeights[j] < minWeights[min]) {
+                min = j;
+            }
+        }
+        float tmp = minWeights[i];
+        minWeights[i] = minWeights[min];
+        minWeights[min] = tmp;
+
+        int tmp2 = closestMoviesID[i];
+        closestMoviesID[i] = closestMoviesID[min];
+        closestMoviesID[min] = tmp2;
+    }
+
+    free(minWeights);
+    return closestMoviesID;
+}
+
+float absFloat(float value) {
+    if (value < 0) {
+        return -1 * value;
+    }
+    return value;
+}
+
+float maxInv(float* values, int size) {
+    float maxAbs = 0;
+    for (int i = 0; i < size; i++) {
+        float absValue = absFloat(values[i]);
+        if (absValue > maxAbs) {
+            maxAbs = absValue;
+        }
+    }
+    return 1 / maxAbs;
+}
+
+// based on nathan algorithm in order to ponderate the influence of
+// each movies liked based on the fame of the movie
+int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
+
+    float* ponderation = malloc(numFilmsID * sizeof(float)); 
+    for (int i = 0; i < numFilmsID; i++) {
+        ponderation[i] = maxInv(graph[moviesIDs[i] - 1], NBMOVIES);
+    }
+
+    float* weights = malloc(NBMOVIES * sizeof(float));
+    for (int movies = 0; movies < NBMOVIES; movies++) {
+        float sum = 0;
+        for (int i = 0; i < numFilmsID; i++) {
+            sum += graph[movies][moviesIDs[i] - 1] * ponderation[i];
+        }
+        weights[movies] = sum;
+    }
+
+    int* closestMoviesID = malloc(n * sizeof(int));
+    float* minWeights = malloc(n * sizeof(int));
+    for(int i = 0; i < n; i++) minWeights[i] = 1000;
+
+    // We update the closestMoviesID array
+    for (int movieID = 0; movieID < NBMOVIES; movieID++) {
+
+        // if the movie is already in the moviesIDs array we continue
+        bool isMovieInTab = false;
+        for (int i = 0; i < numFilmsID; i++) {
+            if (movieID + 1 == moviesIDs[i]) {
+                isMovieInTab = true;
+                break;
+            }
+        }
+    
+        // if the movie is already in the closestMoviesID array we update its weight if
+        // the weight is lower than the current weight associated to the movie
+        bool isMovieInClosest = false;
+        for (int i = 0; i < n; i++) {
+            if (movieID + 1 == closestMoviesID[i]) {
+                if (weights[movieID] < minWeights[i]) {
+                    minWeights[i] = weights[movieID];
+                }
+                break;
+                isMovieInClosest = true;
+            }
+        }
+
+        if (isMovieInTab || isMovieInClosest) {
+            continue;
+        }
+
+        // Otherwise, if the weight is lower than the max weight in the array we update the array
+        int idMax = max(minWeights, n);
+        if (weights[movieID] < minWeights[idMax]) {
+            minWeights[idMax] = weights[movieID];
+            closestMoviesID[idMax] = movieID + 1;
+        }
+    }
+
+    free(ponderation);
+    free(weights);
+    
+    return closestMoviesID;
 }
 
 
-// Function to deserialize the users.bin (here to test)
+
+//À partir de là ça a plus rien à faire là
+
+
+// Function to deserialize the user array from a binary file
 user* deserializeUsers(const char* filename, int* numUsers) {
     FILE* file = fopen(filename, "rb");
     if (file != NULL) {
@@ -148,97 +309,128 @@ void freeUsers(user* users, int numUsers) {
     free(users);
 }
 
-int meanreviewsperuser(user* users, int nbUsers){
-    int sum = 0;
-    for(int i = 0; i < nbUsers; i++){
-        sum += users[i].nb_ratings;
-    }
-    return sum/nbUsers;
-}
-
-void serializeGraph(const char* filename, float** graph, int nbMovies) {
-    FILE* file = fopen(filename, "wb"); // Open the file in binary write mode
-
+movie* deserializeMovies(const char* filename) {
+    FILE* file = fopen(filename, "rb");
     if (file != NULL) {
-        // Write the entire matrix data into the file
-        fwrite(*graph, sizeof(float), nbMovies * nbMovies, file);
+        int numMovies;
+        fread(&numMovies, sizeof(int), 1, file); // Read the number of movies
 
-        fclose(file); // Close the file after writing
-    } else {
-        printf("Unable to open the file for writing.\n");
-    }
-}
+        // Allocate memory for movies
+        movie* movies = (movie*)malloc(numMovies * sizeof(movie));
 
-float** deserializeGraph(const char* filename, int nbMovies) {
-    FILE* file = fopen(filename, "rb"); // Open the file in binary read mode
+        for (int i = 0; i < numMovies; ++i) {
+            fread(&(movies[i].id), sizeof(int), 1, file);
+            fread(&(movies[i].release_date), sizeof(int), 1, file);
 
-    if (file != NULL) {
-        // Allocate memory for the matrix
-        float** graph = (float**)malloc(nbMovies * sizeof(float*));
-        for (int i = 0; i < nbMovies; i++) {
-            graph[i] = (float*)malloc(nbMovies * sizeof(float));
+            // Read title length and allocate memory to read the title
+            int titleLength;
+            fread(&titleLength, sizeof(int), 1, file);
+            fread(movies[i].title, sizeof(char), titleLength, file);
+            movies[i].title[titleLength] = '\0'; // Null-terminate the string
+
+            fread(&(movies[i].nb_ratings), sizeof(int), 1, file);
+
+            // Allocate memory for ratings
+            movies[i].ratings = (rating*)malloc(movies[i].nb_ratings * sizeof(rating));
+
+            // Deserialize each rating within the movie
+            for (int j = 0; j < movies[i].nb_ratings; ++j) {
+                fread(&(movies[i].ratings[j].id_user), sizeof(int), 1, file);
+                fread(&(movies[i].ratings[j].id_film), sizeof(int), 1, file);
+                fread(&(movies[i].ratings[j].year), sizeof(int), 1, file);
+                fread(&(movies[i].ratings[j].day), sizeof(int), 1, file);
+                fread(&(movies[i].ratings[j].month), sizeof(int), 1, file);
+                fread(&(movies[i].ratings[j].star), sizeof(int), 1, file);
+            }
         }
 
-        // Read the entire matrix data from the file
-        fread(*graph, sizeof(float), nbMovies * nbMovies, file);
-
-        fclose(file); // Close the file after reading
-
-        return graph;
+        fclose(file);
+        return movies;
     } else {
-        printf("Unable to open the file for reading.\n");
+        printf("Failed to open the file for reading.\n");
         return NULL;
     }
 }
 
-//Returns the index of the minimum value of the array
-int min(float* array, int size){
-    int min = 0;
-    for(int i = 1; i < size; i++){
-        if(array[i] < array[min]){
-            min = i;
-        }
+void freeMovies(movie* movies, int numMovies) {
+    for (int i = 0; i < numMovies; i++) {
+        free(movies[i].ratings);
     }
-    return min;
+    free(movies);
 }
 
+// int main(){
+//     float weights[5][5] = {
+//         {-0.25, -0.17,  0.0,   0.46,  1.0},
+//         {-0.17, -0.62, -0.46,  0.0,   0.5},
+//         { 0.0,  -0.46, -1.0,  -0.5,   0.0},
+//         { 0.46,  0.0,  -0.5,   1.0,  -0.5},
+//         { 1.0,   0.5,   0.0,  -0.5,  -1.0}
+//     };
+//     int nbUsers;
+//     user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
+//     movie* movies = deserializeMovies("../bin_creation/movies.bin");
 
-int main(){
-    int nbUsers;
-    user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
+//     printf("Number of users: %d\n", nbUsers);
+//     fflush(stdout);
 
-    printf("Number of users: %d\n", nbUsers);
-    fflush(stdout);
+//     float** graph = initGraph(NBMOVIES);
 
-    float** graph = initGraph(NBMOVIES, NB_MAX_REVIEWS);
+//     printf("Graph initialized\n");
+//     fflush(stdout);
 
-    printf("Graph initialized\n");
-    fflush(stdout);
+//     clock_t begin = clock();
+//     int nbUsersTest = NBUSERS - 5;
+//     updateGraph(graph, users, nbUsersTest, NULL, 0, NULL, 0, 0, 2010, weights);
+//     clock_t end = clock();
 
-    clock_t begin = clock();
-    int nbUsersTest = NBUSERS - 5;
-    updateGraph(graph, users, nbUsersTest, NULL, 0, 2010, -1, -1, 0);
-    clock_t end = clock();
+//     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+//     printf("The graph took %f seconds to be updated with %d users.\n", time_spent, nbUsersTest);
 
-    printf("Graph updated\n");
-    // printf("distance ADC - STW1 : %f\n", graph[16264][9885]);
-    // printf("distance ADC - STW6 : %f\n", graph[16264][9627]);
-    // printf("distance ADC - STW2 : %f\n", graph[16264][8686]);
-    // printf("distance ADC - STW5 : %f\n", graph[16264][5581]);
+//     int n = 10;
+//     int moviesIDs1[3] = {17482, 11265, 7617};
 
-    // serializeGraph("graph.bin", graph, NBMOVIES);
-    // printf("Graph serialized\n");
+//     // printf("===========================================================\n");
+//     // for (int i = 0; i < 3; i ++) {
+        
+//     //     printf("Pour le film %s(%d) le film recommandé est :%s (%f)\n", movies[moviesIDs1[i] - 1].title, moviesIDs1[i], movies[min(graph[moviesIDs1[i] - 1], NBMOVIES)].title, graph[moviesIDs1[i] - 1][min(graph[moviesIDs1[i] - 1], NBMOVIES)]);
+//     // }
+
+//     int* recommendedMovies = getNClosestMovies2(moviesIDs1, 3, graph, n);
+//     printf("===========================================================\n");
+//     printf("Les titres des %d films recommandés si vous aimez les films :\n", n);
+//     for (int i = 0; i < 3; i++) {
+//         printf("- %s(%d)\n", movies[moviesIDs1[i] - 1].title, moviesIDs1[i]);
+//     }
+//     printf("sont :\n");
+//     for(int i = 0; i < n; i++){
+//         printf("Film %02d/%d recommandé : %s(%d)\n", i+1, n, movies[recommendedMovies[i] - 1].title, recommendedMovies[i]);
+//     }
+
+//     free(recommendedMovies);
 
 
-    freeGraph(graph, NBMOVIES);
-    freeUsers(users, nbUsers);
+//     int moviesIDs2[6] = {5926, 16265, 9886, 9628, 8687, 5582};
+//     int* recommendedMovies2 = getNClosestMovies(moviesIDs2, 6, graph, n);
+//     printf("===========================================================\n");
+//     printf("Les titres des %d films recommandés si vous aimez les films :\n", n);
+//     for (int i = 0; i < 6; i++) {
+//         printf("- %s(%d)\n", movies[moviesIDs2[i] - 1].title, moviesIDs2[i]);
+//     }
+//     printf("sont :\n");
+//     for(int i = 0; i < n; i++){
+//         printf("Film %02d/%d recommandé : %s(%d)\n", i+1, n, movies[recommendedMovies2[i] - 1].title, recommendedMovies2[i]);
+//     }
 
-    printf("Graph freed\n");
-    fflush(stdout);
+//     free(recommendedMovies2);
 
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("The graph took %f seconds to be updated with %d users.\n", time_spent, nbUsersTest);
+//     freeMovies(movies, NBMOVIES);
+//     freeGraph(graph, NBMOVIES);
+//     freeUsers(users, nbUsers);
 
-    return 0;
+//     printf("Graph freed\n");
+//     fflush(stdout);
+
+//     return 0;
     
-}
+// }
