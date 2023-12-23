@@ -4,13 +4,11 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <time.h>
-#include "./bin_creation/movies.h"
-#include "./bin_creation/user.h"
-#include "./algo/graphcreation.h"
+#include "graphcreation.c"
 
 void print_usage(){
     printf("Usage: ./main -r <MovieYouLikeid1,MovieYouLikeid2,...>(or the path of a .txt) -n <numberOfMoviesYouWannaGetRecommended-f <folderpath> -l <num> -s <film_id> -c <client1,client2...> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n");
-    printf("Note: All options are optional\n");
+    printf("Note: All options are optional except -r\n");
     printf("Options:\n");
     printf("-r <MovieYouLikeid1,MovieYouLikeid2,...>: Provide a list of movies you like (separated by commas) and get a list of movies you might like\n");
     printf("-n <numberOfMoviesYouWannaGetRecommended>: Specify the number of movies you want to get recommended (by default 10)\n");
@@ -52,6 +50,10 @@ void movies_liked_parsing(char* moviesLiked, int** moviesLikedParsed, int numMov
 }
 
 int main(int argc, char* argv[]){
+    if(argc < 3){
+        print_usage();
+        exit(0);
+    }
 
     //---------------------------------------------------------------ARGUMENTS PARSING---------------------------------------------------------------
     extern char* optarg;
@@ -63,7 +65,7 @@ int main(int argc, char* argv[]){
     int* moviesLikedParsed = NULL;
     int numMoviesRecommended = 10;
     char* folderpath = NULL;
-    int dateLimit = 0;
+    int dateLimit = 2023;
     int film_id = -1;
     char* clients = NULL;
     int numClients = 0;
@@ -161,42 +163,61 @@ int main(int argc, char* argv[]){
     //Deserialization of the users and movies
     int nbUsers;
     user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
+    clock_t timer1 = clock();
+    double time_spent1 = (double)(timer1 - begin) / CLOCKS_PER_SEC;
     movie* movies = deserializeMovies("../bin_creation/movies.bin");
-
+    clock_t timer3 = clock();
     //Creation of the graph
     float** graph = initGraph(NBMOVIES);
-    updateGraph(graph, users, NBUSERS, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
-
+    clock_t timer4 = clock();
+    updateGraph(graph, users, NBUSERS - 5, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
+    clock_t timer2 = clock();
     //Determining the movies to recommend
-    int* recommendedMovies = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
+    int* recommendedmMovies1 = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
+    int* recommendedMovies2 = getNClosestMovies2(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
     clock_t end = clock();
 
     //Calculate the execution time of the program
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    double time_spent2 = (double)(timer2 - timer4) / CLOCKS_PER_SEC;
+    double time_spent3 = (double)(timer3 - timer1) / CLOCKS_PER_SEC;
+    double time_spent4 = (double)(timer4 - timer3) / CLOCKS_PER_SEC;
     if(toption){
-        printf("Execution time of the program was : %f secondes.\n", time_spent);
+        printf("Total execution time of the program was : %f seconds.\n", time_spent);
+        printf("Time passed in the users deserialization process : %f seconds.\n", time_spent1);
+        printf("Time passed in the movies deserialization process : %f seconds.\n", time_spent3);
+        printf("Time passed in the graph creation process : %f seconds.\n", time_spent4);
+        printf("Time passed in the graph update process : %f seconds.\n\n", time_spent2);
     }
 
     //Print the movies recommended
     printf("Based on the movies you liked (");
     for(int i = 0; i < numMoviesLiked; i++){
-        printf("%s", movies[moviesLikedParsed[i]].title);
+        printf("%s", movies[moviesLikedParsed[i] - 1].title);
         if(i != numMoviesLiked - 1){
             printf(", ");
         }
     }
-    printf("), we recommend you the following movies:\n");
+    printf("), \n\nErwan recommends you the following movies:\n");
     for(int i = 0; i < numMoviesRecommended; i++){
-        printf("-%s\n", movies[recommendedMovies[i]].title);
+        printf("%d-%s\n", i+1, movies[recommendedMovies2[i] - 1].title);
     }
-
+    printf("\nAnd Nathan recommends you the following movies:\n");
+    for(int i = 0; i < numMoviesRecommended; i++){
+        printf("%d-%s\n", i+1, movies[recommendedmMovies1[i] - 1].title);
+    }
     freeGraph(graph, NBMOVIES);
-    free(recommendedMovies);
+    free(recommendedmMovies1);
+    free(recommendedMovies2);
     free(moviesLikedParsed);
     free(clientsParsed);
     free(badReviewersParsed);
     freeUsers(users, NBUSERS);
     freeMovies(movies, NBMOVIES);
+    free(folderpath);
+    free(moviesLiked);
+    free(clients);
+    free(bad_reviewers);
     return 0;
 
 }

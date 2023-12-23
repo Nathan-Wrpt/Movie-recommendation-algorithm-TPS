@@ -1,15 +1,13 @@
 #ifndef MOVIES_H
 #define MOVIES_H
-
 #include "user.h"
-
 #define NBMOVIES 17770
 
 //This file contains the structure of a movie and the functions to initialize it
 //Moreover, the functions to convert the full movie table into a binary file and to convert it back are in this file
 
 
-// Structure of a movie (Not sure for the moment, prolly gon be modified)
+// Structure of a movie
 typedef struct movie_temp{
     int id;
     int release_date;
