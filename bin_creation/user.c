@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "user.h"
-#include "movies.h"
-#include "movies.c"
+#include "../all.h"
 
 user* initUser(int id) {
     user* u = (user*) malloc(sizeof(user));
@@ -140,26 +137,4 @@ void freeUsers(user* users, int numUsers) {
         free(users[i].ratings);
     }
     free(users);
-}
-
-int main() {
-    movie* moviesDeserialised = deserializeMovies("movies.bin");
-    
-    user* userTable = createUsersTable(moviesDeserialised);
-
-    serializeUsers(userTable, NBUSERS, "users.bin");
-
-    // int numUser = 169307;
-
-    // printf("User with id : %d has %d ratings :\n", userTable[numUser].id, userTable[numUser].nb_ratings);
-    // for(int i = 0; i < userTable[numUser].nb_ratings; i++) {
-    //     printf("--------------------\n");
-    //     printf("Id film rated : %d\n", userTable[numUser].ratings[i].id_film);
-    //     printf("Rating date : %02d-%02d-%02d\n", userTable[numUser].ratings[i].day, userTable[numUser].ratings[i].month, userTable[numUser].ratings[i].year);
-    //     printf("Star(s) : %d\n", userTable[numUser].ratings[i].star);
-    // }
-
-    freeMovies(moviesDeserialised, NBMOVIES);
-    freeUsers(userTable, NBUSERS);
-    return 0;
 }
