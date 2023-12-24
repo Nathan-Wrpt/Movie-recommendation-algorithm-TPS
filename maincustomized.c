@@ -4,9 +4,9 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <time.h>
-#include "./bin_creation/movies.h"
-#include "./bin_creation/user.h"
-#include "./algo/graphcreation.h"
+#include "bin_creation/movies.h"
+#include "bin_creation/user.h"
+#include "algo/graphcreation.h"
 
 //Compte le nombre de films likés après l'option -r, séparés par des ','
 int num_movies_liked(char* moviesLiked){
