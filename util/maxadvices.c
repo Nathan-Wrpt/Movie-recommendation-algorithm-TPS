@@ -1,4 +1,4 @@
-#include "all.h"
+#include "maxadvices.h"
 
 //Function to count the lines of a file
 int countLines(const char* filename){

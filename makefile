@@ -1,25 +1,23 @@
-# Makefile
 CC = gcc
-CFLAGS = -Wall -g
+CFLAGS = -Wall -Wextra -I./algo -I./bin_creation -I./util
 
-# List of source files
-SRC = main.c ./algo/graphcreation.c ./bin_creation/movies.c ./bin_creation/user.c ./util/maxadvices.c
+SRC = main.c \
+      algo/graphcreation.c \
+      bin_creation/movies.c \
+      bin_creation/user.c \
+      util/maxadvices.c
 
-# List of object files
 OBJ = $(SRC:.c=.o)
 
-# Target executable
 TARGET = main
 
-all: $(TARGET)
-
 $(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+.PHONY: clean
 
 clean:
 	rm -f $(OBJ) $(TARGET)
-
-.PHONY: all clean

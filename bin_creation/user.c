@@ -1,5 +1,4 @@
 #include "user.h"
-#include "../all.h"
 
 user* initUser(int id) {
     user* u = (user*) malloc(sizeof(user));

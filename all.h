@@ -7,6 +7,7 @@
 #include <math.h>
 #include <time.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 #define NBUSERS 480189
 #define IDMAXUSER 2649429
