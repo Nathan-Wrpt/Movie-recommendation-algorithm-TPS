@@ -59,7 +59,7 @@ int main(int argc, char* argv[]){
     int* moviesLikedParsed = NULL;
     int numMoviesRecommended = 10;
     char* folderpath = NULL;
-    int dateLimit = 0;
+    int dateLimit = 2020;
     int film_id = -1;
     char* clients = NULL;
     int numClients = 0;
@@ -165,15 +165,9 @@ int main(int argc, char* argv[]){
     printf("Creating the graph...\n");
     float** graph = initGraph(NBMOVIES);
     printf("Updating the graph...\n");
+
     updateGraph(graph, users, NBUSERS, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
     printf("Graph created and updated\n");
-    printf("Graph: \n");
-    for(int i = 0; i < 10; i++){
-        for(int j = 0; j < 10; j++){
-            printf("%f ", graph[i][j]);
-        }
-        printf("\n");
-    }
 
     //Determining the movies to recommend
     printf("Determining the movies to recommend...\n");
@@ -182,6 +176,9 @@ int main(int argc, char* argv[]){
         printf("%d ", moviesLikedParsed[i]);
     }
     printf("\n");
+
+    
+
     printf("Number of movies liked: %d\n", numMoviesLiked);
     printf("Number of movies recommended: %d\n", numMoviesRecommended);
     int* recommendedMovies = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
@@ -198,17 +195,19 @@ int main(int argc, char* argv[]){
         printf("Execution time of the program was : %f secondes.\n", time_spent);
     }
 
+    printf("\n\n ======================= RESULTS ======================= \n\n");
+
     //Print the movies recommended
     printf("Based on the movies you liked (");
     for(int i = 0; i < numMoviesLiked; i++){
-        printf("%s", movies[moviesLikedParsed[i]].title);
+        printf("%s", movies[moviesLikedParsed[i] - 1].title);
         if(i != numMoviesLiked - 1){
             printf(", ");
         }
     }
     printf("), we recommend you the following movies:\n");
     for(int i = 0; i < numMoviesRecommended; i++){
-        printf("-%s\n", movies[recommendedMovies[i]].title);
+        printf("-%s\n", movies[recommendedMovies[i] - 1].title);
     }
 
     freeGraph(graph, NBMOVIES);

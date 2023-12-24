@@ -35,6 +35,7 @@ void updateGraphUser(user user, float** graph, int limitDate, float weights[5][5
                 graph[user.ratings[i].id_film - 1][user.ratings[j].id_film - 1] += updatedweight;
                 graph[user.ratings[j].id_film - 1][user.ratings[i].id_film - 1] += updatedweight;
             }
+
         }
     }
 }
@@ -74,6 +75,7 @@ void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int
     for(int i = 0; i < nbUsers; i++){
         if(isUserIgnored(ignoredUsers, nbIgnoredUsers, users[i].id)){
             continue;
+            printf("User %d ignored\n", users[i].id);
         }
         
         else {
@@ -252,78 +254,78 @@ int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
 }
 
 
-int main(){
-    float weights[5][5] = {
-        {-0.25, -0.17,  0.0,   0.46,  1.0},
-        {-0.17, -0.62, -0.46,  0.0,   0.5},
-        { 0.0,  -0.46, -1.0,  -0.5,   0.0},
-        { 0.46,  0.0,  -0.5,   1.0,  -0.5},
-        { 1.0,   0.5,   0.0,  -0.5,  -1.0}
-    };
-    int nbUsers;
-    user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
-    movie* movies = deserializeMovies("../bin_creation/movies.bin");
+// int main(){
+//     float weights[5][5] = {
+//         {-0.25, -0.17,  0.0,   0.46,  1.0},
+//         {-0.17, -0.62, -0.46,  0.0,   0.5},
+//         { 0.0,  -0.46, -1.0,  -0.5,   0.0},
+//         { 0.46,  0.0,  -0.5,   1.0,  -0.5},
+//         { 1.0,   0.5,   0.0,  -0.5,  -1.0}
+//     };
+//     int nbUsers;
+//     user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
+//     movie* movies = deserializeMovies("../bin_creation/movies.bin");
 
-    printf("Number of users: %d\n", nbUsers);
-    fflush(stdout);
+//     printf("Number of users: %d\n", nbUsers);
+//     fflush(stdout);
 
-    float** graph = initGraph(NBMOVIES);
+//     float** graph = initGraph(NBMOVIES);
 
-    printf("Graph initialized\n");
-    fflush(stdout);
+//     printf("Graph initialized\n");
+//     fflush(stdout);
 
-    clock_t begin = clock();
-    int nbUsersTest = NBUSERS - 5;
-    updateGraph(graph, users, nbUsersTest, NULL, 0, NULL, 0, 0, 2010, weights);
-    clock_t end = clock();
+//     clock_t begin = clock();
+//     int nbUsersTest = NBUSERS - 5;
+//     updateGraph(graph, users, nbUsersTest, NULL, 0, NULL, 0, 0, 2010, weights);
+//     clock_t end = clock();
 
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    printf("The graph took %f seconds to be updated with %d users.\n", time_spent, nbUsersTest);
+//     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+//     printf("The graph took %f seconds to be updated with %d users.\n", time_spent, nbUsersTest);
 
-    int n = 10;
-    int moviesIDs1[3] = {17482, 11265, 7617};
+//     int n = 10;
+//     int moviesIDs1[3] = {17482, 11265, 7617};
 
-    // printf("===========================================================\n");
-    // for (int i = 0; i < 3; i ++) {
+//     // printf("===========================================================\n");
+//     // for (int i = 0; i < 3; i ++) {
         
-    //     printf("Pour le film %s(%d) le film recommandé est :%s (%f)\n", movies[moviesIDs1[i] - 1].title, moviesIDs1[i], movies[min(graph[moviesIDs1[i] - 1], NBMOVIES)].title, graph[moviesIDs1[i] - 1][min(graph[moviesIDs1[i] - 1], NBMOVIES)]);
-    // }
+//     //     printf("Pour le film %s(%d) le film recommandé est :%s (%f)\n", movies[moviesIDs1[i] - 1].title, moviesIDs1[i], movies[min(graph[moviesIDs1[i] - 1], NBMOVIES)].title, graph[moviesIDs1[i] - 1][min(graph[moviesIDs1[i] - 1], NBMOVIES)]);
+//     // }
 
-    int* recommendedMovies = getNClosestMovies2(moviesIDs1, 3, graph, n);
-    printf("===========================================================\n");
-    printf("Les titres des %d films recommandés si vous aimez les films :\n", n);
-    for (int i = 0; i < 3; i++) {
-        printf("- %s(%d)\n", movies[moviesIDs1[i] - 1].title, moviesIDs1[i]);
-    }
-    printf("sont :\n");
-    for(int i = 0; i < n; i++){
-        printf("Film %02d/%d recommandé : %s(%d)\n", i+1, n, movies[recommendedMovies[i] - 1].title, recommendedMovies[i]);
-    }
+//     int* recommendedMovies = getNClosestMovies2(moviesIDs1, 3, graph, n);
+//     printf("===========================================================\n");
+//     printf("Les titres des %d films recommandés si vous aimez les films :\n", n);
+//     for (int i = 0; i < 3; i++) {
+//         printf("- %s(%d)\n", movies[moviesIDs1[i] - 1].title, moviesIDs1[i]);
+//     }
+//     printf("sont :\n");
+//     for(int i = 0; i < n; i++){
+//         printf("Film %02d/%d recommandé : %s(%d)\n", i+1, n, movies[recommendedMovies[i] - 1].title, recommendedMovies[i]);
+//     }
 
-    free(recommendedMovies);
+//     free(recommendedMovies);
 
 
-    int moviesIDs2[6] = {5926, 16265, 9886, 9628, 8687, 5582};
-    int* recommendedMovies2 = getNClosestMovies(moviesIDs2, 6, graph, n);
-    printf("===========================================================\n");
-    printf("Les titres des %d films recommandés si vous aimez les films :\n", n);
-    for (int i = 0; i < 6; i++) {
-        printf("- %s(%d)\n", movies[moviesIDs2[i] - 1].title, moviesIDs2[i]);
-    }
-    printf("sont :\n");
-    for(int i = 0; i < n; i++){
-        printf("Film %02d/%d recommandé : %s(%d)\n", i+1, n, movies[recommendedMovies2[i] - 1].title, recommendedMovies2[i]);
-    }
+//     int moviesIDs2[6] = {5926, 16265, 9886, 9628, 8687, 5582};
+//     int* recommendedMovies2 = getNClosestMovies(moviesIDs2, 6, graph, n);
+//     printf("===========================================================\n");
+//     printf("Les titres des %d films recommandés si vous aimez les films :\n", n);
+//     for (int i = 0; i < 6; i++) {
+//         printf("- %s(%d)\n", movies[moviesIDs2[i] - 1].title, moviesIDs2[i]);
+//     }
+//     printf("sont :\n");
+//     for(int i = 0; i < n; i++){
+//         printf("Film %02d/%d recommandé : %s(%d)\n", i+1, n, movies[recommendedMovies2[i] - 1].title, recommendedMovies2[i]);
+//     }
 
-    free(recommendedMovies2);
+//     free(recommendedMovies2);
 
-    freeMovies(movies, NBMOVIES);
-    freeGraph(graph, NBMOVIES);
-    freeUsers(users, nbUsers);
+//     freeMovies(movies, NBMOVIES);
+//     freeGraph(graph, NBMOVIES);
+//     freeUsers(users, nbUsers);
 
-    printf("Graph freed\n");
-    fflush(stdout);
+//     printf("Graph freed\n");
+//     fflush(stdout);
 
-    return 0;
+//     return 0;
     
-}
+// }
