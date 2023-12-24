@@ -3,10 +3,7 @@
 float** initGraph(int nbMovies){
     float** graph = malloc(nbMovies * sizeof(float*));
     for(int i = 0; i < nbMovies; i++){
-        graph[i] = malloc(nbMovies * sizeof(float));
-        for(int j = 0; j < nbMovies; j++){
-            graph[i][j] = INIT_WEIGHT;
-        }
+        graph[i] = calloc(nbMovies, sizeof(float));
     }
     return graph;
 }
@@ -18,16 +15,7 @@ void freeGraph(float** graph, int nbMovies){
     free(graph);
 }
 
-float updateWeight(int rating1, int rating2) {
-    // Weight matrix (explanation in the readme)
-    float weights[5][5] = {
-        {-0.25, -0.17,  0.0,   0.46,  1.0},
-        {-0.17, -0.62, -0.46,  0.0,   0.5},
-        { 0.0,  -0.46, -1.0,  -0.5,   0.0},
-        { 0.46,  0.0,  -0.5,   1.0,  -0.5},
-        { 1.0,   0.5,   0.0,  -0.5,  -1.0}
-    };
-
+float updateWeight(int rating1, int rating2, float weights[5][5]) {
     if (rating1 >= 1 && rating1 <= 5 && rating2 >= 1 && rating2 <= 5) {
         return weights[rating1 - 1][rating2 - 1];
     } else {
@@ -35,7 +23,7 @@ float updateWeight(int rating1, int rating2) {
     }
 }
 
-void updateGraphUser(user user, float** graph, int limitDate){
+void updateGraphUser(user user, float** graph, int limitDate, float weights[5][5]){
 
     // For each different couple (i, j) of user ratings we update the graph
     for(int i = 0; i < user.nb_ratings && i < RATINGS_CONSIDERED; i++){
@@ -43,7 +31,7 @@ void updateGraphUser(user user, float** graph, int limitDate){
 
             // If the two ratings are before the limit date, we update the graph
             if(user.ratings[i].year < limitDate && user.ratings[j].year < limitDate){
-                float updatedweight = updateWeight(user.ratings[i].star, user.ratings[j].star);
+                float updatedweight = updateWeight(user.ratings[i].star, user.ratings[j].star, weights);
                 graph[user.ratings[i].id_film - 1][user.ratings[j].id_film - 1] += updatedweight;
                 graph[user.ratings[j].id_film - 1][user.ratings[i].id_film - 1] += updatedweight;
             }
@@ -69,14 +57,14 @@ int findIdUser(user* users, int nbUsers, int idUser){
     return -1;
 }
 
-void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int nbIgnoredUsers, int* privilegedUser, int nbPrivilegedUser, int minRatings, int limitDate){
+void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int nbIgnoredUsers, int* privilegedUser, int nbPrivilegedUser, int minRatings, int limitDate, float weights[5][5]){
     
     // We update the graph only taking in consideration the ratings of the privileged users
     if(privilegedUser != NULL){
         for(int i = 0; i < nbPrivilegedUser; i++){
             int idUser = findIdUser(users, nbUsers, privilegedUser[i]);
             if(idUser != -1){
-                updateGraphUser(users[idUser], graph, limitDate);
+                updateGraphUser(users[idUser], graph, limitDate, weights);
             }
         }
         return;
@@ -90,62 +78,10 @@ void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int
         
         else {
             if(users[i].nb_ratings >= minRatings){
-                updateGraphUser(users[i], graph, limitDate);
+                updateGraphUser(users[i], graph, limitDate, weights);
             }
         }
     }
-}
-
-user* deserializeUsers(const char* filename, int* numUsers) {
-    FILE* file = fopen(filename, "rb");
-    if (file != NULL) {
-        fread(numUsers, sizeof(int), 1, file); // Read the number of users
-
-        user* users = (user*)malloc((*numUsers) * sizeof(user));
-        if (users == NULL) {
-            fclose(file);
-            return NULL; // Memory allocation failed
-        }
-
-        for (int i = 0; i < *numUsers; ++i) {
-            fread(&(users[i].id), sizeof(int), 1, file);
-            fread(&(users[i].nb_ratings), sizeof(int), 1, file);
-
-            users[i].ratings = (rating*)malloc(users[i].nb_ratings * sizeof(rating));
-            if (users[i].ratings == NULL) {
-                // Handle memory allocation failure
-                fclose(file);
-                for (int j = 0; j < i; ++j) {
-                    free(users[j].ratings);
-                }
-                free(users);
-                return NULL;
-            }
-
-            // Deserialize each rating for the user
-            for (int j = 0; j < users[i].nb_ratings; ++j) {
-                fread(&(users[i].ratings[j].id_user), sizeof(int), 1, file);
-                fread(&(users[i].ratings[j].id_film), sizeof(int), 1, file);
-                fread(&(users[i].ratings[j].year), sizeof(int), 1, file);
-                fread(&(users[i].ratings[j].day), sizeof(int), 1, file);
-                fread(&(users[i].ratings[j].month), sizeof(int), 1, file);
-                fread(&(users[i].ratings[j].star), sizeof(int), 1, file);
-            }
-        }
-
-        fclose(file);
-        return users;
-    } else {
-        printf("Failed to open the file for reading.\n");
-        return NULL;
-    }
-}
-
-void freeUsers(user* users, int numUsers) {
-    for (int i = 0; i < numUsers; i++) {
-        free(users[i].ratings);
-    }
-    free(users);
 }
 
 int min(float* array, int size){
@@ -251,7 +187,7 @@ float maxInv(float* values, int size) {
 }
 
 // based on nathan algorithm in order to ponderate the influence of
-// blockbuster in order to promote other kind of movies
+// each movies liked based on the fame of the movie
 int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
 
     float* ponderation = malloc(numFilmsID * sizeof(float)); 
@@ -311,61 +247,19 @@ int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
 
     free(ponderation);
     free(weights);
-
+    
     return closestMoviesID;
 }
 
-movie* deserializeMovies(const char* filename) {
-    FILE* file = fopen(filename, "rb");
-    if (file != NULL) {
-        int numMovies;
-        fread(&numMovies, sizeof(int), 1, file); // Read the number of movies
-
-        // Allocate memory for movies
-        movie* movies = (movie*)malloc(numMovies * sizeof(movie));
-
-        for (int i = 0; i < numMovies; ++i) {
-            fread(&(movies[i].id), sizeof(int), 1, file);
-            fread(&(movies[i].release_date), sizeof(int), 1, file);
-
-            // Read title length and allocate memory to read the title
-            int titleLength;
-            fread(&titleLength, sizeof(int), 1, file);
-            fread(movies[i].title, sizeof(char), titleLength, file);
-            movies[i].title[titleLength] = '\0'; // Null-terminate the string
-
-            fread(&(movies[i].nb_ratings), sizeof(int), 1, file);
-
-            // Allocate memory for ratings
-            movies[i].ratings = (rating*)malloc(movies[i].nb_ratings * sizeof(rating));
-
-            // Deserialize each rating within the movie
-            for (int j = 0; j < movies[i].nb_ratings; ++j) {
-                fread(&(movies[i].ratings[j].id_user), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].id_film), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].year), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].day), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].month), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].star), sizeof(int), 1, file);
-            }
-        }
-
-        fclose(file);
-        return movies;
-    } else {
-        printf("Failed to open the file for reading.\n");
-        return NULL;
-    }
-}
-
-void freeMovies(movie* movies, int numMovies) {
-    for (int i = 0; i < numMovies; i++) {
-        free(movies[i].ratings);
-    }
-    free(movies);
-}
 
 int main(){
+    float weights[5][5] = {
+        {-0.25, -0.17,  0.0,   0.46,  1.0},
+        {-0.17, -0.62, -0.46,  0.0,   0.5},
+        { 0.0,  -0.46, -1.0,  -0.5,   0.0},
+        { 0.46,  0.0,  -0.5,   1.0,  -0.5},
+        { 1.0,   0.5,   0.0,  -0.5,  -1.0}
+    };
     int nbUsers;
     user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
     movie* movies = deserializeMovies("../bin_creation/movies.bin");
@@ -380,7 +274,7 @@ int main(){
 
     clock_t begin = clock();
     int nbUsersTest = NBUSERS - 5;
-    updateGraph(graph, users, nbUsersTest, NULL, 0, NULL, 0, 0, 2010);
+    updateGraph(graph, users, nbUsersTest, NULL, 0, NULL, 0, 0, 2010, weights);
     clock_t end = clock();
 
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;

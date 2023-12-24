@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-#define NBFILMS 17770
+#include "maxadvices.h"
 
 //Function to count the lines of a file
 int countLines(const char* filename){
@@ -27,14 +24,12 @@ int countLines(const char* filename){
 int getMaxAdvices(char* folderpath){
     int max = 0;
     int i = 1;
-    int movieinquestion = 0;
-    while(i<NBFILMS + 1){
+    while(i<NBMOVIES + 1){
         char filename[100];
         sprintf(filename, "%s/mv_%07d.txt", folderpath, i);
         int tmp = countLines(filename);
         if(tmp>max){
             max = tmp;
-            movieinquestion = i;
         }
         i++;
     }
