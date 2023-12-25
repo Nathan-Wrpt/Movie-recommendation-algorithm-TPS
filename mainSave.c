@@ -116,33 +116,6 @@ int main(int argc, char* argv[]){
                 exit(EXIT_FAILURE);
         }
     }
-
-    printf("(Option -r) Movies Liked: %s\n", moviesLiked);
-    printf("Number of Movies Liked: %d\n", numMoviesLiked);
-    printf("Movies Liked Parsed: ");
-    for(int i = 0; i < numMoviesLiked; i++){
-        printf("%d ", moviesLikedParsed[i]);
-    }
-    printf("\n");
-    printf("(Option -n) : \nNumber of Movies Recommended: %d\n", numMoviesRecommended);
-    printf("(option -f) : \nFolder Path: %s\n", folderpath);
-    printf("(option -l) : \nDate limite : %d\n", dateLimit);
-    printf("(option -s) : \n Film ID: %d\n", film_id);
-    printf("(option -c) : \n Clients: %s\n", clients);
-    printf("Number of Clients: %d\n", numClients);
-    printf("Clients Parsed: ");
-    for(int i = 0; i < numClients; i++){
-        printf("%d ", clientsParsed[i]);
-    }
-    printf("(option -e) : \nMin Movies Reviewed: %d\n", minmoviesreviewed);
-    printf("(option -b) : \nBad Reviewers: %s\n", bad_reviewers);
-    printf("Number of Bad Reviewers: %d\n", numBadReviewers);
-    printf("Bad Reviewers Parsed: ");
-    for(int i = 0; i < numBadReviewers; i++){
-        printf("%d ", badReviewersParsed[i]);
-    }
-    printf("\n");
-    printf("Toption: %d\n", toption);
     //---------------------------------------------------------------END OF ARGUMENTS PARSING---------------------------------------------------------------
 
     //Matrix representing the function to update weights between 2 movies based on the stars a same user gave to both movies
