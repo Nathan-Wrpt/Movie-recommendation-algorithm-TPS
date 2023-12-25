@@ -10,13 +10,24 @@ void print_usage(){
     printf("Options:\n");
     printf("-r <MovieYouLikeid1,MovieYouLikeid2,...>: Provide a list of movies you like (separated by commas) and get a list of movies you might like\n");
     printf("-n <numberOfMoviesYouWannaGetRecommended>: Specify the number of movies you want to get recommended (by default 10)\n");
-    printf("-f <folderpath>: Path to the folder where the files corresponding to the requested results will be saved (by default in the current directory)\n");
+    printf("-f <.txt path and filename (example : /home/data.txt)>: Path to the txt where the results will be saved if you want them to\n");
     printf("-l <num>: Ignore ratings whose date is greater than <num>\n");
     printf("-s <film_id>: Provide statistics on the film with identifier <film_id> (number of ratings, average rating, etc.)\n");
     printf("-c <client1,client2...>: Consider only ratings from clients <client1> and <client2>\n");
     printf("-b <bad_reviewer1,bad_reviewer2,...>: Exclude ratings from reviewers <bad_reviewer1>, <bad_reviewer2>, etc.\n");
     printf("-e <minmoviesreviewed>: Consider only elite clients who have watched a minimum of <minmoviesreviewed> movies\n"); 
     printf("-t: Specify the execution time of the algorithm\n");
+}
+
+//fonction qui à partir d'un chemin vers un fichier txt, écrit le contenu de string dans ce fichier
+void write_txt(char* string, char* path){
+    FILE* file = fopen(path, "w");
+    if(file == NULL){
+        printf("Error opening file\n");
+        exit(1);
+    }
+    fprintf(file, "%s", string);
+    fclose(file);
 }
 
 //Compte le nombre de films likés après l'option -r, séparés par des ','
@@ -116,33 +127,6 @@ int main(int argc, char* argv[]){
                 exit(EXIT_FAILURE);
         }
     }
-
-    printf("(Option -r) Movies Liked: %s\n", moviesLiked);
-    printf("Number of Movies Liked: %d\n", numMoviesLiked);
-    printf("Movies Liked Parsed: ");
-    for(int i = 0; i < numMoviesLiked; i++){
-        printf("%d ", moviesLikedParsed[i]);
-    }
-    printf("\n");
-    printf("(Option -n) : \nNumber of Movies Recommended: %d\n", numMoviesRecommended);
-    printf("(option -f) : \nFolder Path: %s\n", folderpath);
-    printf("(option -l) : \nDate limite : %d\n", dateLimit);
-    printf("(option -s) : \n Film ID: %d\n", film_id);
-    printf("(option -c) : \n Clients: %s\n", clients);
-    printf("Number of Clients: %d\n", numClients);
-    printf("Clients Parsed: ");
-    for(int i = 0; i < numClients; i++){
-        printf("%d ", clientsParsed[i]);
-    }
-    printf("(option -e) : \nMin Movies Reviewed: %d\n", minmoviesreviewed);
-    printf("(option -b) : \nBad Reviewers: %s\n", bad_reviewers);
-    printf("Number of Bad Reviewers: %d\n", numBadReviewers);
-    printf("Bad Reviewers Parsed: ");
-    for(int i = 0; i < numBadReviewers; i++){
-        printf("%d ", badReviewersParsed[i]);
-    }
-    printf("\n");
-    printf("Toption: %d\n", toption);
     //---------------------------------------------------------------END OF ARGUMENTS PARSING---------------------------------------------------------------
 
     //Matrix representing the function to update weights between 2 movies based on the stars a same user gave to both movies
@@ -155,11 +139,18 @@ int main(int argc, char* argv[]){
     };
     clock_t begin = clock();
     //Deserialization of the users and movies
+    printf("Deserializing movies...\n");
+    movie* movies = deserializeMovies("bin_creation/movies.bin");
+
+    //If the user wants to get statistics about a specific movie
+    if(film_id != -1){
+        print_movie_stats(film_id, movies);
+        exit(0);
+    }
+
     int nbUsers;
     printf("Deserializing users...\n");
     user* users = deserializeUsers("bin_creation/users.bin", &nbUsers);
-    printf("Deserializing movies...\n");
-    movie* movies = deserializeMovies("bin_creation/movies.bin");
 
     //Creation of the graph
     printf("Creating the graph...\n");
@@ -210,6 +201,29 @@ int main(int argc, char* argv[]){
         printf("-%s\n", movies[recommendedMovies[i] - 1].title);
     }
 
+    if(folderpath != NULL){
+        //if folderpath isnt an existing txt file, we create it
+        if(strstr(folderpath, ".txt") == NULL){
+            char* path = malloc(strlen(folderpath) + 5);
+            strcpy(path, folderpath);
+            strcat(path, ".txt");
+            folderpath = path;
+        }
+        //we write the results in the file
+        FILE* f = fopen(folderpath, "w");
+        fprintf(f, "Based on the movies you liked (");
+        for(int i = 0; i < numMoviesLiked; i++){
+            fprintf(f, "%s", movies[moviesLikedParsed[i] - 1].title);
+            if(i != numMoviesLiked - 1){
+                fprintf(f, ", ");
+            }
+        }
+        fprintf(f, "), we recommend you the following movies:\n");
+        for(int i = 0; i < numMoviesRecommended; i++){
+            fprintf(f, "-%s\n", movies[recommendedMovies[i] - 1].title);
+        }
+        fclose(f);
+    }
     freeGraph(graph, NBMOVIES);
     free(recommendedMovies);
     free(moviesLikedParsed);
