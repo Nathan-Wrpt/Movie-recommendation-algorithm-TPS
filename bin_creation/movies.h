@@ -24,4 +24,10 @@ movie* deserializeMovies(const char* filename);
 //Function to free the memory allocated for a movie, iterating through the ratings and freeing them too
 void freeMovies(movie* movies, int numMovies);
 
+//function which returns the average rating of a movie given its id
+float averageRating(int id, movie* movies);
+
+//print function for a movie
+void print_movie_stats(int id, movie* movies);
+
 #endif

@@ -170,3 +170,27 @@ void freeMovies(movie* movies, int numMovies) {
     }
     free(movies);
 }
+
+float averageRating(int id, movie* movies){
+    if(id < 1 || id > NBMOVIES){
+        printf("Invalid movie id\n");
+        return -1;
+    }
+    float sum = 0;
+    for(int i = 0; i < movies[id - 1].nb_ratings; i++){
+        sum += movies[id - 1].ratings[i].star;
+    }
+    return sum / movies[id - 1].nb_ratings;
+}
+
+void print_movie_stats(int id, movie* movies){
+    if(id < 1 || id > NBMOVIES){
+        printf("Invalid movie id\n");
+        return;
+    }
+    printf("Information about the movie with the id : %d \n", movies[id - 1].id);
+    printf("Title : %s\n", movies[id - 1].title);
+    printf("Release date : %d\n", movies[id - 1].release_date);
+    printf("Average rating : %f\n", averageRating(id, movies));
+    printf("Number of ratings : %d\n", movies[id - 1].nb_ratings);
+}
