@@ -188,9 +188,15 @@ void print_movie_stats(int id, movie* movies){
         printf("Invalid movie id\n");
         return;
     }
-    printf("Information about the movie with the id : %d \n", movies[id - 1].id);
-    printf("Title : %s\n", movies[id - 1].title);
-    printf("Release date : %d\n", movies[id - 1].release_date);
-    printf("Average rating : %f\n", averageRating(id, movies));
-    printf("Number of ratings : %d\n", movies[id - 1].nb_ratings);
+
+    
+    printf("Information about movie ");
+    printf("\033[1;37m");
+    printf("%s", movies[id - 1].title);
+    printf("\033[1;22m");
+    printf(" (id : %d) :\n\n", id);
+
+    printf("📅 Release date : %d\n", movies[id - 1].release_date);
+    printf("⭐ Average rating : %f\n", averageRating(id, movies));
+    printf("🔢 Number of ratings : %d\n", movies[id - 1].nb_ratings);
 }

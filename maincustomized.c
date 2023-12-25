@@ -9,7 +9,7 @@
 #include "algo/graphcreation.h"
 
 //Compte le nombre de films likés après l'option -r, séparés par des ','
-int num_movies_liked(char* moviesLiked){
+int num_movies_liked(char*   moviesLiked){
     char* copy = malloc(strlen(moviesLiked) + 1);
     strcpy(copy, moviesLiked);
     int num = 0;

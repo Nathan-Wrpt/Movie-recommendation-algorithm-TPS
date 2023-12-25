@@ -60,7 +60,7 @@ void movies_liked_parsing(char* moviesLiked, int** moviesLikedParsed, int numMov
 
 int main(int argc, char* argv[]){
 
-    //---------------------------------------------------------------ARGUMENTS PARSING---------------------------------------------------------------
+    //-------------- ARGUMENTS PARSING --------------
     extern char* optarg;
     int opt;
 
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
     int* moviesLikedParsed = NULL;
     int numMoviesRecommended = 10;
     char* folderpath = NULL;
-    int dateLimit = 2020;
+    int dateLimit = 2006;
     int film_id = -1;
     char* clients = NULL;
     int numClients = 0;
@@ -127,7 +127,72 @@ int main(int argc, char* argv[]){
                 exit(EXIT_FAILURE);
         }
     }
+
+    if(film_id == -1){
+
+        printf("\033[1;37m"); // White Bold
+        printf("\n ──────────── 🔩 OPTIONS ──────────── \n\n");
+        
+        printf("\033[1;37m"); printf("💕 Movies Liked ");
+        printf("\033[1;22m"); printf("(Option -r): %s\n", moviesLiked);
+        
+        printf("\033[1;37m"); printf("🔢 Number of Movies Recommended ");
+        printf("\033[1;22m"); printf("(Option -n): %d\n", numMoviesRecommended);
+
+        printf("\033[1;37m"); printf("📂 Folder Path ");
+        printf("\033[1;22m"); printf("(Option -f): %s\n", folderpath);
+
+        printf("\033[1;37m"); printf("📅 Limit Date ");
+        printf("\033[1;22m"); printf("(Option -l): %d (ending of the database mid 2005)\n", dateLimit);
+
+        printf("\033[1;37m"); printf("👥 Clients Considered ");
+        printf("\033[1;22m"); printf("(Option -c): ");
+        if (numClients > 0){
+            for(int i = 0; i < numClients - 1; i++){
+                printf("%d,", clientsParsed[i]);
+            }
+            printf("%d\n", clientsParsed[numClients - 1]);
+
+        } else {
+            printf("ALL\n");
+        }
+
+        printf("\033[1;37m"); printf("⭐ CLients Min Review Number ");
+        printf("\033[1;22m"); printf("(Option -r): %d\n", minmoviesreviewed);
+
+
+        printf("\033[1;37m"); printf("🚫 Reviewers Black-listed ");
+        printf("\033[1;22m"); printf("(Option -r): ");
+        if (numBadReviewers > 0){
+            for(int i = 0; i < numBadReviewers - 1; i++){
+                printf("%d,", badReviewersParsed[i]);
+            }
+            printf("%d\n", badReviewersParsed[numBadReviewers - 1]);
+
+        } else {
+            printf("NONE\n");
+        }
+
+        // printf("---- (option -s) : \n Film ID: %d\n", film_id);
+
+        printf("\033[1;37m"); printf("⏰ Time of the Process Indicated ");
+        printf("\033[1;22m"); printf("(Option -t): ");
+        if (toption){
+            printf("YES\n");
+        } else {
+            printf("NO\n");
+        }
+    
+    }
+
+
     //---------------------------------------------------------------END OF ARGUMENTS PARSING---------------------------------------------------------------
+
+    printf("\033[1;37m"); // White Bold
+    printf("\n ──────────── ⏳ PROCESS ──────────── \n\n");
+    printf("\033[1;22m"); // Normal
+
+    
 
     //Matrix representing the function to update weights between 2 movies based on the stars a same user gave to both movies
     float weights[5][5] = {
@@ -138,92 +203,96 @@ int main(int argc, char* argv[]){
         { 1.0,   0.5,   0.0,  -0.5,  -1.0}
     };
     clock_t begin = clock();
-    //Deserialization of the users and movies
-    printf("Deserializing movies...\n");
-    movie* movies = deserializeMovies("bin_creation/movies.bin");
+
+
 
     //If the user wants to get statistics about a specific movie
     if(film_id != -1){
+
+        printf("\033[1;33m");
+        printf("Deserializing movies.\n");
+        movie* movies = deserializeMovies("bin_creation/movies.bin");
+        printf("\033[1;32m");
+        printf("Done.\n");
+
+        printf("\033[1;37m"); // White Bold
+        printf("\n ──────────── 📃 INFORMATIONS ──────────── \n\n");
+        printf("\033[1;22m"); // Normal
+
         print_movie_stats(film_id, movies);
+        freeMovies(movies, NBMOVIES);
+
+        printf("\033[1;37m"); // White Bold
+        printf("\n ──────────────────────────────────── \n\n");
+
         exit(0);
     }
 
     int nbUsers;
-    printf("Deserializing users...\n");
+
+    printf("\033[1;33m");
+    printf("Deserializing users.\n");
     user* users = deserializeUsers("bin_creation/users.bin", &nbUsers);
+    printf("\033[1;32m");
+    printf("Done.\n");
+
+    printf("\033[1;33m");
+    printf("Deserializing movies.\n");
+    movie* movies = deserializeMovies("bin_creation/movies.bin");
+    printf("\033[1;32m");
+    printf("Done.\n");
 
     //Creation of the graph
-    printf("Creating the graph...\n");
+    printf("\033[1;33m");
+    printf("Creating the graph.\n");
     float** graph = initGraph(NBMOVIES);
-    printf("Updating the graph...\n");
+    printf("\033[1;32m");
+    printf("Done.\n");
 
+    printf("\033[1;33m");
+    printf("Updating the graph.\n");
     updateGraph(graph, users, NBUSERS, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
-    printf("Graph created and updated\n");
+    printf("\033[1;32m");
+    printf("Done.\n");
 
-    //Determining the movies to recommend
-    printf("Determining the movies to recommend...\n");
-    printf("Movies liked parsed: ");
-    for(int i = 0; i < numMoviesLiked; i++){
-        printf("%d ", moviesLikedParsed[i]);
-    }
-    printf("\n");
-
-    
-
-    printf("Number of movies liked: %d\n", numMoviesLiked);
-    printf("Number of movies recommended: %d\n", numMoviesRecommended);
     int* recommendedMovies = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
-    printf("Recommended movies: ");
-    for(int i = 0; i < numMoviesRecommended; i++){
-        printf("%d ", recommendedMovies[i]);
-    }
     
     clock_t end = clock();
 
     //Calculate the execution time of the program
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     if(toption){
-        printf("Execution time of the program was : %f secondes.\n", time_spent);
+        printf("\033[1;37m"); // White Bold
+        printf("\nExecution time of the program was : %f secondes.\n", time_spent);
     }
 
-    printf("\n\n ======================= RESULTS ======================= \n\n");
-
+    printf("\033[1;37m"); // White Bold
+    printf("\n ──────────── 📊 RESULTS ──────────── \n\n");
+    printf("\033[1;22m"); // Normal
     //Print the movies recommended
-    printf("Based on the movies you liked (");
+    printf("📝 Based on the movies you liked:\n\n");
     for(int i = 0; i < numMoviesLiked; i++){
+        printf("▸ ");
+        printf("\033[1;37m");
         printf("%s", movies[moviesLikedParsed[i] - 1].title);
-        if(i != numMoviesLiked - 1){
-            printf(", ");
-        }
-    }
-    printf("), we recommend you the following movies:\n");
-    for(int i = 0; i < numMoviesRecommended; i++){
-        printf("-%s\n", movies[recommendedMovies[i] - 1].title);
+        printf("\033[1;22m");
+        printf("(id %d)\n", moviesLikedParsed[i]);
     }
 
-    if(folderpath != NULL){
-        //if folderpath isnt an existing txt file, we create it
-        if(strstr(folderpath, ".txt") == NULL){
-            char* path = malloc(strlen(folderpath) + 5);
-            strcpy(path, folderpath);
-            strcat(path, ".txt");
-            folderpath = path;
-        }
-        //we write the results in the file
-        FILE* f = fopen(folderpath, "w");
-        fprintf(f, "Based on the movies you liked (");
-        for(int i = 0; i < numMoviesLiked; i++){
-            fprintf(f, "%s", movies[moviesLikedParsed[i] - 1].title);
-            if(i != numMoviesLiked - 1){
-                fprintf(f, ", ");
-            }
-        }
-        fprintf(f, "), we recommend you the following movies:\n");
-        for(int i = 0; i < numMoviesRecommended; i++){
-            fprintf(f, "-%s\n", movies[recommendedMovies[i] - 1].title);
-        }
-        fclose(f);
+    
+    printf("\n🎯 We recommend you the following movies:\n\n");
+    for(int i = 0; i < numMoviesRecommended; i++){
+        printf("▸ ");
+        printf("\033[1;37m");
+        printf("%s", movies[recommendedMovies[i] - 1].title);
+        printf("\033[1;22m");
+        printf("(id %d)\n", recommendedMovies[i]);
     }
+
+    
+    printf("\033[1;37m"); // White Bold
+    printf("\n ──────────────────────────────────── \n\n");
+
     freeGraph(graph, NBMOVIES);
     free(recommendedMovies);
     free(moviesLikedParsed);
