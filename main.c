@@ -4,6 +4,7 @@
 #include "algo/graphcreation.h"
 #include "util/maxadvices.h"
 #include "util/progressbar.h"
+#include "util/getmovietitle.h"
 
 void print_usage(){
     printf("Usage: ./main -r <MovieYouLikeid1,MovieYouLikeid2,...>(or the path of a .txt) -n <numberOfMoviesYouWannaGetRecommended-f <folderpath> -l <num> -s <film_id> -c <client1,client2...> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n");
@@ -230,31 +231,45 @@ int main(int argc, char* argv[]){
     }
 
     int nbUsers;
+    user* users = NULL;
+    float **graph = NULL;
+    if(dateLimit == 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && 1 == 2){ //EFBIZBFIZEFBEZIFBEZFFIZFZFBZFEZFBFEZIZEFIBUEFZBUIFEZBUIEBUIEFZ
+        printf("\033[1;33m");
+        printf("Deserializing graph.\n");
+        clock_t deserializetime = clock();
+        graph = deserializegraph("algo/graph.bin");
+        clock_t deserializetimeend = clock();
+        float deserializetimespent = (float)(deserializetimeend - deserializetime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", deserializetimespent);
+    }else{
+        printf("\033[1;33m");
+        printf("Deserializing users.\n");
+        clock_t deserializetime = clock();
+        users = deserializeUsers("bin_creation/users.bin", &nbUsers);
+        clock_t deserializetimeend = clock();
+        float deserializetimespent = (float)(deserializetimeend - deserializetime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", deserializetimespent);
+        printf("\033[1;33m");
+        printf("Creating the graph.\n");
+        clock_t graphtime = clock();
+        graph = initGraph(NBMOVIES);
+        clock_t graphtimeend = clock();
+        float graphtimespent = (float)(graphtimeend - graphtime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", graphtimespent);
 
-    printf("\033[1;33m");
-    printf("Deserializing users.\n");
-    user* users = deserializeUsers("bin_creation/users.bin", &nbUsers);
-    printf("\033[1;32m");
-    printf("Done.                                      \n");
-
-    printf("\033[1;33m");
-    printf("Deserializing movies.\n");
-    movie* movies = deserializeMovies("bin_creation/movies.bin");
-    printf("\033[1;32m");
-    printf("Done.                                      \n");
-
-    //Creation of the graph
-    printf("\033[1;33m");
-    printf("Creating the graph.\n");
-    float** graph = initGraph(NBMOVIES);
-    printf("\033[1;32m");
-    printf("Done.                                      \n");
-
-    printf("\033[1;33m");
-    printf("Updating the graph.\n");
-    updateGraph(graph, users, NBUSERS, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
-    printf("\033[1;32m");
-    printf("Done.                                      \n");
+        printf("\033[1;33m");
+        printf("Updating the graph.\n");
+        clock_t updatetime = clock();
+        updateGraph(graph, users, NBUSERS, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
+        clock_t updatetimeend = clock();
+        float updatetimespent = (float)(updatetimeend - updatetime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", updatetimespent);
+        serializegraph(graph, "algo/graph.bin");
+    }
 
     int* recommendedMovies = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
     
@@ -276,7 +291,7 @@ int main(int argc, char* argv[]){
     for(int i = 0; i < numMoviesLiked; i++){
         printf("▸ ");
         printf("\033[1;37m");
-        printf("%s", movies[moviesLikedParsed[i] - 1].title);
+        printf("%s", getMovieTitle(moviesLikedParsed[i], "util/movie_titles.txt"));
         printf("\033[1;22m");
         printf("(id %d)\n", moviesLikedParsed[i]);
     }
@@ -286,7 +301,7 @@ int main(int argc, char* argv[]){
     for(int i = 0; i < numMoviesRecommended; i++){
         printf("▸ ");
         printf("\033[1;37m");
-        printf("%s", movies[recommendedMovies[i] - 1].title);
+        printf("%s", getMovieTitle(recommendedMovies[i], "util/movie_titles.txt"));
         printf("\033[1;22m");
         printf("(id %d)\n", recommendedMovies[i]);
     }
@@ -296,14 +311,16 @@ int main(int argc, char* argv[]){
     printf("\n ──────────────────────────────────── \n\n");
 
     // ---------------------Free the memory---------------------
-
     freeGraph(graph, NBMOVIES);
     free(recommendedMovies);
     free(moviesLikedParsed);
     free(clientsParsed);
     free(badReviewersParsed);
-    freeUsers(users, NBUSERS);
-    freeMovies(movies, NBMOVIES);
+    if(dateLimit != 2006 || clients != NULL || bad_reviewers != NULL || minmoviesreviewed != 0){
+        free(users);
+    }else{
+        freeUsers(users, nbUsers);
+    }
     return 0;
 
 }

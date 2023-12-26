@@ -7,6 +7,7 @@ SRC = main.c \
       bin_creation/user.c \
       util/maxadvices.c \
       util/progressbar.c \
+      util/getmovietitle.c \
 
 OBJ = $(SRC:.c=.o)
 
