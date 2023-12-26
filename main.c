@@ -309,6 +309,36 @@ int main(int argc, char* argv[]){
     printf("\033[1;37m"); // White Bold
     printf("\n ──────────────────────────────────── \n\n");
 
+    //If the user wants to save the results in a txt file
+    if(folderpath != NULL){
+        char* string = malloc(1000 * sizeof(char));
+        strcat(string, "📝 Based on the movies you liked:\n\n");
+        for(int i = 0; i < numMoviesLiked; i++){
+            strcat(string, "▸ ");
+            strcat(string, getMovieTitle(moviesLikedParsed[i], "util/movie_titles.txt"));
+            strcat(string, "(id ");
+            char* id = malloc(10 * sizeof(char));
+            sprintf(id, "%d", moviesLikedParsed[i]);
+            strcat(string, id);
+            strcat(string, ")\n");
+            free(id);
+        }
+        strcat(string, "\n🎯 We recommend you the following movies:\n\n");
+        for(int i = 0; i < numMoviesRecommended; i++){
+            strcat(string, "▸ ");
+            strcat(string, getMovieTitle(recommendedMovies[i], "util/movie_titles.txt"));
+            strcat(string, "(id ");
+            char* id = malloc(10 * sizeof(char));
+            sprintf(id, "%d", recommendedMovies[i]);
+            strcat(string, id);
+            strcat(string, ")\n");
+            free(id);
+        }
+        write_txt(string, folderpath);
+        free(string);
+        printf("💾 Results saved in %s\n", folderpath);
+    }
+
     // ---------------------Free the memory---------------------
     freeGraph(graph, NBMOVIES);
     free(recommendedMovies);
