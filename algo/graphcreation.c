@@ -264,6 +264,9 @@ void serializegraph(float** graph, char* path){
             for(int j = 0; j < NBMOVIES; j++){
                 fwrite(&(graph[i][j]), sizeof(float), 1, file);
             }
+            if(i % 10 == 0){
+                updateProgressBar((int) (100 * (float) i / NBMOVIES));
+            }
         }
         fclose(file);
     } else {

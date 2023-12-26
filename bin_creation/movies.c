@@ -84,6 +84,9 @@ movie* createMovieTable(char* movietitlespath, char* trainingsetpath){
 
     for (int i = 0; i < NBMOVIES; i++) {
         movies[i] = *initMovie(i+1, movietitlespath, trainingsetpath); // i+1 because movie ids start at 1
+        if(i % 5 == 0){
+            updateProgressBar(i * 100 / NBMOVIES);
+        }
     }
 
     return movies;
@@ -113,6 +116,9 @@ void serializeMovies(movie* movies, int numMovies, const char* filename) {
                 fwrite(&(movies[i].ratings[j].day), sizeof(int), 1, file);
                 fwrite(&(movies[i].ratings[j].month), sizeof(int), 1, file);
                 fwrite(&(movies[i].ratings[j].star), sizeof(int), 1, file);
+            }
+            if(i % 5 == 0){
+                updateProgressBar(i * 100 / numMovies);
             }
         }
         fclose(file);

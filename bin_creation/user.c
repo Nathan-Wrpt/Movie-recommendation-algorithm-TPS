@@ -23,11 +23,10 @@ user* createUsersTable(movie* moviesTable) {
 
     // for each film, check the id of reviewers and group the review
     // per reviewers
-    for (int movie_id = 0; movie_id < NBMOVIES; movie_id++) {
+    for (int movie_id = 0; movie_id < NBMOVIES - 1; movie_id++) {
         // printf("Movie %d : %s\n", movie_id, moviesTable[movie_id].title);
 
         int nb_ratings = moviesTable[movie_id].nb_ratings;
-
         for (int num_rating = 0; num_rating < nb_ratings - 1; num_rating++)
         {
             int id_user = moviesTable[movie_id].ratings[num_rating].id_user;
@@ -41,15 +40,19 @@ user* createUsersTable(movie* moviesTable) {
                 nbUserSeen++;
                 seenUserTable[id_user] = placeInTable;
                 usersTable[placeInTable] = *initUser(id_user);
+                usersTable[placeInTable].ratings = (rating*) malloc(5 * sizeof(rating));
+                usersTable[placeInTable].ratings[0] = moviesTable[movie_id].ratings[num_rating];
             } else {
                 placeInTable = seenUserTable[id_user];
+                int newNbRatings = usersTable[placeInTable].nb_ratings + 1;
+                usersTable[placeInTable].nb_ratings = newNbRatings;
+                usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 5) * sizeof(rating));
+                usersTable[placeInTable].ratings[newNbRatings - 1] = moviesTable[movie_id].ratings[num_rating];
             }
-            
-            int newNbRatings = usersTable[placeInTable].nb_ratings + 1;
-            usersTable[placeInTable].nb_ratings = newNbRatings;
-
-            usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, newNbRatings * sizeof(rating));
-            usersTable[placeInTable].ratings[newNbRatings - 1] = moviesTable[movie_id].ratings[num_rating];
+        }
+        
+        if(movie_id % 10 == 0){
+            updateProgressBar(movie_id * 100 / NBMOVIES);
         }
     }
 
@@ -75,6 +78,9 @@ void serializeUsers(user* users, int numUsers, const char* filename) {
                 fwrite(&(users[i].ratings[j].day), sizeof(int), 1, file);
                 fwrite(&(users[i].ratings[j].month), sizeof(int), 1, file);
                 fwrite(&(users[i].ratings[j].star), sizeof(int), 1, file);
+            }
+            if(i % 500 == 0){
+                updateProgressBar(i * 100 / numUsers);
             }
         }
         fclose(file);
