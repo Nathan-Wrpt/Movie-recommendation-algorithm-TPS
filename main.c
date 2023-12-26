@@ -233,7 +233,7 @@ int main(int argc, char* argv[]){
     int nbUsers;
     user* users = NULL;
     float **graph = NULL;
-    if(dateLimit == 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && 1==2){
+    if(dateLimit == 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
         printf("\033[1;33m");
         printf("Deserializing graph.\n");
         clock_t deserializetime = clock();
@@ -268,7 +268,6 @@ int main(int argc, char* argv[]){
         float updatetimespent = (float)(updatetimeend - updatetime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
         printf("Done. (%fs)                                      \n", updatetimespent);
-        serializegraph(graph, "algo/graph.bin");
     }
 
     int* recommendedMovies = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
