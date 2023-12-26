@@ -67,6 +67,7 @@ void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int
             if(idUser != -1){
                 updateGraphUser(users[idUser], graph, limitDate, weights);
             }
+            updateProgressBar((int) (100 * (float) i / nbPrivilegedUser) + 1 );
         }
         return;
     }
