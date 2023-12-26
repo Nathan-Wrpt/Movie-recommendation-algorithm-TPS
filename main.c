@@ -3,6 +3,7 @@
 #include "bin_creation/movies.h"
 #include "algo/graphcreation.h"
 #include "util/maxadvices.h"
+#include "util/progressbar.h"
 
 void print_usage(){
     printf("Usage: ./main -r <MovieYouLikeid1,MovieYouLikeid2,...>(or the path of a .txt) -n <numberOfMoviesYouWannaGetRecommended-f <folderpath> -l <num> -s <film_id> -c <client1,client2...> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n");
@@ -234,26 +235,26 @@ int main(int argc, char* argv[]){
     printf("Deserializing users.\n");
     user* users = deserializeUsers("bin_creation/users.bin", &nbUsers);
     printf("\033[1;32m");
-    printf("Done.\n");
+    printf("Done.                                      \n");
 
     printf("\033[1;33m");
     printf("Deserializing movies.\n");
     movie* movies = deserializeMovies("bin_creation/movies.bin");
     printf("\033[1;32m");
-    printf("Done.\n");
+    printf("Done.                                      \n");
 
     //Creation of the graph
     printf("\033[1;33m");
     printf("Creating the graph.\n");
     float** graph = initGraph(NBMOVIES);
     printf("\033[1;32m");
-    printf("Done.\n");
+    printf("Done.                                      \n");
 
     printf("\033[1;33m");
     printf("Updating the graph.\n");
     updateGraph(graph, users, NBUSERS, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
     printf("\033[1;32m");
-    printf("Done.\n");
+    printf("Done.                                      \n");
 
     int* recommendedMovies = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
     

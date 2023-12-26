@@ -154,6 +154,9 @@ movie* deserializeMovies(const char* filename) {
                 fread(&(movies[i].ratings[j].month), sizeof(int), 1, file);
                 fread(&(movies[i].ratings[j].star), sizeof(int), 1, file);
             }
+            if(i % 5 == 0){
+                updateProgressBar(i * 100 / numMovies);
+            }
         }
 
         fclose(file);

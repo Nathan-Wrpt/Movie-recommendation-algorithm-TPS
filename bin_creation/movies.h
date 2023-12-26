@@ -2,6 +2,7 @@
 #define MOVIES_H
 #include "../all.h"
 #include "../util/maxadvices.h"
+#include "../util/progressbar.h"
 
 
 //functions to convert the full movie table into a binary file and to convert it back are in this file

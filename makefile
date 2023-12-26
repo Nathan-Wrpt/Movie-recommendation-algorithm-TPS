@@ -5,7 +5,8 @@ SRC = main.c \
       algo/graphcreation.c \
       bin_creation/movies.c \
       bin_creation/user.c \
-      util/maxadvices.c
+      util/maxadvices.c \
+      util/progressbar.c \
 
 OBJ = $(SRC:.c=.o)
 

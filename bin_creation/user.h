@@ -1,6 +1,7 @@
 #ifndef USER_H
 #define USER_H
 #include "../all.h"
+#include "../util/progressbar.h"
 
 
 user* initUser(int id);

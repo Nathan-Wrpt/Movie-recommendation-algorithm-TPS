@@ -120,6 +120,9 @@ user* deserializeUsers(const char* filename, int* numUsers) {
                 fread(&(users[i].ratings[j].month), sizeof(int), 1, file);
                 fread(&(users[i].ratings[j].star), sizeof(int), 1, file);
             }
+            if(i % 500 == 0){
+                updateProgressBar(i * 100 / *numUsers);
+            }
         }
 
         fclose(file);
