@@ -19,6 +19,7 @@ void print_usage(){
     printf("-b <bad_reviewer1,bad_reviewer2,...>: Exclude ratings from reviewers <bad_reviewer1>, <bad_reviewer2>, etc.\n");
     printf("-e <minmoviesreviewed>: Consider only elite clients who have watched a minimum of <minmoviesreviewed> movies\n"); 
     printf("-t: Specify the execution time of the algorithm\n");
+    printf("-o : Creates or create again all the .bin files (movies.bin, users.bin, graph.bin)\n");
 }
 
 //fonction qui à partir d'un chemin vers un fichier txt, écrit le contenu de string dans ce fichier
@@ -81,8 +82,9 @@ int main(int argc, char* argv[]){
     int numBadReviewers = 0;
     int* badReviewersParsed = NULL;
     bool toption = false;
+    bool ooption = false;
 
-    while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:th")) != -1) {
+    while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:tho")) != -1) {
         switch (opt) {
             case 'h':
                 print_usage();
@@ -124,13 +126,16 @@ int main(int argc, char* argv[]){
             case 't':
                 toption = true;
                 break;
+            case 'o':
+                ooption = true;
+                break;
             default:
                 fprintf(stderr, "Usage: %s -r <MovieYouLikeid1,MovieYouLikeid2,...>(or the path of a .txt) -n <numberOfMoviesYouWannaGetRecommended-f <folderpath> -l <num> -s <film_id> -c <client1,client2...> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n", argv[0]);
                 exit(EXIT_FAILURE);
         }
     }
 
-    if(film_id == -1){
+    if(film_id == -1 && ooption == false){
 
         printf("\033[1;37m"); // White Bold
         printf("\n ──────────── 🔩 OPTIONS ──────────── \n\n");
@@ -206,7 +211,62 @@ int main(int argc, char* argv[]){
     };
     clock_t begin = clock();
 
-
+    //If the user wants to create or recreate the .bin files
+    if(ooption){
+        printf("\033[1;33m");
+        printf("Creating movies table.\n");
+        clock_t createmoviestime = clock();
+        movie* movies = createMovieTable("util/movie_titles.txt", "training_set");
+        clock_t createmoviestimeend = clock();
+        float createmoviestimespent = (float)(createmoviestimeend - createmoviestime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", createmoviestimespent);
+        printf("\033[1;33m");
+        printf("Serializing movies.\n");
+        clock_t serializemoviestime = clock();
+        serializeMovies(movies, NBMOVIES, "bin_creation/movies.bin");
+        clock_t serializemoviestimeend = clock();
+        float serializemoviestimespent = (float)(serializemoviestimeend - serializemoviestime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", serializemoviestimespent);
+        printf("\033[1;33m");
+        printf("Creating users table.\n");
+        clock_t createuserstime = clock();
+        user* users = createUsersTable(movies);
+        clock_t createuserstimeend = clock();
+        float createuserstimespent = (float)(createuserstimeend - createuserstime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", createuserstimespent);
+        printf("\033[1;33m");
+        printf("Serializing users.\n");
+        clock_t serializeuserstime = clock();
+        serializeUsers(users, NBUSERS, "bin_creation/users.bin");
+        clock_t serializeuserstimeend = clock();
+        float serializeuserstimespent = (float)(serializeuserstimeend - serializeuserstime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", serializeuserstimespent);
+        printf("\033[1;33m");
+        printf("Creating graph.bin.\n");
+        clock_t creategraphtime = clock();
+        float** graph = initGraph(NBMOVIES);
+        updateGraph(graph, users, NBUSERS, NULL, 0, NULL, 0, 0, 2006, weights);
+        clock_t creategraphtimeend = clock();
+        float creategraphtimespent = (float)(creategraphtimeend - creategraphtime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", creategraphtimespent);
+        printf("\033[1;33m");
+        printf("Serializing graph.\n");
+        clock_t serializegraphtime = clock();
+        serializegraph(graph, "algo/graphtest.bin");
+        clock_t serializegraphtimeend = clock();
+        float serializegraphtimespent = (float)(serializegraphtimeend - serializegraphtime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", serializegraphtimespent);
+        freeGraph(graph, NBMOVIES);
+        // freeMovies(movies, NBMOVIES);
+        freeUsers(users, NBUSERS);
+        exit(0);
+    }
 
     //If the user wants to get statistics about a specific movie
     if(film_id != -1){
