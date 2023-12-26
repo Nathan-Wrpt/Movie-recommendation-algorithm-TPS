@@ -187,7 +187,7 @@ int main(int argc, char* argv[]){
     }
 
 
-    //---------------------------------------------------------------END OF ARGUMENTS PARSING---------------------------------------------------------------
+    //---------------------END OF ARGUMENTS PARSING---------------------
 
     printf("\033[1;37m"); // White Bold
     printf("\n ──────────── ⏳ PROCESS ──────────── \n\n");
@@ -214,10 +214,10 @@ int main(int argc, char* argv[]){
         printf("Deserializing movies.\n");
         movie* movies = deserializeMovies("bin_creation/movies.bin");
         printf("\033[1;32m");
-        printf("Done.\n");
+        printf("Done.                                      \n");
 
         printf("\033[1;37m"); // White Bold
-        printf("\n ──────────── 📃 INFORMATIONS ──────────── \n\n");
+        printf("\n ────────── 📃 INFORMATIONS ───────── \n\n");
         printf("\033[1;22m"); // Normal
 
         print_movie_stats(film_id, movies);
@@ -270,6 +270,7 @@ int main(int argc, char* argv[]){
     printf("\033[1;37m"); // White Bold
     printf("\n ──────────── 📊 RESULTS ──────────── \n\n");
     printf("\033[1;22m"); // Normal
+
     //Print the movies recommended
     printf("📝 Based on the movies you liked:\n\n");
     for(int i = 0; i < numMoviesLiked; i++){
@@ -293,6 +294,8 @@ int main(int argc, char* argv[]){
     
     printf("\033[1;37m"); // White Bold
     printf("\n ──────────────────────────────────── \n\n");
+
+    // ---------------------Free the memory---------------------
 
     freeGraph(graph, NBMOVIES);
     free(recommendedMovies);
