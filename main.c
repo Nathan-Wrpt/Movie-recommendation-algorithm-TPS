@@ -264,7 +264,7 @@ int main(int argc, char* argv[]){
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     if(toption){
         printf("\033[1;37m"); // White Bold
-        printf("\nExecution time of the program was : %f secondes.\n", time_spent);
+        printf("\nExecution time of the program was : %f seconds.\n", time_spent);
     }
 
     printf("\033[1;37m"); // White Bold
