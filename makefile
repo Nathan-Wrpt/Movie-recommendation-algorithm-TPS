@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -I./algo -I./bin_creation -I./util
+CFLAGS = -Wall -Wextra -I./algo -I./bin_creation -I./util -Wpedantic -fsanitize=address,undefined -lm
 
 SRC = main.c \
       algo/graphcreation.c \
