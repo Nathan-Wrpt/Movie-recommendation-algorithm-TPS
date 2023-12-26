@@ -315,7 +315,7 @@ int main(int argc, char* argv[]){
     free(moviesLikedParsed);
     free(clientsParsed);
     free(badReviewersParsed);
-    if(dateLimit != 2006 || clients != NULL || bad_reviewers != NULL || minmoviesreviewed != 0){
+    if(dateLimit == 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
         free(users);
     }else{
         freeUsers(users, nbUsers);
