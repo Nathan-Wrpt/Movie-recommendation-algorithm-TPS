@@ -67,7 +67,7 @@ void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int
             if(idUser != -1){
                 updateGraphUser(users[idUser], graph, limitDate, weights);
             }
-            updateProgressBar((int) (100 * (float) i / nbPrivilegedUser) + 1 );
+            updateProgressBar((int) (100 * (float) i / nbPrivilegedUser));
         }
         return;
     }
@@ -85,7 +85,7 @@ void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int
             }
         }
         if(i % 500 == 0){
-            updateProgressBar((int) (100 * (float) i / nbUsers) + 1);
+            updateProgressBar((int) (100 * (float) i / nbUsers));
         }
     }
 }
@@ -257,6 +257,40 @@ int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
     return closestMoviesID;
 }
 
+void serializegraph(float** graph, char* path){
+    FILE* file = fopen(path, "wb");
+    if (file != NULL) {
+        for (int i = 0; i < NBMOVIES; i++) {
+            for(int j = 0; j < NBMOVIES; j++){
+                fwrite(&(graph[i][j]), sizeof(float), 1, file);
+            }
+        }
+        fclose(file);
+    } else {
+        printf("Failed to open the file for writing.\n");
+    }
+}
+
+float** deserializegraph(char* path){
+    FILE* file = fopen(path, "rb");
+    if (file != NULL) {
+        float** graph = malloc(NBMOVIES * sizeof(float*));
+        for(int i = 0; i < NBMOVIES; i++){
+            graph[i] = malloc(NBMOVIES * sizeof(float));
+            for(int j = 0; j < NBMOVIES; j++){
+                fread(&(graph[i][j]), sizeof(float), 1, file);
+            }
+            if(i % 10 == 0){
+                updateProgressBar((int) (100 * (float) i / NBMOVIES));
+            }
+        }
+        fclose(file);
+        return graph;
+    } else {
+        printf("Failed to open the file for reading.\n");
+        return NULL;
+    }
+}
 
 // int main(){
 //     float weights[5][5] = {

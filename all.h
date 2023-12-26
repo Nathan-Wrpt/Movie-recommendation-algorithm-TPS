@@ -43,5 +43,10 @@ typedef struct user_temp{
     rating* ratings;
 } user;
 
+typedef struct movie2_temp{
+    int id;
+    char title[300];
+} movie2;
+
 #endif // ALL_H
 

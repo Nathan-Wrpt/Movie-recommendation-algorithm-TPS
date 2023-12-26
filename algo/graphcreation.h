@@ -12,5 +12,7 @@ void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int
 int* getNClosestMovies(int* moviesID, int numFilmsID, float** graph, int n);
 int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n);
 void updateProgressBar(int percentage);
+void serializegraph(float** graph, char* path);
+float** deserializegraph(char* path);
 
 #endif // GRAPHCREATION_H

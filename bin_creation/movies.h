@@ -28,7 +28,7 @@ void freeMovies(movie* movies, int numMovies);
 //function which returns the average rating of a movie given its id
 float averageRating(int id, movie* movies);
 
-//print function for a movie
 void print_movie_stats(int id, movie* movies);
+
 
 #endif
