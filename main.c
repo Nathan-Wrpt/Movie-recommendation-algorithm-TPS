@@ -350,7 +350,9 @@ int main(int argc, char* argv[]){
     for(int i = 0; i < numMoviesLiked; i++){
         printf("▸ ");
         printf("\033[1;37m");
-        printf("%s", getMovieTitle(moviesLikedParsed[i], "util/movie_titles.txt"));
+        char* title = getMovieTitle(moviesLikedParsed[i], "util/movie_titles.txt");
+        printf("%s", title);
+        free(title);
         printf("\033[1;22m");
         printf("(id %d)\n", moviesLikedParsed[i]);
     }
@@ -360,7 +362,9 @@ int main(int argc, char* argv[]){
     for(int i = 0; i < numMoviesRecommended; i++){
         printf("▸ ");
         printf("\033[1;37m");
-        printf("%s", getMovieTitle(recommendedMovies[i], "util/movie_titles.txt"));
+        char* title = getMovieTitle(recommendedMovies[i], "util/movie_titles.txt");
+        printf("%s", title);
+        free(title);
         printf("\033[1;22m");
         printf("(id %d)\n", recommendedMovies[i]);
     }
@@ -375,7 +379,9 @@ int main(int argc, char* argv[]){
         strcat(string, "📝 Based on the movies you liked:\n\n");
         for(int i = 0; i < numMoviesLiked; i++){
             strcat(string, "▸ ");
-            strcat(string, getMovieTitle(moviesLikedParsed[i], "util/movie_titles.txt"));
+            char* title = getMovieTitle(moviesLikedParsed[i], "util/movie_titles.txt");
+            strcat(string, title);
+            free(title);
             strcat(string, "(id ");
             char* id = malloc(10 * sizeof(char));
             sprintf(id, "%d", moviesLikedParsed[i]);
@@ -386,7 +392,9 @@ int main(int argc, char* argv[]){
         strcat(string, "\n🎯 We recommend you the following movies:\n\n");
         for(int i = 0; i < numMoviesRecommended; i++){
             strcat(string, "▸ ");
-            strcat(string, getMovieTitle(recommendedMovies[i], "util/movie_titles.txt"));
+            char* title = getMovieTitle(recommendedMovies[i], "util/movie_titles.txt");
+            strcat(string, title);
+            free(title);
             strcat(string, "(id ");
             char* id = malloc(10 * sizeof(char));
             sprintf(id, "%d", recommendedMovies[i]);
