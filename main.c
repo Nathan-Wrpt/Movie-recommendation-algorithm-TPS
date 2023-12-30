@@ -33,6 +33,26 @@ void write_txt(char* string, char* path){
     fclose(file);
 }
 
+int* movieslikedfromtxt(char* path){
+    FILE* file = fopen(path, "r");
+    if(file == NULL){
+        printf("Error opening movies liked file\n");
+        exit(1);
+    }
+    int* moviesLikedParsed = malloc(10000 * sizeof(int));
+    int i = 0;
+    char* line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    while((read = getline(&line, &len, file)) != -1){
+        moviesLikedParsed[i] = atoi(line);
+        i++;
+    }
+    fclose(file);
+    free(line);
+    return moviesLikedParsed;
+}
+
 //Compte le nombre de films likés après l'option -r, séparés par des ','
 int num_movies_liked(char* moviesLiked){
     char* copy = malloc(strlen(moviesLiked) + 1);
@@ -91,10 +111,15 @@ int main(int argc, char* argv[]){
                 exit(0);
                 break;
             case 'r':
-                moviesLiked = optarg;
-                numMoviesLiked = num_movies_liked(moviesLiked);
-                moviesLikedParsed = malloc(numMoviesLiked * sizeof(int));
-                movies_liked_parsing(moviesLiked, &moviesLikedParsed, numMoviesLiked);
+                if(strstr(optarg, ".txt") != NULL){
+                    moviesLikedParsed = movieslikedfromtxt(optarg);
+                    numMoviesLiked = countLines(optarg);
+                }else{
+                    moviesLiked = optarg;
+                    numMoviesLiked = num_movies_liked(moviesLiked);
+                    moviesLikedParsed = malloc(numMoviesLiked * sizeof(int));
+                    movies_liked_parsing(moviesLiked, &moviesLikedParsed, numMoviesLiked);
+                }
                 break;
             case 'n':
                 numMoviesRecommended = atoi(optarg);
