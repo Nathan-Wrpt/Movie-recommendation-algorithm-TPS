@@ -336,7 +336,7 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Deserializing graph.\n");
         clock_t deserializetime = clock();
-        graph = deserializegraph("algo/graph.bin");
+        graph = deserializegraph("algo/graph200.bin");
         clock_t deserializetimeend = clock();
         float deserializetimespent = (float)(deserializetimeend - deserializetime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
