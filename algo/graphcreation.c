@@ -189,6 +189,9 @@ float maxInv(float* values, int size) {
             maxAbs = absValue;
         }
     }
+    if(maxAbs == 0){
+        return 0;
+    }
     return 1 / maxAbs;
 }
 
@@ -198,9 +201,13 @@ int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
 
     float* ponderation = malloc(numFilmsID * sizeof(float)); 
     for (int i = 0; i < numFilmsID; i++) {
-        ponderation[i] = maxInv(graph[moviesIDs[i] - 1], NBMOVIES);
+        float valpond = maxInv(graph[moviesIDs[i] - 1], NBMOVIES);
+        ponderation[i] = valpond;
     }
-
+    float sumponderation = 0;
+    for (int i = 0; i < numFilmsID; i++) {
+        sumponderation += ponderation[i];
+    }
     float* weights = malloc(NBMOVIES * sizeof(float));
     for (int movies = 0; movies < NBMOVIES; movies++) {
         float sum = 0;
