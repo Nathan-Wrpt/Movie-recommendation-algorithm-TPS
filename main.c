@@ -194,11 +194,11 @@ int main(int argc, char* argv[]){
         }
 
         printf("\033[1;37m"); printf("⭐ CLients Min Review Number ");
-        printf("\033[1;22m"); printf("(Option -r): %d\n", minmoviesreviewed);
+        printf("\033[1;22m"); printf("(Option -e): %d\n", minmoviesreviewed);
 
 
         printf("\033[1;37m"); printf("🚫 Reviewers Black-listed ");
-        printf("\033[1;22m"); printf("(Option -r): ");
+        printf("\033[1;22m"); printf("(Option -b): ");
         if (numBadReviewers > 0){
             for(int i = 0; i < numBadReviewers - 1; i++){
                 printf("%d,", badReviewersParsed[i]);
@@ -401,10 +401,10 @@ int main(int argc, char* argv[]){
         printf("▸ ");
         printf("\033[1;37m");
         char* title = getMovieTitle(moviesLikedParsed[i], "util/movie_titles.txt");
-        printf("%s", title);
+        printf("%s ", title);
         free(title);
         printf("\033[1;22m");
-        printf("(id %d)\n", moviesLikedParsed[i]);
+        printf("(id : %d)\n", moviesLikedParsed[i]);
     }
 
     
@@ -413,10 +413,10 @@ int main(int argc, char* argv[]){
         printf("▸ ");
         printf("\033[1;37m");
         char* title = getMovieTitle(recommendedMovies[i], "util/movie_titles.txt");
-        printf("%s", title);
+        printf("%s ", title);
         free(title);
         printf("\033[1;22m");
-        printf("(id %d)\n", recommendedMovies[i]);
+        printf("(id : %d)\n", recommendedMovies[i]);
     }
 
     
