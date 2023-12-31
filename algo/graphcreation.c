@@ -253,6 +253,7 @@ int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
 
     free(ponderation);
     free(weights);
+    free(minWeights);
     
     return closestMoviesID;
 }

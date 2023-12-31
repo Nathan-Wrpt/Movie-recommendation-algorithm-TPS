@@ -26,7 +26,7 @@ void print_usage(){
 void write_txt(char* string, char* path){
     FILE* file = fopen(path, "w");
     if(file == NULL){
-        printf("Error opening file\n");
+        printf("Error opening output file\n");
         exit(1);
     }
     fprintf(file, "%s", string);
@@ -103,8 +103,9 @@ int main(int argc, char* argv[]){
     int* badReviewersParsed = NULL;
     bool toption = false;
     bool ooption = false;
+    int algochosen = 1;
 
-    while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:tho")) != -1) {
+    while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:thoa:")) != -1) {
         switch (opt) {
             case 'h':
                 print_usage();
@@ -153,6 +154,9 @@ int main(int argc, char* argv[]){
                 break;
             case 'o':
                 ooption = true;
+                break;
+            case 'a':
+                algochosen = atoi(optarg);
                 break;
             default:
                 fprintf(stderr, "Usage: %s -r <MovieYouLikeid1,MovieYouLikeid2,...>(or the path of a .txt) -n <numberOfMoviesYouWannaGetRecommended-f <folderpath> -l <num> -s <film_id> -c <client1,client2...> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n", argv[0]);
@@ -214,7 +218,17 @@ int main(int argc, char* argv[]){
         } else {
             printf("NO\n");
         }
-    
+        printf("\033[1;37m"); printf("📁 Create .bin Files ");
+        printf("\033[1;22m"); printf("(Option -o): ");
+        if (ooption){
+            printf("YES\n");
+        } else {
+            printf("NO\n");
+        }
+        printf("\033[1;37m"); printf("🎲 Algorithm Chosen ");
+        printf("\033[1;22m"); printf("(Option -a): ");
+        printf("%d\n", algochosen);
+        printf("\033[1;37m"); // White Bold
     }
 
 
@@ -318,7 +332,7 @@ int main(int argc, char* argv[]){
     int nbUsers;
     user* users = NULL;
     float **graph = NULL;
-    if(dateLimit == 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
+    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
         printf("\033[1;33m");
         printf("Deserializing graph.\n");
         clock_t deserializetime = clock();
@@ -355,7 +369,18 @@ int main(int argc, char* argv[]){
         printf("Done. (%fs)                                      \n", updatetimespent);
     }
 
-    int* recommendedMovies = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
+    int* recommendedMovies = NULL;
+    switch(algochosen){
+        case 1:
+            recommendedMovies = getNClosestMovies(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
+            break;
+        case 2:
+            recommendedMovies = getNClosestMovies2(moviesLikedParsed, numMoviesLiked, graph, numMoviesRecommended);
+            break;
+        default:
+            printf("Error: algo chosen must be 1 or 2\n");
+            exit(1);
+    }
     
     clock_t end = clock();
 
@@ -400,7 +425,8 @@ int main(int argc, char* argv[]){
 
     //If the user wants to save the results in a txt file
     if(folderpath != NULL){
-        char* string = malloc(1000 * sizeof(char));
+        char* string = malloc(10000 * sizeof(char));
+        string[0] = '\0';
         strcat(string, "📝 Based on the movies you liked:\n\n");
         for(int i = 0; i < numMoviesLiked; i++){
             strcat(string, "▸ ");
@@ -438,7 +464,7 @@ int main(int argc, char* argv[]){
     free(moviesLikedParsed);
     free(clientsParsed);
     free(badReviewersParsed);
-    if(dateLimit == 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
+    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
         free(users);
     }else{
         freeUsers(users, nbUsers);
