@@ -13,9 +13,6 @@
 #define IDMAXUSER 2649429
 #define NBMOVIES 17770
 #define INIT_WEIGHT 0
-#define RATINGS_CONSIDERED 200
-
-
 
 typedef struct rating_temp{
      int id_user;
