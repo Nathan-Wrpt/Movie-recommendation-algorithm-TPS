@@ -20,6 +20,8 @@ void print_usage(){
     printf("-e <minmoviesreviewed>: Consider only elite clients who have watched a minimum of <minmoviesreviewed> movies\n"); 
     printf("-t: Specify the execution time of the algorithm\n");
     printf("-o : Creates or create again all the .bin files (movies.bin, users.bin, graph.bin)\n");
+    printf("-a <1 or 2>: Choose the algorithm you want to use (1 or 2)\n");
+    printf("-z <num>: Specify the number of ratings considered for each user (by default 30)\n");
 }
 
 //fonction qui à partir d'un chemin vers un fichier txt, écrit le contenu de string dans ce fichier
@@ -50,6 +52,11 @@ int* movieslikedfromtxt(char* path){
     }
     fclose(file);
     free(line);
+    if(i == 0){
+        printf("⚠️ The text file meant to contain the movies you like is empty ⚠️\n");
+        printf("⛔ Program will be stopped ⛔\n");
+        exit(1);
+    }
     return moviesLikedParsed;
 }
 
@@ -104,14 +111,20 @@ int main(int argc, char* argv[]){
     bool toption = false;
     bool ooption = false;
     int algochosen = 1;
+    int ratingsConsidered = 30;
 
-    while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:thoa:")) != -1) {
+    while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:thoa:z:")) != -1) {
         switch (opt) {
             case 'h':
                 print_usage();
                 exit(0);
                 break;
             case 'r':
+                if(optarg[0] == '-' || optarg[0] == '\0'){
+                    printf("⚠️ You didn't provide any movie you like ⚠️\n");
+                    printf("⛔ Program will be stopped ⛔\n");
+                    exit(1);
+                }
                 if(strstr(optarg, ".txt") != NULL){
                     moviesLikedParsed = movieslikedfromtxt(optarg);
                     numMoviesLiked = countLines(optarg);
@@ -158,9 +171,24 @@ int main(int argc, char* argv[]){
             case 'a':
                 algochosen = atoi(optarg);
                 break;
+            case 'z':
+                ratingsConsidered = atoi(optarg);
+                break;
             default:
                 fprintf(stderr, "Usage: %s -r <MovieYouLikeid1,MovieYouLikeid2,...>(or the path of a .txt) -n <numberOfMoviesYouWannaGetRecommended-f <folderpath> -l <num> -s <film_id> -c <client1,client2...> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n", argv[0]);
                 exit(EXIT_FAILURE);
+        }
+    }
+
+    //If the option -z is used but other options are not
+    if(ratingsConsidered != 30 && dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
+        printf("\033[1;37m"); // White Bold
+        printf("⚠️ You are changing the number of ratings considered but you are not using options that require the graph to be created again ⚠️\n");
+        printf("Are you sure you want to do that ? (y/n)\n");
+        char* response = malloc(10*sizeof(char));
+        scanf("%s", response);
+        if(strcmp(response, "n") == 0){
+            ratingsConsidered = 30;
         }
     }
 
@@ -288,7 +316,7 @@ int main(int argc, char* argv[]){
         printf("Creating graph.bin.\n");
         clock_t creategraphtime = clock();
         float** graph = initGraph(NBMOVIES);
-        updateGraph(graph, users, NBUSERS, NULL, 0, NULL, 0, 0, 2006, weights);
+        updateGraph(graph, users, NBUSERS, NULL, 0, NULL, 0, 0, 2006, weights, ratingsConsidered);
         clock_t creategraphtimeend = clock();
         float creategraphtimespent = (float)(creategraphtimeend - creategraphtime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
@@ -332,7 +360,7 @@ int main(int argc, char* argv[]){
     int nbUsers;
     user* users = NULL;
     float **graph = NULL;
-    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
+    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ratingsConsidered == 30){
         printf("\033[1;33m");
         printf("Deserializing graph.\n");
         clock_t deserializetime = clock();
@@ -362,7 +390,7 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Updating the graph.\n");
         clock_t updatetime = clock();
-        updateGraph(graph, users, NBUSERS, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights);
+        updateGraph(graph, users, NBUSERS, badReviewersParsed, numBadReviewers, clientsParsed, numClients, minmoviesreviewed, dateLimit, weights, ratingsConsidered);
         clock_t updatetimeend = clock();
         float updatetimespent = (float)(updatetimeend - updatetime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
