@@ -23,11 +23,11 @@ float updateWeight(int rating1, int rating2, float weights[5][5]) {
     }
 }
 
-void updateGraphUser(user user, float** graph, int limitDate, float weights[5][5]){
+void updateGraphUser(user user, float** graph, int limitDate, float weights[5][5], int ratingsConsidered){
 
     // For each different couple (i, j) of user ratings we update the graph
-    for(int i = 0; i < user.nb_ratings && i < RATINGS_CONSIDERED; i++){
-        for(int j = i + 1; j < user.nb_ratings && j < RATINGS_CONSIDERED; j++){
+    for(int i = 0; i < user.nb_ratings && i < ratingsConsidered; i++){
+        for(int j = i + 1; j < user.nb_ratings && j < ratingsConsidered; j++){
 
             // If the two ratings are before the limit date, we update the graph
             if(user.ratings[i].year < limitDate && user.ratings[j].year < limitDate){
@@ -58,14 +58,14 @@ int findIdUser(user* users, int nbUsers, int idUser){
     return -1;
 }
 
-void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int nbIgnoredUsers, int* privilegedUser, int nbPrivilegedUser, int minRatings, int limitDate, float weights[5][5]){
+void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int nbIgnoredUsers, int* privilegedUser, int nbPrivilegedUser, int minRatings, int limitDate, float weights[5][5], int ratingsConsidered){
     
     // We update the graph only taking in consideration the ratings of the privileged users
     if(privilegedUser != NULL){
         for(int i = 0; i < nbPrivilegedUser; i++){
             int idUser = findIdUser(users, nbUsers, privilegedUser[i]);
             if(idUser != -1){
-                updateGraphUser(users[idUser], graph, limitDate, weights);
+                updateGraphUser(users[idUser], graph, limitDate, weights, ratingsConsidered);
             }
             updateProgressBar((int) (100 * (float) i / nbPrivilegedUser));
         }
@@ -81,7 +81,7 @@ void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int
         
         else {
             if(users[i].nb_ratings >= minRatings){
-                updateGraphUser(users[i], graph, limitDate, weights);
+                updateGraphUser(users[i], graph, limitDate, weights, ratingsConsidered);
             }
         }
         if(i % 500 == 0){
