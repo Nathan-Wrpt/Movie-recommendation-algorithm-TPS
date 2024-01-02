@@ -246,8 +246,19 @@ int main(int argc, char* argv[]){
         exit(1);
     }
 
+    //Path to the graph.bin file with the ratings considered
+    char* pathtograph = malloc(100 * sizeof(char));
+    strcpy(pathtograph, "algo/graph");
+    char* nbratingscons = malloc(10 * sizeof(char));
+    sprintf(nbratingscons, "%d", ratingsConsidered);
+    strcat(pathtograph, nbratingscons);
+    strcat(pathtograph, ".bin");
+
+    //If the user has created the graph with the numbers of ratings considered he wants
+    bool graphexists2 = access(pathtograph, F_OK) != -1;
+
     //If the option -z is used but other options are not
-    if(ratingsConsidered != 30 && dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ooption == false && film_id == -1){
+    if(ratingsConsidered != 30 && graphexists2 == false && dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ooption == false && film_id == -1){
         printf("\033[1;37m"); // White Bold
         printf("⚠️ You are changing the number of ratings considered but you are not using options that require the graph to be created again ⚠️\n");
         printf("Are you sure you want to do that ? (y/n)\n");
@@ -332,15 +343,6 @@ int main(int argc, char* argv[]){
     printf("\033[1;37m"); // White Bold
     printf("\n ──────────── ⏳ PROCESS ──────────── \n\n");
     printf("\033[1;22m"); // Normal
-
-
-    //Path to the graph.bin file
-    char* pathtograph = malloc(100 * sizeof(char));
-    strcpy(pathtograph, "algo/graph");
-    char* nbratingscons = malloc(10 * sizeof(char));
-    sprintf(nbratingscons, "%d", ratingsConsidered);
-    strcat(pathtograph, nbratingscons);
-    strcat(pathtograph, ".bin");
 
     //Matrix representing the function to update weights between 2 movies based on the stars a same user gave to both movies
     float weights[5][5] = {
@@ -442,7 +444,7 @@ int main(int argc, char* argv[]){
     float **graph = NULL;
     //If the user has downloaded the graph with the whole BDD that took 4400 seconds to create
     bool graphexists = access("algo/graphWHOLEBDD.bin", F_OK) != -1;
-    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ratingsConsidered == 30 && graphexists){
+    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ((ratingsConsidered == 30 && (graphexists)) || (graphexists2))){
         printf("\033[1;33m");
         printf("Deserializing graph.\n");
         clock_t deserializetime = clock();
