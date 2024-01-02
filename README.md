@@ -17,7 +17,7 @@ We then created a function to create the graph with a matrix of size 17770x17770
 
 With the graph updated, we could easily recommend movies to a user by looking at the movies he liked. Indeed, if the user tells us he likes a movie, we can look at the graph and find the nearest movies to the one he liked, and then recommend him the movies. 
 
-The problem is : if we he tells us he liked several movies, how to deal with the graph ? 
+The problem is : if he tells us he liked several movies, how to deal with the graph ? 
 We made 2 different algorithm to do so :
 - The first one creating an array of size 17770 and for each movie, we add the distance of all the movies he liked. We then find the nearest movies in this new array and recommend them to the user.
 
