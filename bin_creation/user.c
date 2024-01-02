@@ -134,8 +134,8 @@ user* deserializeUsers(const char* filename, int* numUsers) {
         fclose(file);
         return users;
     } else {
-        printf("Failed to open the file for reading.\n");
-        return NULL;
+        printf("Failed to open %s. It might not exist (normal if you haven't downloaded or created the bin files using -o\n", filename);
+        exit(1);
     }
 }
 
