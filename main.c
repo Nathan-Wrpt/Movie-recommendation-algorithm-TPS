@@ -7,21 +7,78 @@
 #include "util/getmovietitle.h"
 
 void print_usage(){
-    printf("Usage: ./main -r <MovieYouLikeid1,MovieYouLikeid2,...>(or the path of a .txt) -n <numberOfMoviesYouWannaGetRecommended-f <folderpath> -l <num> -s <film_id> -c <client1,client2...> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n");
-    printf("Note: All options are optional\n");
-    printf("Options:\n");
-    printf("-r <MovieYouLikeid1,MovieYouLikeid2,...>: Provide a list of movies you like (separated by commas) and get a list of movies you might like\n");
-    printf("-n <numberOfMoviesYouWannaGetRecommended>: Specify the number of movies you want to get recommended (by default 10)\n");
-    printf("-f <.txt path and filename (example : /home/data.txt)>: Path to the txt where the results will be saved if you want them to\n");
-    printf("-l <num>: Ignore ratings whose date is greater than <num>\n");
-    printf("-s <film_id>: Provide statistics on the film with identifier <film_id> (number of ratings, average rating, etc.)\n");
-    printf("-c <client1,client2...>: Consider only ratings from clients <client1> and <client2>\n");
-    printf("-b <bad_reviewer1,bad_reviewer2,...>: Exclude ratings from reviewers <bad_reviewer1>, <bad_reviewer2>, etc.\n");
-    printf("-e <minmoviesreviewed>: Consider only elite clients who have watched a minimum of <minmoviesreviewed> movies\n"); 
-    printf("-t: Specify the execution time of the algorithm\n");
-    printf("-o : Creates or create again all the .bin files (movies.bin, users.bin, graph.bin)\n");
-    printf("-a <1 or 2>: Choose the algorithm you want to use (1 or 2)\n");
-    printf("-z <num>: Specify the number of ratings considered for each user (by default 30)\n");
+    printf("\033[1;37m"); // White Bold
+    printf("\n ──────────── 🚨 HELP ──────────── \n\n");
+
+    printf("\033[1;37m"); printf("📃 Note : ALL OPTIONS ARE OPTIONALS\n\n");
+    
+    printf("\033[1;37m"); printf("💕 Movies Liked ");
+    printf("\033[1;22m"); printf("(Option -r)\n");
+    printf("\033[1;22m"); printf("Provide a list of movies you like (separated by commas, or in a .txt file with a single movie each line) and get a list of movies you might like\n");
+    printf("\033[1;37m"); printf("Usage : -r <MovieYouLikeid1,MovieYouLikeid2,...> (or the path of a .txt) \n");
+    printf("\033[1;22m"); printf("Example : -r 1,2,3,4,5\n\n");
+
+    printf("\033[1;37m"); printf("🔢 Number of Movies Recommended ");
+    printf("\033[1;22m"); printf("(Option -n)\n");
+    printf("\033[1;22m"); printf("Specify the number of movies you want to get recommended (by default 10)\n");
+    printf("\033[1;37m"); printf("Usage : -n <numberOfMoviesYouWannaGetRecommended>\n");
+    printf("\033[1;22m"); printf("Example : -n 20\n\n");
+
+    printf("\033[1;37m"); printf("📂 Folder Path ");
+    printf("\033[1;22m"); printf("(Option -f)\n");
+    printf("\033[1;22m"); printf("Path to the txt where the results will be saved if you want them to\n");
+    printf("\033[1;37m"); printf("Usage : -f <.txt path and filename (example : /home/data.txt)>\n");
+    printf("\033[1;22m"); printf("Example : -f /home/data.txt\n\n");
+
+    printf("\033[1;37m"); printf("📅 Limit Date ");
+    printf("\033[1;22m"); printf("(Option -l)\n");
+    printf("\033[1;22m"); printf("Ignore ratings whose date is greater than <num> (ending of the database mid 2005)\n");
+    printf("\033[1;37m"); printf("Usage : -l <num>\n");
+    printf("\033[1;22m"); printf("Example : -l 2002\n\n");
+
+    printf("\033[1;37m"); printf("👥 Clients Considered ");
+    printf("\033[1;22m"); printf("(Option -c)\n");
+    printf("\033[1;22m"); printf("Consider only ratings from clients <client1> and <client2>\n");
+    printf("\033[1;37m"); printf("Usage : -c <client1,client2...>\n");
+    printf("\033[1;22m"); printf("Example : -c 1,2,3,4,5\n\n");
+
+    printf("\033[1;37m"); printf("⭐ CLients Min Review Number ");
+    printf("\033[1;22m"); printf("(Option -e)\n");
+    printf("\033[1;22m"); printf("Consider only elite clients who have watched a minimum of <minmoviesreviewed> movies\n");
+    printf("\033[1;37m"); printf("Usage : -e <minmoviesreviewed>\n");
+    printf("\033[1;22m"); printf("Example : -e 100\n\n");
+
+    printf("\033[1;37m"); printf("🚫 Reviewers Black-listed ");
+    printf("\033[1;22m"); printf("(Option -b)\n");
+    printf("\033[1;22m"); printf("Exclude ratings from reviewers <bad_reviewer1>, <bad_reviewer2>, etc.\n");
+    printf("\033[1;37m"); printf("Usage : -b <bad_reviewer1,bad_reviewer2,...>\n");
+    printf("\033[1;22m"); printf("Example : -b 1,2,3,4,5\n\n");
+
+    printf("\033[1;37m"); printf("⏰ Time of the Process Indicated ");
+    printf("\033[1;22m"); printf("(Option -t)\n");
+    printf("\033[1;22m"); printf("Specify the execution time of the algorithm\n");
+    printf("\033[1;37m"); printf("Usage : -t\n\n");
+
+    printf("\033[1;37m"); printf("📁 Create .bin Files ");
+    printf("\033[1;22m"); printf("(Option -o)\n");
+    printf("\033[1;22m"); printf("Creates or create again all the .bin files (movies.bin, users.bin, graph.bin)\n");
+    printf("\033[1;37m"); printf("Usage : -o\n\n");
+
+    printf("\033[1;37m"); printf("🎲 Algorithm Chosen ");
+    printf("\033[1;22m"); printf("(Option -a)\n");
+    printf("\033[1;22m"); printf("Choose the algorithm you want to use (1 or 2)\n");
+    printf("\033[1;37m"); printf("Usage : -a <1 or 2>\n");
+    printf("\033[1;22m"); printf("Example : -a 2\n\n");
+
+    printf("\033[1;37m"); printf("📝 Number of Ratings Considered ");
+    printf("\033[1;22m"); printf("(Option -z)\n");
+    printf("\033[1;22m"); printf("Specify the number of ratings considered for each user (by default 30)\n");
+    printf("\033[1;37m"); printf("Usage : -z <num>\n");
+    printf("\033[1;22m"); printf("Example : -z 50\n");
+
+    printf("\033[1;37m"); // White Bold
+    printf("\n ──────────────────────────────────── \n\n");
+
 }
 
 //fonction qui à partir d'un chemin vers un fichier txt, écrit le contenu de string dans ce fichier
@@ -112,8 +169,10 @@ int main(int argc, char* argv[]){
     bool ooption = false;
     int algochosen = 1;
     int ratingsConsidered = 30;
+    bool noOptionsUsed = true;
 
     while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:thoa:z:")) != -1) {
+        noOptionsUsed = false;
         switch (opt) {
             case 'h':
                 print_usage();
@@ -175,13 +234,20 @@ int main(int argc, char* argv[]){
                 ratingsConsidered = atoi(optarg);
                 break;
             default:
-                fprintf(stderr, "Usage: %s -r <MovieYouLikeid1,MovieYouLikeid2,...>(or the path of a .txt) -n <numberOfMoviesYouWannaGetRecommended-f <folderpath> -l <num> -s <film_id> -c <client1,client2...> -b <bad_reviewer1,bad_reviewer2,...> -e <minmoviesreviewed> -t\n", argv[0]);
+                print_usage();
                 exit(EXIT_FAILURE);
         }
     }
 
+    //If no options are used
+    if(noOptionsUsed){
+        printf("\n⚠️ You didn't use any option ⚠️\n");
+        print_usage();
+        exit(1);
+    }
+
     //If the option -z is used but other options are not
-    if(ratingsConsidered != 30 && dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
+    if(ratingsConsidered != 30 && dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ooption == false && film_id == -1){
         printf("\033[1;37m"); // White Bold
         printf("⚠️ You are changing the number of ratings considered but you are not using options that require the graph to be created again ⚠️\n");
         printf("Are you sure you want to do that ? (y/n)\n");
@@ -190,6 +256,7 @@ int main(int argc, char* argv[]){
         if(strcmp(response, "n") == 0){
             ratingsConsidered = 30;
         }
+        free(response);
     }
 
     if(film_id == -1 && ooption == false){
@@ -266,7 +333,14 @@ int main(int argc, char* argv[]){
     printf("\n ──────────── ⏳ PROCESS ──────────── \n\n");
     printf("\033[1;22m"); // Normal
 
-    
+
+    //Path to the graph.bin file
+    char* pathtograph = malloc(100 * sizeof(char));
+    strcpy(pathtograph, "algo/graph");
+    char* nbratingscons = malloc(10 * sizeof(char));
+    sprintf(nbratingscons, "%d", ratingsConsidered);
+    strcat(pathtograph, nbratingscons);
+    strcat(pathtograph, ".bin");
 
     //Matrix representing the function to update weights between 2 movies based on the stars a same user gave to both movies
     float weights[5][5] = {
@@ -280,10 +354,13 @@ int main(int argc, char* argv[]){
 
     //If the user wants to create or recreate the .bin files
     if(ooption){
+        char* pathtotrainingsset = malloc(1000 * sizeof(char));
+        printf("Please enter the path to the training set folder (example : ../training_set) : ");
+        scanf("%s", pathtotrainingsset);
         printf("\033[1;33m");
         printf("Creating movies table.\n");
         clock_t createmoviestime = clock();
-        movie* movies = createMovieTable("util/movie_titles.txt", "../training_set");
+        movie* movies = createMovieTable("util/movie_titles.txt", pathtotrainingsset);
         clock_t createmoviestimeend = clock();
         float createmoviestimespent = (float)(createmoviestimeend - createmoviestime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
@@ -291,7 +368,7 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Serializing movies.\n");
         clock_t serializemoviestime = clock();
-        serializeMovies(movies, NBMOVIES, "bin_creation/movies2.bin");
+        serializeMovies(movies, NBMOVIES, "bin_creation/movies.bin");
         clock_t serializemoviestimeend = clock();
         float serializemoviestimespent = (float)(serializemoviestimeend - serializemoviestime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
@@ -307,13 +384,13 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Serializing users.\n");
         clock_t serializeuserstime = clock();
-        serializeUsers(users, NBUSERS, "bin_creation/users2.bin");
+        serializeUsers(users, NBUSERS, "bin_creation/users.bin");
         clock_t serializeuserstimeend = clock();
         float serializeuserstimespent = (float)(serializeuserstimeend - serializeuserstime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
         printf("Done. (%fs)                                      \n", serializeuserstimespent);
         printf("\033[1;33m");
-        printf("Creating graph.bin.\n");
+        printf("Creating and updating graph\n");
         clock_t creategraphtime = clock();
         float** graph = initGraph(NBMOVIES);
         updateGraph(graph, users, NBUSERS, NULL, 0, NULL, 0, 0, 2006, weights, ratingsConsidered);
@@ -324,7 +401,7 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Serializing graph.\n");
         clock_t serializegraphtime = clock();
-        serializegraph(graph, "algo/graph2.bin");
+        serializegraph(graph, pathtograph);
         clock_t serializegraphtimeend = clock();
         float serializegraphtimespent = (float)(serializegraphtimeend - serializegraphtime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
@@ -363,7 +440,9 @@ int main(int argc, char* argv[]){
     int nbUsers;
     user* users = NULL;
     float **graph = NULL;
-    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ratingsConsidered == 30){
+    //If the user has downloaded the graph with the whole BDD that took 4400 seconds to create
+    bool graphexists = access("algo/graphWHOLEBDD.bin", F_OK) != -1;
+    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ratingsConsidered == 30 && graphexists){
         printf("\033[1;33m");
         printf("Deserializing graph.\n");
         clock_t deserializetime = clock();
@@ -495,11 +574,13 @@ int main(int argc, char* argv[]){
     free(moviesLikedParsed);
     free(clientsParsed);
     free(badReviewersParsed);
-    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
+    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ratingsConsidered == 30 && graphexists){
         free(users);
     }else{
         freeUsers(users, nbUsers);
     }
+    free(pathtograph);
+    free(nbratingscons);
     return 0;
 
 }
