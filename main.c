@@ -75,7 +75,12 @@ void print_usage(){
     printf("\033[1;22m"); printf("(Option -z)\n");
     printf("\033[1;22m"); printf("Specify the number of ratings considered for each user (by default 30)\n");
     printf("\033[1;37m"); printf("Usage : -z <num>\n");
-    printf("\033[1;22m"); printf("Example : -z 50\n");
+    printf("\033[1;22m"); printf("Example : -z 50\n\n");
+
+    printf("\033[1;37m"); printf("📊 Save Graph ");
+    printf("\033[1;22m"); printf("(Option -g)\n");
+    printf("\033[1;22m"); printf("Save the graph in a .bin file if the following options are not used : -l, -c, -e, -b (obviously -s and -o too)\n");
+    printf("\033[1;37m"); printf("Usage : -g\n");
 
     printf("\033[1;37m"); // White Bold
     printf("\n ──────────────────────────────────── \n\n");
@@ -171,8 +176,9 @@ int main(int argc, char* argv[]){
     int algochosen = 1;
     int ratingsConsidered = 30;
     bool noOptionsUsed = true;
+    bool savegraph = false;
 
-    while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:thoa:z:")) != -1) {
+    while ((opt = getopt(argc, argv, "r:n:f:l:s:c:b:e:thoa:z:g")) != -1) {
         noOptionsUsed = false;
         switch (opt) {
             case 'h':
@@ -228,6 +234,9 @@ int main(int argc, char* argv[]){
                 break;
             case 'z':
                 ratingsConsidered = atoi(optarg);
+                break;
+            case 'g':
+                savegraph = true;
                 break;
             default:
                 print_usage();
@@ -475,6 +484,16 @@ int main(int argc, char* argv[]){
         float updatetimespent = (float)(updatetimeend - updatetime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
         printf("Done. (%fs)                                      \n", updatetimespent);
+        if(savegraph && dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
+            printf("\033[1;33m");
+            printf("Serializing graph.\n");
+            clock_t serializegraphtime = clock();
+            serializegraph(graph, pathtograph);
+            clock_t serializegraphtimeend = clock();
+            float serializegraphtimespent = (float)(serializegraphtimeend - serializegraphtime) / CLOCKS_PER_SEC;
+            printf("\033[1;32m");
+            printf("Done. (%fs)                                      \n", serializegraphtimespent);
+        }
     }
 
     int* recommendedMovies = NULL;
@@ -564,6 +583,9 @@ int main(int argc, char* argv[]){
         write_txt(string, folderpath);
         free(string);
         printf("💾 Results saved in %s\n", folderpath);
+    }
+    if(savegraph && dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0){
+        printf("💾 Graph saved in %s\n", pathtograph);
     }
 
     // ---------------------Free the memory---------------------
