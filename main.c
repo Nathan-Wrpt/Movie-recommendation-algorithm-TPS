@@ -10,7 +10,7 @@ void print_usage(){
     printf("\033[1;37m"); // White Bold
     printf("\n ──────────── 🚨 HELP ──────────── \n\n");
 
-    printf("\033[1;37m"); printf("📃 Note : ALL OPTIONS ARE OPTIONALS\n\n");
+    printf("\033[1;37m"); printf("📃 Note : ALL OPTIONS ARE OPTIONALS (But you need to choose between -r, -o or -s at least\n\n");
     
     printf("\033[1;37m"); printf("💕 Movies Liked ");
     printf("\033[1;22m"); printf("(Option -r)\n");
@@ -62,8 +62,9 @@ void print_usage(){
     printf("\033[1;37m"); printf("📁 Create .bin Files ");
     printf("\033[1;22m"); printf("(Option -o)\n");
     printf("\033[1;22m"); printf("Creates or create again all the .bin files (movies.bin, users.bin, graph.bin)\n");
+    printf("\033[1;22m"); printf("Pro tip : use the -z option to specify the number of ratings considered in the graph.bin creation\n");
     printf("\033[1;37m"); printf("Usage : -o\n\n");
-
+ 
     printf("\033[1;37m"); printf("🎲 Algorithm Chosen ");
     printf("\033[1;22m"); printf("(Option -a)\n");
     printf("\033[1;22m"); printf("Choose the algorithm you want to use (1 or 2)\n");
@@ -179,11 +180,6 @@ int main(int argc, char* argv[]){
                 exit(0);
                 break;
             case 'r':
-                if(optarg[0] == '-' || optarg[0] == '\0'){
-                    printf("⚠️ You didn't provide any movie you like ⚠️\n");
-                    printf("⛔ Program will be stopped ⛔\n");
-                    exit(1);
-                }
                 if(strstr(optarg, ".txt") != NULL){
                     moviesLikedParsed = movieslikedfromtxt(optarg);
                     numMoviesLiked = countLines(optarg);
