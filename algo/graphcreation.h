@@ -24,8 +24,6 @@ int findIdUser(user* users, int nbUsers, int idUser);
 //updates the graph for all the users (iterates the updateGraphUser function)
 void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int nbIgnoredUsers, int* privilegedUser, int nbPrivilegedUser, int minRatings, int limitDate, float weights[5][5], int ratingsConsidered);
 
-int* getNMaxIndexes(float* array, int size, int n);
-
 //Given movies liked by the user, returns the n movies that should be recommended acording to the graph 
 int* getNClosestMovies(int* moviesID, int numFilmsID, float** graph, int n);
 
