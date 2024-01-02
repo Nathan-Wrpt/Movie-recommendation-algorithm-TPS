@@ -70,7 +70,6 @@ movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
         i++;
     }
     fclose(fileRating);
-
     return m;
 }
 
@@ -83,7 +82,9 @@ movie* createMovieTable(char* movietitlespath, char* trainingsetpath){
     }
 
     for (int i = 0; i < NBMOVIES; i++) {
-        movies[i] = *initMovie(i+1, movietitlespath, trainingsetpath); // i+1 because movie ids start at 1
+        movie* m = initMovie(i+1, movietitlespath, trainingsetpath); // i+1 because movie ids start at 1
+        movies[i] = *m;
+        free(m);
         if(i % 5 == 0){
             updateProgressBar(i * 100 / NBMOVIES);
         }

@@ -283,7 +283,7 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Creating movies table.\n");
         clock_t createmoviestime = clock();
-        movie* movies = createMovieTable("util/movie_titles.txt", "training_set");
+        movie* movies = createMovieTable("util/movie_titles.txt", "../training_set");
         clock_t createmoviestimeend = clock();
         float createmoviestimespent = (float)(createmoviestimeend - createmoviestime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
@@ -291,7 +291,7 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Serializing movies.\n");
         clock_t serializemoviestime = clock();
-        serializeMovies(movies, NBMOVIES, "bin_creation/movies.bin");
+        serializeMovies(movies, NBMOVIES, "bin_creation/movies2.bin");
         clock_t serializemoviestimeend = clock();
         float serializemoviestimespent = (float)(serializemoviestimeend - serializemoviestime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
@@ -307,7 +307,7 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Serializing users.\n");
         clock_t serializeuserstime = clock();
-        serializeUsers(users, NBUSERS, "bin_creation/users.bin");
+        serializeUsers(users, NBUSERS, "bin_creation/users2.bin");
         clock_t serializeuserstimeend = clock();
         float serializeuserstimespent = (float)(serializeuserstimeend - serializeuserstime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
@@ -324,14 +324,17 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Serializing graph.\n");
         clock_t serializegraphtime = clock();
-        serializegraph(graph, "algo/graphtest.bin");
+        serializegraph(graph, "algo/graph2.bin");
         clock_t serializegraphtimeend = clock();
         float serializegraphtimespent = (float)(serializegraphtimeend - serializegraphtime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
         printf("Done. (%fs)                                      \n", serializegraphtimespent);
         freeGraph(graph, NBMOVIES);
-        // freeMovies(movies, NBMOVIES);
+        freeMovies(movies, NBMOVIES);
         freeUsers(users, NBUSERS);
+        free(moviesLikedParsed);
+        free(clientsParsed);
+        free(badReviewersParsed);
         exit(0);
     }
 
