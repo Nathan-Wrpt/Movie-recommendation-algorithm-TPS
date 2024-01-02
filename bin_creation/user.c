@@ -17,17 +17,19 @@ user* createUsersTable(movie* moviesTable) {
     // problem : IDMAXUSER - NBUSERS will stay not seen
     // but the struct will be destroyed when he userTable
     // will be created
-    int* seenUserTable = (int*) malloc(IDMAXUSER * sizeof(int)); //size 4 * 2 600 000 = 10.4 Mo oof
-    if (seenUserTable == NULL) return NULL;
-    for (int id = 0; id < IDMAXUSER - 1; id++) seenUserTable[id] = -1;
-
+    int* seenUserTable = (int*) malloc((IDMAXUSER + 1) * sizeof(int)); //size 4 * 2 600 000 = 10.4 Mo oof
+    if (seenUserTable == NULL){
+        printf("Error while allocating memory for seenUserTable\n");
+        free(usersTable);
+        exit(1);
+    }
+    for (int id = 0; id < IDMAXUSER; id++) seenUserTable[id] = -1;
     // for each film, check the id of reviewers and group the review
     // per reviewers
-    for (int movie_id = 0; movie_id < NBMOVIES - 1; movie_id++) {
-        // printf("Movie %d : %s\n", movie_id, moviesTable[movie_id].title);
+    for (int movie_id = 0; movie_id < NBMOVIES; movie_id++) {
 
         int nb_ratings = moviesTable[movie_id].nb_ratings;
-        for (int num_rating = 0; num_rating < nb_ratings - 1; num_rating++)
+        for (int num_rating = 0; num_rating < nb_ratings; num_rating++)
         {
             int id_user = moviesTable[movie_id].ratings[num_rating].id_user;
 
@@ -36,17 +38,28 @@ user* createUsersTable(movie* moviesTable) {
 
             int placeInTable;
             if (seenUserTable[id_user] == -1) {
+                fflush(stdout);
                 placeInTable = nbUserSeen;
                 nbUserSeen++;
                 seenUserTable[id_user] = placeInTable;
-                usersTable[placeInTable] = *initUser(id_user);
-                usersTable[placeInTable].ratings = (rating*) malloc(5 * sizeof(rating));
+                user* temp = initUser(id_user);
+                usersTable[placeInTable] = *temp;
+                free(temp);
+                usersTable[placeInTable].ratings = (rating*) malloc(1 * sizeof(rating));
                 usersTable[placeInTable].ratings[0] = moviesTable[movie_id].ratings[num_rating];
             } else {
+                fflush(stdout);
                 placeInTable = seenUserTable[id_user];
                 int newNbRatings = usersTable[placeInTable].nb_ratings + 1;
                 usersTable[placeInTable].nb_ratings = newNbRatings;
-                usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 5) * sizeof(rating));
+                usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings) * sizeof(rating));
+                if(usersTable[placeInTable].ratings == NULL){
+                    printf("Error while reallocating memory for user %d\n", id_user);
+                    free(usersTable[placeInTable].ratings); // Free the failed reallocation
+                    free(usersTable);
+                    free(seenUserTable);
+                    exit(1);
+                }
                 usersTable[placeInTable].ratings[newNbRatings - 1] = moviesTable[movie_id].ratings[num_rating];
             }
         }
