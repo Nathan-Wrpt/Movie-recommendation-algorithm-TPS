@@ -132,11 +132,11 @@ int* getNClosestMovies(int* moviesIDs, int numFilmsID, float** graph, int n){
             bool isMovieInClosest = false;
             for (int i = 0; i < n; i++) {
                 if (movieID + 1 == closestMoviesID[i]) {
+                    isMovieInClosest = true;
                     if (graph[moviesIDs[nbMovieInTab] - 1][movieID] < minWeights[i]) {
                         minWeights[i] = graph[moviesIDs[nbMovieInTab] - 1][movieID];
-                        isMovieInClosest = true;
+                        break; // Update the weight and break the loop
                     }
-                    break;
                 }
             }
 
@@ -157,7 +157,12 @@ int* getNClosestMovies(int* moviesIDs, int numFilmsID, float** graph, int n){
     for (int i = 0; i < n; i++) {
         int min = i;
         for (int j = i + 1; j < n; j++) {
-            if (minWeights[j] < minWeights[min]) {
+            // If weights are equal, maintain the original order
+            if (minWeights[j] == minWeights[min]) {
+                if (closestMoviesID[j] < closestMoviesID[min]) {
+                    min = j;
+                }
+            } else if (minWeights[j] < minWeights[min]) {
                 min = j;
             }
         }
@@ -240,9 +245,9 @@ int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
             if (movieID + 1 == closestMoviesID[i]) {
                 if (weights[movieID] < minWeights[i]) {
                     minWeights[i] = weights[movieID];
+                    isMovieInClosest = true; // Update flag for movie found
                 }
-                break;
-                isMovieInClosest = true;
+                break; // Break after updating
             }
         }
 
@@ -298,83 +303,7 @@ float** deserializegraph(char* path){
         fclose(file);
         return graph;
     } else {
-        printf("Failed to open the file for reading.\n");
+        printf("Failed to open %s. It might not exist (normal if you haven't downloaded or created the bin files using -o yet\n", path);
         return NULL;
     }
 }
-
-// int main(){
-//     float weights[5][5] = {
-//         {-0.25, -0.17,  0.0,   0.46,  1.0},
-//         {-0.17, -0.62, -0.46,  0.0,   0.5},
-//         { 0.0,  -0.46, -1.0,  -0.5,   0.0},
-//         { 0.46,  0.0,  -0.5,   1.0,  -0.5},
-//         { 1.0,   0.5,   0.0,  -0.5,  -1.0}
-//     };
-//     int nbUsers;
-//     user* users = deserializeUsers("../bin_creation/users.bin", &nbUsers);
-//     movie* movies = deserializeMovies("../bin_creation/movies.bin");
-
-//     printf("Number of users: %d\n", nbUsers);
-//     fflush(stdout);
-
-//     float** graph = initGraph(NBMOVIES);
-
-//     printf("Graph initialized\n");
-//     fflush(stdout);
-
-//     clock_t begin = clock();
-//     int nbUsersTest = NBUSERS - 5;
-//     updateGraph(graph, users, nbUsersTest, NULL, 0, NULL, 0, 0, 2010, weights);
-//     clock_t end = clock();
-
-//     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-//     printf("The graph took %f seconds to be updated with %d users.\n", time_spent, nbUsersTest);
-
-//     int n = 10;
-//     int moviesIDs1[3] = {17482, 11265, 7617};
-
-//     // printf("===========================================================\n");
-//     // for (int i = 0; i < 3; i ++) {
-        
-//     //     printf("Pour le film %s(%d) le film recommandé est :%s (%f)\n", movies[moviesIDs1[i] - 1].title, moviesIDs1[i], movies[min(graph[moviesIDs1[i] - 1], NBMOVIES)].title, graph[moviesIDs1[i] - 1][min(graph[moviesIDs1[i] - 1], NBMOVIES)]);
-//     // }
-
-//     int* recommendedMovies = getNClosestMovies2(moviesIDs1, 3, graph, n);
-//     printf("===========================================================\n");
-//     printf("Les titres des %d films recommandés si vous aimez les films :\n", n);
-//     for (int i = 0; i < 3; i++) {
-//         printf("- %s(%d)\n", movies[moviesIDs1[i] - 1].title, moviesIDs1[i]);
-//     }
-//     printf("sont :\n");
-//     for(int i = 0; i < n; i++){
-//         printf("Film %02d/%d recommandé : %s(%d)\n", i+1, n, movies[recommendedMovies[i] - 1].title, recommendedMovies[i]);
-//     }
-
-//     free(recommendedMovies);
-
-
-//     int moviesIDs2[6] = {5926, 16265, 9886, 9628, 8687, 5582};
-//     int* recommendedMovies2 = getNClosestMovies(moviesIDs2, 6, graph, n);
-//     printf("===========================================================\n");
-//     printf("Les titres des %d films recommandés si vous aimez les films :\n", n);
-//     for (int i = 0; i < 6; i++) {
-//         printf("- %s(%d)\n", movies[moviesIDs2[i] - 1].title, moviesIDs2[i]);
-//     }
-//     printf("sont :\n");
-//     for(int i = 0; i < n; i++){
-//         printf("Film %02d/%d recommandé : %s(%d)\n", i+1, n, movies[recommendedMovies2[i] - 1].title, recommendedMovies2[i]);
-//     }
-
-//     free(recommendedMovies2);
-
-//     freeMovies(movies, NBMOVIES);
-//     freeGraph(graph, NBMOVIES);
-//     freeUsers(users, nbUsers);
-
-//     printf("Graph freed\n");
-//     fflush(stdout);
-
-//     return 0;
-    
-// }

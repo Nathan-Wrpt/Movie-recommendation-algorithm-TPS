@@ -168,8 +168,8 @@ movie* deserializeMovies(const char* filename) {
         fclose(file);
         return movies;
     } else {
-        printf("Failed to open the file for reading.\n");
-        return NULL;
+        printf("Failed to open %s. It might not exist (normal if you haven't downloaded or created the bin files using -o yet\n", filename);
+        exit(1);
     }
 }
 
