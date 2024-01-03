@@ -53,6 +53,14 @@ Go get your recommendations !
 
 :)
 
+## Video Tutorial
+
+Here is a demonstration of the program, with the graphWHOLEBDD.bin file downloaded from the releases section of the project.
+
+GIF :
+
+![Alt Text](util/PROJECTDEMO.gif)
+
 ## Structure of the project
 
 The project is divided in 3 main folders :
@@ -69,17 +77,6 @@ Great amount of time saved, isn't it ?
 
 ## If you are curious...
 If further information is needed about the functions used to end up on this result, details about them are located in the header files of the project.
-
-## Demonstration
-
-Here is a demonstration of the program, with the graphWHOLEBDD.bin file downloaded from the releases section of the project.
-
-GIF :
-Display of the gif located in the util folder named PROJECTDEMO.gif :
-
-![Alt Text](util/PROJECTDEMO.gif)
-
-
 
 
 
