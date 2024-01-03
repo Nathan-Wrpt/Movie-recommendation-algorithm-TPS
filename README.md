@@ -8,6 +8,8 @@ This project was made for the C programming course at the Telecom Physique Stras
 
 The dataset contains 2 main parts, a text file named movie_titles.txt containing the movie id, the release year and the title of the movie, and a folder named training_set containing 17770 text files, each one containing the movie id, the user id, the rating and the date of the rating.
 
+Link to the dataset : https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a
+
 To take advantage of the dataset, we decided to create a movie structure containing the movie id, the release year, the title, the number of ratings and an array of all the ratings (which is a structure too). Moreover, we created a user structure containing the user id, the number of ratings and an array of all the ratings.
 We then created a function to read the movie_titles.txt file and the corresponding text file in the training_set folder, and then store all the movies in an array of movie structures.
 We then made a function to create a user table containing all the users and their ratings, based on the movie table we created right before.
@@ -45,13 +47,29 @@ For your information, here are the average times to update the graph depending o
 
 ## How to use ?
 
-To use the program, you need to compile it with the makefile, and then run it with the following command :
-./main -o to create all the .bin files needed to run the program (you need to do this only once). We highly recommend you to download the graphWHOLEBDD.bin file to obtain the best results in your recommendations.
-You can then use ./main -h to see all the options available and their usage.
+### 1) To use the program, you first need to compile it with the makefile :
+```bash
+$ make
+```
+### 2) Run the following command in order to create all the .bin files needed to run the algorithm (you need to do this only once) :
+
+```bash
+$ ./main -o 
+```
+
+### 3) You are now able to use the recommendation algorithm :
+
+```bash
+$ ./main -r <id1,id2,...>
+```
+
+If you want to use the additional options provided by the program, you can use ./main -h to see all the options available and their usage.
 
 Go get your recommendations !
 
 :)
+
+PS : We highly recommend you to download the graphWHOLEBDD.bin file to obtain the best results
 
 ## Video Tutorial
 
@@ -63,10 +81,30 @@ GIF :
 
 ## Structure of the project
 
-The project is divided in 3 main folders :
-- bin_creation : contains the files to translate the .txt files into movies array and users array, and then serialize it into binary files (movies.bin containing the movies array, users.bin the users array)
-- util : contains all the files than can be useful, such as getmovietitle that helps us to get the title of a movie given its id and the .txt file, or the progressbar that prevents YOU from being bored when using the program(Yes, us too, we spent hours in front of the terminal waiting for the program to finish)
-- algo : contains all the files needed to create the graph and the similarity between the movies, and then recommend movies to the user.
+```bash
+< Project >
+     | 
+     |-- bin_creation/                              
+     |    |-- movies.c            # Parses the dataset/creates the movie table
+     |    |-- movies.bin          # Serialized movie table         
+     |    |-- user.c              # Creates the user table      
+     |    |-- user.bin            # Serialized user table       
+     | 
+     |-- util/
+     |    |-- getmovietitle.c     # Functions to get the title of a movie
+     |    |-- progressbar.c       # Progress bar implementation
+     |    |-- maxadvices.c        # Function to count the Lines of a file and get
+     |                            # the max amount of ratings a user has made
+     |
+     |-- algo                             
+     |    |-- graphcreation.c     # All the functions to create/update the graph          
+     |    |-- graphWHOLEBDD.bin   # The updated graph of the whole dataset 
+     | 
+     |-- all.h                    # Contains all the structures/global variables     
+     |                        
+     |-- ************************************************************************
+```
+
 
 
 ## Good to know
