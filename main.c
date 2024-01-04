@@ -405,8 +405,9 @@ int main(int argc, char* argv[]){
         clock_t serializeuserstimeend = clock();
         float serializeuserstimespent = (float)(serializeuserstimeend - serializeuserstime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
-        printf("Done. (%fs)                                      \n", serializeuserstimespent);
+        printf("Done. (%fs)                                      \n\n", serializeuserstimespent);
         printf("\033[1;33m");
+        printf("✅ Binary files successfully created ✅\n");
         freeMovies(movies, NBMOVIES);
         freeUsers(users, NBUSERS);
         free(moviesLikedParsed);
