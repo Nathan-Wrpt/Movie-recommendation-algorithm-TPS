@@ -1,12 +1,98 @@
-# Movie recommendation algorithm by WURPILLOT Nathan and COUBRET Erwan
+# 💡 Movie recommendation algorithm by WURPILLOT Nathan and COUBRET Erwan
 
-## Why ?
+## ❓ Why ?
 
 This project was made for the C programming course at the Telecom Physique Strasbourg engineering school. The goal was to create a movie recommendation algorithm based on the Netflix Prize dataset.
 
-## How ?
+## ✨ How to use ?
 
-The dataset contains 2 main parts, a text file named movie_titles.txt containing the movie id, the release year and the title of the movie, and a folder named training_set containing 17770 text files, each one containing the movie id, the user id, the rating and the date of the rating.
+### Step 1 - You first need to compile the program with the makefile :
+```bash
+$ make
+```
+### Step 2 - Run the following command in order to create all the .bin files needed to run the algorithm (you need to do this only once) :
+
+```bash
+$ ./main -o 
+```
+
+### Step 3 - You are now able to use the recommendation algorithm :
+
+```bash
+$ ./main -r <id1,id2,...>
+```
+
+If you want to use the additional options provided by the program, you can use ./main -h to see all the options available and their usage.
+
+Go get your recommendations !
+
+:)
+
+PS : We highly recommend you to download the graphWHOLEBDD.bin file to obtain the best results in a tiny amount of time.
+
+Here's why :
+<br />
+
+> <a href="#line119">`CLick here to see what the ratings considered mean`</a>
+
+| Ratings Considered | Time to update graph |
+| --- | --- | 
+| `5` | 0.669877s 
+| `10` | 3.050473s 
+| `20` | 13.053415s 
+| `30` | 31.887728s
+| `50` | 78.202530s
+| `100` | 253.987503s
+| `150` | 469.266174s
+| `ALL` | 4410.273438s
+
+<br />
+
+graphWHOLEBDD.bin is the serialized version of the update graph with all the ratings considered. It means that to get a recommendation, it just takes 6.658463s (time to deserialize the graph) instead of ~4410s
+
+## 🎥 Video Tutorial
+
+Here is a demonstration of the program (with the graphWHOLEBDD.bin file downloaded)
+
+![Alt Text](util/PROJECTDEMO.gif)
+
+## 🌳 Structure of the project
+
+```bash
+< Project >
+     | 
+     |-- bin_creation/                              
+     |    |-- movies.c            # Parses the dataset/creates the movie table
+     |    |-- movies.bin          # Serialized movie table         
+     |    |-- user.c              # Creates the user table      
+     |    |-- user.bin            # Serialized user table       
+     | 
+     |-- util/
+     |    |-- getmovietitle.c     # Functions to get the title of a movie
+     |    |-- progressbar.c       # Progress bar implementation
+     |    |-- maxadvices.c        # Function to count the Lines of a file and get
+     |                            # the max amount of ratings a movie has
+     |
+     |-- algo                             
+     |    |-- graphcreation.c     # All the functions to create/update the graph          
+     |    |-- graphWHOLEBDD.bin   # The updated graph of the whole dataset 
+     | 
+     |-- all.h                    # Contains all the structures/global variables     
+     |                        
+     |-- ************************************************************************
+```
+
+
+
+## 🚀 Good to know
+
+When you use the -g option to create your graph.bin after using ./main -r "likedmovies" -z "number" -g, the next time you will call the function with the same number in the z option, the process time will only be 6 seconds, as the program detects the graph.bin was created for this amount of ratings considered.
+
+Great amount of time saved, isn't it ?
+
+## 🛠️ How ?
+
+The dataset contains 2 main parts, a text file named movie_titles.txt containing the movie id, the release year and the title of the movie, and a folder named training_set containing 17,770 text files, each one containing the movie id, the user id, the rating and the date of the rating.
 
 Link to the dataset : https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a
 
@@ -29,6 +115,9 @@ We encountered a problem while trying to recommend movies : it takes 4400s to ca
 The solution we found was to create a file containing the graph and the similarity between all the movies, and then read it when we need it.
 But this solution is not perfect since we need to recreate the graph if the user uses options such as -b, -c, -l, -e... Because to update the graph, we need to know beforehand if the user wants to exclude reviewers, change the minimum amount of reviews a user has to have to be considered, etc... 
 So we decided to use this file taking in account the whole dataset only when no such options are used.
+
+#### Ratings considered explanation :
+
 To avoid waiting 4400s every time we use an option, we created a new option : -z. This option limitates the number of ratings per user taken into account to create the graph. For example, for a reviewer having 252 ratings, if the user uses -z 50, only the 50 first ratings will be used to adjust the distances between the movies.
 By default, the number of ratings taken into account is 30, taking an average time of 31s to update the whole graph, and giving pretty decent results.
 
@@ -45,75 +134,7 @@ For your information, here are the average times to update the graph depending o
 
 - Simply deserializing a graph created before : (6.658463s)
 
-## How to use ?
-
-### 1) To use the program, you first need to compile it with the makefile :
-```bash
-$ make
-```
-### 2) Run the following command in order to create all the .bin files needed to run the algorithm (you need to do this only once) :
-
-```bash
-$ ./main -o 
-```
-
-### 3) You are now able to use the recommendation algorithm :
-
-```bash
-$ ./main -r <id1,id2,...>
-```
-
-If you want to use the additional options provided by the program, you can use ./main -h to see all the options available and their usage.
-
-Go get your recommendations !
-
-:)
-
-PS : We highly recommend you to download the graphWHOLEBDD.bin file to obtain the best results
-
-## Video Tutorial
-
-Here is a demonstration of the program, with the graphWHOLEBDD.bin file downloaded from the releases section of the project.
-
-GIF :
-
-![Alt Text](util/PROJECTDEMO.gif)
-
-## Structure of the project
-
-```bash
-< Project >
-     | 
-     |-- bin_creation/                              
-     |    |-- movies.c            # Parses the dataset/creates the movie table
-     |    |-- movies.bin          # Serialized movie table         
-     |    |-- user.c              # Creates the user table      
-     |    |-- user.bin            # Serialized user table       
-     | 
-     |-- util/
-     |    |-- getmovietitle.c     # Functions to get the title of a movie
-     |    |-- progressbar.c       # Progress bar implementation
-     |    |-- maxadvices.c        # Function to count the Lines of a file and get
-     |                            # the max amount of ratings a user has made
-     |
-     |-- algo                             
-     |    |-- graphcreation.c     # All the functions to create/update the graph          
-     |    |-- graphWHOLEBDD.bin   # The updated graph of the whole dataset 
-     | 
-     |-- all.h                    # Contains all the structures/global variables     
-     |                        
-     |-- ************************************************************************
-```
-
-
-
-## Good to know
-
-When you use the -g option to create your graph.bin after using ./main -r "likedmovies" -z "number" -g, the next time you will call the function with the same number in the z option, the process time will only be 6 seconds, as the program detects the graph.bin was created for this amount of ratings considered.
-
-Great amount of time saved, isn't it ?
-
-## If you are curious...
+## 🤔 If you are curious...
 If further information is needed about the functions used to end up on this result, details about them are located in the header files of the project.
 
 
