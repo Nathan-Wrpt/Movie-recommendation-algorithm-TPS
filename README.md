@@ -33,18 +33,18 @@ PS : We highly recommend you to download the graphWHOLEBDD.bin file to obtain th
 Here's why :
 <br />
 
-> <a href="#line119">`CLick here to see what the ratings considered mean`</a>
+> [Click here to see what the ratings considered mean](#ratings-considered-explanation-:)
 
 | Ratings Considered | Time to update graph |
 | --- | --- | 
-| `5` | 0.669877s 
-| `10` | 3.050473s 
-| `20` | 13.053415s 
-| `30` | 31.887728s
-| `50` | 78.202530s
-| `100` | 253.987503s
-| `150` | 469.266174s
-| `ALL` | 4410.273438s
+| `5` | 0.669s 
+| `10` | 3.050s 
+| `20` | 13.053s 
+| `30` | 31.887s
+| `50` | 78.202s
+| `100` | 253.987s
+| `150` | 469.266s
+| `ALL` | 4410.273s
 
 <br />
 

@@ -175,6 +175,7 @@ int main(int argc, char* argv[]){
     bool ooption = false;
     int algochosen = 1;
     int ratingsConsidered = 30;
+    bool ratingsconsideredchanged = false;
     bool noOptionsUsed = true;
     bool savegraph = false;
 
@@ -233,6 +234,7 @@ int main(int argc, char* argv[]){
                 algochosen = atoi(optarg);
                 break;
             case 'z':
+                ratingsconsideredchanged = true;
                 ratingsConsidered = atoi(optarg);
                 break;
             case 'g':
@@ -339,6 +341,14 @@ int main(int argc, char* argv[]){
         printf("\033[1;37m"); printf("🎲 Algorithm Chosen ");
         printf("\033[1;22m"); printf("(Option -a): ");
         printf("%d\n", algochosen);
+
+        printf("\033[1;37m"); printf("🗒️ Ratings Considered ");
+        printf("\033[1;22m"); printf("(Option -z): ");
+        if (ratingsconsideredchanged){
+            printf("%d\n", ratingsConsidered);
+        } else {
+            printf("DEFAULT\n");
+        }
         printf("\033[1;37m"); // White Bold
     }
 
