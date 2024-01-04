@@ -6,17 +6,47 @@ This project was made for the C programming course at the Telecom Physique Stras
 
 ## ✨ How to use ?
 
-### Step 1 - You first need to compile the program with the makefile :
+### 1 ─ Download dependencies and Install
+
+- If gcc is not installed on your computer, run these commands :
+```bash
+$ sudo apt update
+$ sudo apt install build-essential
+```
+- Go to [Netflix Prize dataset](https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a) and download ` nf_prize_dataset.tar.gz`
+
+- Extract the download file, and then extract the `training_set.tar` in it
+
+- Fork this project and pull it locally with git
+
+### 2 ─ Use Makefile
+
+Compile the project using the following command :
+
 ```bash
 $ make
 ```
-### Step 2 - Run the following command in order to create all the .bin files needed to run the algorithm (you need to do this only once) :
+
+### 3 ─ Build Binary Files
+
+Exectute the following command to create the binary files created in order to save data with precise structure that are necessary to create the graph of recommandaions :
 
 ```bash
 $ ./main -o 
 ```
 
-### Step 3 - You are now able to use the recommendation algorithm :
+The program will then ask you to precise the path of the training_set folder. 
+
+This command will create :
+
+- `bin_creation/movies.bin`
+
+- `bin_creation/user.bin`
+
+[Details about those binary files](#details-about-the-binary-files)
+
+
+### 4 - You are now able to use the recommendation algorithm :
 
 ```bash
 $ ./main -r <id1,id2,...>
@@ -111,33 +141,67 @@ We made 2 different algorithm to do so :
 
 - The second one creating an array of size 17770 and for each movie, we add the distance of all the movies he liked, but this time ponderating the distance by the celebrity of the movie. This algorithm seems to be more efficient since the first one could take too much into consideration the famous movies and not enough the less famous ones in the list of liked movies.
 
+
+#### Ratings considered explanation :
+
 We encountered a problem while trying to recommend movies : it takes 4400s to calculate the graph and the similarity between all the movies, which is way too much. 
 The solution we found was to create a file containing the graph and the similarity between all the movies, and then read it when we need it.
 But this solution is not perfect since we need to recreate the graph if the user uses options such as -b, -c, -l, -e... Because to update the graph, we need to know beforehand if the user wants to exclude reviewers, change the minimum amount of reviews a user has to have to be considered, etc... 
 So we decided to use this file taking in account the whole dataset only when no such options are used.
 
-#### Ratings considered explanation :
-
 To avoid waiting 4400s every time we use an option, we created a new option : -z. This option limitates the number of ratings per user taken into account to create the graph. For example, for a reviewer having 252 ratings, if the user uses -z 50, only the 50 first ratings will be used to adjust the distances between the movies.
 By default, the number of ratings taken into account is 30, taking an average time of 31s to update the whole graph, and giving pretty decent results.
-
-For your information, here are the average times to update the graph depending on the number of ratings taken into account (on our PC):
-- 5 ratings : (0.669877s)
-- 10 ratings : (3.050473s)
-- 20 ratings : (13.053415s)
-- 30 ratings : (31.887728s)
-- 50 ratings : (78.202530s)
-- 100 ratings : (253.987503s)
-- 150 ratings : (469.266174s)
-
-- EVERY rating : (4410.273438s)
-
-- Simply deserializing a graph created before : (6.658463s)
 
 ## 🤔 If you are curious...
 If further information is needed about the functions used to end up on this result, details about them are located in the header files of the project.
 
+## Details about the binary files
 
+- `bin_creation/movies.bin` : a table of movies, where every user has stocked its reviews. 
+
+```c
+//Structure of a rating
+typedef struct rating_temp{
+     int id_user;
+     int id_film;
+     int year;
+     int day;
+     int month;
+     int star;
+} rating;
+
+// Structure of a movie
+typedef struct movie_temp{
+    int id;
+    int release_date;
+    char title[300];
+    int nb_ratings;
+    rating* ratings;
+} movie;
+```
+
+- `bin_creation/user.bin` : a table of users, where every user has his reviews stored. 
+
+```c
+//Structure of a rating
+typedef struct rating_temp{
+     int id_user;
+     int id_film;
+     int year;
+     int day;
+     int month;
+     int star;
+} rating;
+
+//Structure of a user
+typedef struct user_temp{
+    int id;
+    int nb_ratings;
+    rating* ratings;
+} user;
+```
+
+---
 
 
 
