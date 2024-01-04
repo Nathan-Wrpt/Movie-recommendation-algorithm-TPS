@@ -72,13 +72,18 @@ Here's why :
 | `50` | 78.202s
 | `100` | 253.987s
 | `150` | 469.266s
-| `ALL` | 4410.273s
+| `17652 (ALL)` | 4410.273s
 
 <br />
 
+ FYI : 
+- average number of ratings given by users : 208.25
+
+- Time taken to deserialize a downloaded/created updated graph instead of generating it each time we use the program : 6.658463s
+
 > [Click here to see what the ratings considered mean](#ratings-considered-explanation)
 
-graphWHOLEBDD.bin is the serialized version of the update graph with all the ratings considered. It means that to get a recommendation, it just takes 6.658463s (time to deserialize the graph) instead of ~4410s
+graphWHOLEBDD.bin is the serialized version of the updated graph with all the ratings considered. It means that to get a recommendation, it just takes 6.6s (time to deserialize the graph) instead of ~4410s
 
 ## 🎥 Video Tutorial
 

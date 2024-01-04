@@ -35,3 +35,21 @@ int getMaxAdvices(char* folderpath){
     }
     return (max - 2); //The first line is not a rating
 }
+
+int maxratings(user* users, int numUsers) {
+    int max = 0;
+    for (int i = 0; i < numUsers; i++) {
+        if (users[i].nb_ratings > max) {
+            max = users[i].nb_ratings;
+        }
+    }
+    return max;
+}
+
+float averageRatings(user* users, int numUsers) {
+    int sum = 0;
+    for (int i = 0; i < numUsers; i++) {
+        sum += users[i].nb_ratings;
+    }
+    return (float)sum / numUsers;
+}
