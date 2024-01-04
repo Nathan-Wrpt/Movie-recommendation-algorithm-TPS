@@ -142,7 +142,7 @@ We made 2 different algorithm to do so :
 - The second one creating an array of size 17770 and for each movie, we add the distance of all the movies he liked, but this time ponderating the distance by the celebrity of the movie. This algorithm seems to be more efficient since the first one could take too much into consideration the famous movies and not enough the less famous ones in the list of liked movies.
 
 
-#### Ratings considered explanation :
+#### Ratings considered explanation
 
 We encountered a problem while trying to recommend movies : it takes 4400s to calculate the graph and the similarity between all the movies, which is way too much. 
 The solution we found was to create a file containing the graph and the similarity between all the movies, and then read it when we need it.
