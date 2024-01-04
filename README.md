@@ -33,8 +33,6 @@ PS : We highly recommend you to download the graphWHOLEBDD.bin file to obtain th
 Here's why :
 <br />
 
-> [Click here to see what the ratings considered mean](#ratings-considered-explanation-:)
-
 | Ratings Considered | Time to update graph |
 | --- | --- | 
 | `5` | 0.669s 
@@ -47,6 +45,8 @@ Here's why :
 | `ALL` | 4410.273s
 
 <br />
+
+> [Click here to see what the ratings considered mean](#ratings-considered-explanation)
 
 graphWHOLEBDD.bin is the serialized version of the update graph with all the ratings considered. It means that to get a recommendation, it just takes 6.658463s (time to deserialize the graph) instead of ~4410s
 
