@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+/**
+ * @file progressbar.c
+ * @brief Function for displaying a progress bar.
+ */
+
 void updateProgressBar(int percentage) {
     int i;
     int numBars = percentage / 5; // 100% divided by 5 gives 20 bars

@@ -2,6 +2,11 @@
 #include "../all.h"
 
 
+/**
+ * @file movies.c
+ * @brief Functions to parse the movie database and create the movie table.
+ */
+
 movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
     if(id < 1 || id > NBMOVIES){
         printf("Invalid movie id\n");

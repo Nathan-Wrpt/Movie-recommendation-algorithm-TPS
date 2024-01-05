@@ -1,5 +1,10 @@
 #include "getmovietitle.h"
 
+/**
+ * @file getmovietitle.c
+ * @brief Function to retrieve movie titles by ID.
+ */
+
 char* getMovieTitle(int id, char* movietitlespath){
     if(id < 1 || id > NBMOVIES){
         printf("Invalid movie id\n");

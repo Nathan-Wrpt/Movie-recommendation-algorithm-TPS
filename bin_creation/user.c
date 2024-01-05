@@ -1,5 +1,10 @@
 #include "user.h"
 
+/**
+ * @file user.c
+ * @brief Functions to create the user table thanks to the movie table.
+ */
+
 user* initUser(int id) {
     user* u = (user*) malloc(sizeof(user));
     u->id = id;

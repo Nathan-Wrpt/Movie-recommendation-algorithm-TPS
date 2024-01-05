@@ -1,5 +1,10 @@
 #include "graphcreation.h"
 
+/**
+ * @file graphcreation.c
+ * @brief Functions to create the graph representing the similitarity between movies.
+ */
+
 float** initGraph(int nbMovies){
     float** graph = malloc(nbMovies * sizeof(float*));
     for(int i = 0; i < nbMovies; i++){

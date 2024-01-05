@@ -207,7 +207,3 @@ typedef struct user_temp{
 ```
 
 ---
-
-
-
-
