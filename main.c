@@ -355,10 +355,13 @@ int main(int argc, char* argv[]){
 
     //---------------------END OF ARGUMENTS PARSING---------------------
 
-    printf("\033[1;37m"); // White Bold
-    printf("\n ──────────── ⏳ PROCESS ──────────── \n\n");
-    printf("\033[1;22m"); // Normal
-
+    
+    if(!ooption){
+        printf("\033[1;37m"); // White Bold
+        printf("\n ──────────── ⏳ PROCESS ──────────── \n\n");
+        printf("\033[1;22m"); // Normal
+    }
+    
     //Matrix representing the function to update weights between 2 movies based on the stars a same user gave to both movies
     float weights[5][5] = {
         {-0.25, -0.17,  0.0,   0.46,  1.0},
@@ -374,6 +377,7 @@ int main(int argc, char* argv[]){
         char* pathtotrainingsset = malloc(1000 * sizeof(char));
         printf("Please enter the path to the training set folder (example : ../training_set) : ");
         scanf("%s", pathtotrainingsset);
+        printf("\n ──────────── ⏳ PROCESS ──────────── \n\n");
         printf("\033[1;33m");
         printf("Creating movies table.\n");
         clock_t createmoviestime = clock();
@@ -405,14 +409,35 @@ int main(int argc, char* argv[]){
         clock_t serializeuserstimeend = clock();
         float serializeuserstimespent = (float)(serializeuserstimeend - serializeuserstime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
-        printf("Done. (%fs)                                      \n\n", serializeuserstimespent);
+        printf("Done. (%fs)                                      \n", serializeuserstimespent);
         printf("\033[1;33m");
+        printf("Creating %s.\n", pathtograph);
+        clock_t creategraphtime = clock();
+        float** graph = initGraph(NBMOVIES);
+        updateGraph(graph, users, NBUSERS, NULL, 0, NULL, 0, 0, 2010, weights, ratingsConsidered);
+        clock_t creategraphtimeend = clock();
+        float creategraphtimespent = (float)(creategraphtimeend - creategraphtime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n", creategraphtimespent);
+        printf("\033[1;33m");
+        printf("Serializing graph.\n");
+        clock_t serializegraphtime = clock();
+        serializegraph(graph, "algo/graph.bin");
+        clock_t serializegraphtimeend = clock();
+        float serializegraphtimespent = (float)(serializegraphtimeend - serializegraphtime) / CLOCKS_PER_SEC;
+        printf("\033[1;32m");
+        printf("Done. (%fs)                                      \n\n", serializegraphtimespent);
+        printf("\033[1;32m");
         printf("✅ Binary files successfully created ✅\n");
         freeMovies(movies, NBMOVIES);
         freeUsers(users, NBUSERS);
         free(moviesLikedParsed);
         free(clientsParsed);
         free(badReviewersParsed);
+        free(pathtotrainingsset);
+        free(pathtograph);
+        freeGraph(graph, NBMOVIES);
+        free(nbratingscons);
         exit(0);
     }
 
