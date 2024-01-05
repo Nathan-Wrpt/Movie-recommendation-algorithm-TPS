@@ -279,9 +279,8 @@ void serializegraph(float** graph, char* path){
     FILE* file = fopen(path, "wb");
     if (file != NULL) {
         for (int i = 0; i < NBMOVIES; i++) {
-            for(int j = 0; j < NBMOVIES; j++){
-                fwrite(&(graph[i][j]), sizeof(float), 1, file);
-            }
+            // Batch write for improved performance
+            fwrite(graph[i], sizeof(float), NBMOVIES, file);
             if(i % 10 == 0){
                 updateProgressBar((int) (100 * (float) i / NBMOVIES));
             }
@@ -296,13 +295,14 @@ float** deserializegraph(char* path){
     FILE* file = fopen(path, "rb");
     if (file != NULL) {
         float** graph = malloc(NBMOVIES * sizeof(float*));
-        for(int i = 0; i < NBMOVIES; i++){
+        for (int i = 0; i < NBMOVIES; i++) {
             graph[i] = malloc(NBMOVIES * sizeof(float));
-            for(int j = 0; j < NBMOVIES; j++){
-                fread(&(graph[i][j]), sizeof(float), 1, file);
-            }
-            if(i % 10 == 0){
-                updateProgressBar((int) (100 * (float) i / NBMOVIES));
+            
+            // Batch read for improved performance
+            fread(graph[i], sizeof(float), NBMOVIES, file);
+            
+            if (i % 10 == 0) {
+                updateProgressBar((int)((float)i / NBMOVIES * 100));
             }
         }
         fclose(file);
