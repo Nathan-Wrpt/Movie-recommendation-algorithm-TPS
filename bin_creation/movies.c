@@ -28,14 +28,13 @@ movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
     }
 
     char line[256];
+    int file_id, file_release_date;
+    char file_title[300];
+    int curline = 0;
     while (fgets(line, sizeof(line), file)) {
-        int file_id, file_release_date;
-        char file_title[300];
-
-        // Read the line and store the data into the variables
-        sscanf(line, "%d,%d,%299[^\n]", &file_id, &file_release_date, file_title);
-
-        if (file_id == id) {
+        curline++;
+        if(curline == id){ //Because movie with id n is on line n
+            sscanf(line, "%d,%d,%299[^\n]", &file_id, &file_release_date, file_title);
             m->id = file_id;
             m->release_date = file_release_date;
             strncpy(m->title, file_title, sizeof(m->title) - 1);
@@ -51,12 +50,17 @@ movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
 
     //allocate memory for ratings array
     m->ratings = (rating*)malloc(sizeof(rating) * m->nb_ratings);
+    if (m->ratings == NULL) {
+        printf("Memory allocation failed for ratings\n");
+        free(m);
+        return NULL;
+    }
 
     FILE* fileRating = fopen(filepath, "r");
     if (fileRating == NULL) {
         printf("Can't open file.\n");
-        free(m);
         free(m->ratings);
+        free(m);
         return NULL;
     }
 

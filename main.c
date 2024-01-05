@@ -407,6 +407,7 @@ int main(int argc, char* argv[]){
         clock_t serializeuserstime = clock();
         serializeUsers(users, NBUSERS, "bin_creation/users.bin");
         clock_t serializeuserstimeend = clock();
+        freeMovies(movies, NBMOVIES);
         float serializeuserstimespent = (float)(serializeuserstimeend - serializeuserstime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
         printf("Done. (%fs)                                      \n", serializeuserstimespent);
@@ -429,8 +430,8 @@ int main(int argc, char* argv[]){
         printf("Done. (%fs)                                      \n\n", serializegraphtimespent);
         printf("\033[1;32m");
         printf("✅ Binary files successfully created ✅\n");
-        freeMovies(movies, NBMOVIES);
-        freeUsers(users, NBUSERS);
+        printf("\033[1;37m"); // White Bold
+        printf("\n ──────────────────────────────────── \n\n");
         free(moviesLikedParsed);
         free(clientsParsed);
         free(badReviewersParsed);
@@ -438,6 +439,7 @@ int main(int argc, char* argv[]){
         free(pathtograph);
         freeGraph(graph, NBMOVIES);
         free(nbratingscons);
+        freeUsers(users, NBUSERS);
         exit(0);
     }
 
