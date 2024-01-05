@@ -1,35 +1,76 @@
 #ifndef MOVIES_H
 #define MOVIES_H
+
 #include "../all.h"
 #include "../util/maxadvices.h"
 #include "../util/progressbar.h"
 
+/**
+ * @file movies.h
+ * @brief Header file for movies.c.
+ */
 
-//functions to convert the full movie table into a binary file and to convert it back are in this file
-
-//Given the id of a movie, the path of movie_titles.txt and training_set folder, returns a pointer to a movie structure containing the movie's information and ratings
-//It's the most important part of this file.
+/**
+ * @brief Given the ID of a movie, the path of movie_titles.txt, and the training_set folder,
+ * returns a pointer to a movie structure containing the movie's information and ratings.
+ *
+ * @param id The ID of the movie.
+ * @param movietitlespath The path of movie_titles.txt.
+ * @param trainingsetpath The path of the training_set folder.
+ * @return A pointer to the initialized movie structure.
+ */
 movie* initMovie(int id, char* movietitlespath, char* trainingsetpath);
 
-//Given the path of movie_titles.txt and training_set folder, it creates the full table of movies and returns a pointer to it
-//It's the longest function of the file, takes around 1 minute 30 seconds to execute
-//It simply iterates the initMovie function for every movie
+/**
+ * @brief Given the path of movie_titles.txt and the training_set folder, creates the full table of movies thanks to initMovie
+ * and returns a pointer to it. This function may take around 1 minute 30 seconds to execute.
+ *
+ * @param movietitlespath The path of movie_titles.txt.
+ * @param trainingsetpath The path of the training_set folder.
+ * @return A pointer to the created full table of movies.
+ */
 movie* createMovieTable(char* movietitlespath, char* trainingsetpath);
 
-// Function to serialize the movie array into a binary file which name is what we give to the function as filename(We didn't know how to do it, so we searched how to do it on the internet and adapted it to our case)
+/**
+ * @brief Serializes the movie array into a binary file in the given filename.
+ *
+ * @param movies The array of movies to serialize.
+ * @param numMovies The number of movies in the array.
+ * @param filename The filename for the output binary file.
+ */
 void serializeMovies(movie* movies, int numMovies, const char* filename);
 
-// Function to deserialize the movie array from a binary file
+/**
+ * @brief Deserializes the movie array from a binary file using the given filename.
+ *
+ * @param filename The filename of the input binary file.
+ * @return A pointer to the deserialized movie array.
+ */
 movie* deserializeMovies(const char* filename);
 
-//Function to free the memory allocated for a movie, iterating through the ratings and freeing them too
+/**
+ * @brief Frees the memory allocated for a movie array, including its ratings.
+ *
+ * @param movies The array of movies to free.
+ * @param numMovies The number of movies in the array.
+ */
 void freeMovies(movie* movies, int numMovies);
 
-//Function returning the average rating of a movie given its id
+/**
+ * @brief Get the average rating of a movie by its ID.
+ *
+ * @param id The ID of the movie.
+ * @param movies The movie table.
+ * @return The average rating of the movie.
+ */
 float averageRating(int id, movie* movies);
 
-//Prints the stats of a movie given its id
+/**
+ * @brief Print the statistics of a movie by its ID.
+ *
+ * @param id The ID of the movie.
+ * @param movies The movie table.
+ */
 void print_movie_stats(int id, movie* movies);
 
-
-#endif
+#endif /* MOVIES_H */

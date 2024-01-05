@@ -3,16 +3,43 @@
 
 #include "../all.h"
 
-//Counts the number of lines in a file
+/**
+ * @file maxadvices.h
+ * @brief Header file for maxadvices.c.
+ */
+
+/**
+ * @brief Counts and returns the number of lines in the specified file.
+ *
+ * @param filename The path to the file.
+ * @return The number of lines in the file.
+ */
 int countLines(const char* filename);
 
-//Returns the max numbers of ratings a user has given
+/**
+ * @brief Get the maximum number of ratings a user has given.
+ *
+ * @param folderpath The path to the training_set.
+ * @return The maximum number of ratings a user has given.
+ */
 int getMaxAdvices(char* folderpath);
 
-//Returns the maximum number of ratings a user has given
+/**
+ * @brief Same as getMaxAdvices, but using the users table
+ *
+ * @param users The users table.
+ * @param numUsers The number of users in the table.
+ * @return The maximum number of ratings given by users.
+ */
 int maxratings(user* users, int numUsers);
 
-//Returns the average number of ratings the users gave
+/**
+ * @brief Get the average number of ratings given by users.
+ *
+ * @param users The table of users.
+ * @param numUsers The number of users in the table.
+ * @return The average number of ratings given by users.
+ */
 float averageRatings(user* users, int numUsers);
 
 #endif // MAXA_H

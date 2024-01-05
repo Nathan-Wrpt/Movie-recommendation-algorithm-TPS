@@ -1,6 +1,10 @@
 #include "maxadvices.h"
 
-//Function to count the lines of a file
+/**
+ * @file maxadvices.c
+ * @brief Functions to count the number of lines in a file and to get the maximum and average number of ratings given by users.
+ */
+
 int countLines(const char* filename){
     FILE* file = fopen(filename, "r");
     int count = 0;
@@ -20,7 +24,6 @@ int countLines(const char* filename){
     return count;
 }
 
-//Function to return the max numbers of lines in all the files named mv_*.txt
 int getMaxAdvices(char* folderpath){
     int max = 0;
     int i = 1;

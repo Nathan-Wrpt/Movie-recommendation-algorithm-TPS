@@ -12,6 +12,7 @@ SRC = main.c \
 OBJ = $(SRC:.c=.o)
 
 TARGET = main
+DOXYGEN = doxygen  # Chemin vers l'exécutable Doxygen s'il est différent ou défini dans une variable
 
 $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
@@ -19,7 +20,10 @@ $(TARGET): $(OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-.PHONY: clean
+doc:
+	$(DOXYGEN) Doxyfile
+
+.PHONY: clean doc
 
 clean:
 	rm -f $(OBJ) $(TARGET)
