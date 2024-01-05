@@ -9,7 +9,7 @@ is_stderr_empty() {
 
     # Check if the command exceeded the time limit
     if [ $? -eq 124 ]; then
-        echo "⌛ Command took longer than 30 seconds (Probably because you didn't create graph30.bin or downloaded graphWHOLEBDD.bin)"
+        echo "⌛ Command took longer than 30 seconds (Probably because you didn't create graph30.bin (or your PC is slow))"
         return 1 # Command took longer than 25 seconds
     elif [ -s /tmp/stderr_initial ]; then
         return 1 # stderr is not empty
