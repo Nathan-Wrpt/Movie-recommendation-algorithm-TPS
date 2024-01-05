@@ -21,9 +21,11 @@ $(TARGET): $(OBJ)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 doc:
-	$(DOXYGEN) Doxyfile
+	$(DOXYGEN) util/Doxyfile && echo "Documentation generated in documentation. Open documentation/html/index.html in your browser to see it."
+test:
+	sh util/tests.sh
 
-.PHONY: clean doc
+.PHONY: clean doc test
 
 clean:
 	rm -f $(OBJ) $(TARGET)
