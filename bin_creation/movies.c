@@ -119,14 +119,7 @@ void serializeMovies(movie* movies, int numMovies, const char* filename) {
             fwrite(&(movies[i].nb_ratings), sizeof(int), 1, file);
 
             // Serialize each rating within the movie
-            for (int j = 0; j < movies[i].nb_ratings; ++j) {
-                fwrite(&(movies[i].ratings[j].id_user), sizeof(int), 1, file);
-                fwrite(&(movies[i].ratings[j].id_film), sizeof(int), 1, file);
-                fwrite(&(movies[i].ratings[j].year), sizeof(int), 1, file);
-                fwrite(&(movies[i].ratings[j].day), sizeof(int), 1, file);
-                fwrite(&(movies[i].ratings[j].month), sizeof(int), 1, file);
-                fwrite(&(movies[i].ratings[j].star), sizeof(int), 1, file);
-            }
+            fwrite(movies[i].ratings, sizeof(rating), movies[i].nb_ratings, file);
             if(i % 5 == 0){
                 updateProgressBar(i * 100 / numMovies);
             }
@@ -162,14 +155,7 @@ movie* deserializeMovies(const char* filename) {
             movies[i].ratings = (rating*)malloc(movies[i].nb_ratings * sizeof(rating));
 
             // Deserialize each rating within the movie
-            for (int j = 0; j < movies[i].nb_ratings; ++j) {
-                fread(&(movies[i].ratings[j].id_user), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].id_film), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].year), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].day), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].month), sizeof(int), 1, file);
-                fread(&(movies[i].ratings[j].star), sizeof(int), 1, file);
-            }
+            fread(movies[i].ratings, sizeof(rating), movies[i].nb_ratings, file);
             if(i % 5 == 0){
                 updateProgressBar(i * 100 / numMovies);
             }

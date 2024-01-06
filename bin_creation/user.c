@@ -49,14 +49,14 @@ user* createUsersTable(movie* moviesTable) {
                 user* temp = initUser(id_user);
                 usersTable[placeInTable] = *temp;
                 free(temp);
-                usersTable[placeInTable].ratings = (rating*) malloc(250 * sizeof(rating));
+                usersTable[placeInTable].ratings = (rating*) malloc(100 * sizeof(rating));
                 usersTable[placeInTable].ratings[0] = moviesTable[movie_id].ratings[num_rating];
             } else {
                 placeInTable = seenUserTable[id_user];
                 int newNbRatings = usersTable[placeInTable].nb_ratings + 1;
                 usersTable[placeInTable].nb_ratings = newNbRatings;
-                if(newNbRatings % 250 == 0){
-                    usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 250) * sizeof(rating));
+                if(newNbRatings % 100 == 0){
+                    usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 100) * sizeof(rating));
                     if(usersTable[placeInTable].ratings == NULL){
                         printf("Error while reallocating memory for user %d\n", id_user);
                         free(usersTable[placeInTable].ratings); // Free the failed reallocation
@@ -84,12 +84,12 @@ void serializeUsers(user* users, int numUsers, const char* filename) {
     if (file != NULL) {
         fwrite(&numUsers, sizeof(int), 1, file); // Write number of users first
 
-        for (int i = 0; i < numUsers; ++i) {
+        for (int i = 0; i < numUsers; i++) {
             fwrite(&(users[i].id), sizeof(int), 1, file);
             fwrite(&(users[i].nb_ratings), sizeof(int), 1, file);
 
             // Serialize each rating within the user
-            fwrite(users[i].ratings, sizeof(rating), users[i].nb_ratings, file);
+            fwrite(&(users[i].ratings), sizeof(rating), users[i].nb_ratings, file);
             if(i % 500 == 0){
                 updateProgressBar(i * 100 / numUsers);
             }
@@ -113,7 +113,7 @@ user* deserializeUsers(const char* filename, int* numUsers) {
             return NULL; // Memory allocation failed
         }
 
-        for (int i = 0; i < *numUsers; ++i) {
+        for (int i = 0; i < *numUsers; i++) {
             fread(&(users[i].id), sizeof(int), 1, file);
             fread(&(users[i].nb_ratings), sizeof(int), 1, file);
 
