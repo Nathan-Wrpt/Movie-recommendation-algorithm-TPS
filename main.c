@@ -428,10 +428,10 @@ int main(int argc, char* argv[]){
         float serializegraphtimespent = (float)(serializegraphtimeend - serializegraphtime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
         printf("Done. (%fs)                                      \n\n", serializegraphtimespent);
-        printf("\033[1;32m");
-        printf("✅ Binary files successfully created ✅\n");
         printf("\033[1;37m"); // White Bold
-        printf("\n ──────────────────────────────────── \n\n");
+        printf("\n ──────────────────────────────────── \n");
+        printf("\033[1;32m");
+        printf("✅ Binary files successfully created ✅\n\n");
         free(moviesLikedParsed);
         free(clientsParsed);
         free(badReviewersParsed);
