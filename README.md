@@ -79,11 +79,11 @@ Here's why :
  FYI : 
 - average number of ratings given by users : 208.25
 
-- Time taken to deserialize a downloaded/created updated graph instead of generating it each time we use the program : 6.658463s
+- Time taken to deserialize a downloaded/created updated graph instead of generating it each time we use the program : 0.300296s
 
 > [Click here to see what the ratings considered mean](#ratings-considered-explanation)
 
-graphWHOLEBDD.bin is the serialized version of the updated graph with all the ratings considered. It means that to get a recommendation, it just takes 6.6s (time to deserialize the graph) instead of ~4410s
+graphWHOLEBDD.bin is the serialized version of the updated graph with all the ratings considered. It means that to get a recommendation, it just takes 0.3s (time to deserialize the graph) instead of ~4410s
 
 ## 🎥 Video Tutorial
 
@@ -121,7 +121,7 @@ Here is a demonstration of the program (with the graphWHOLEBDD.bin file download
 
 ## 🚀 Good to know
 
-When you use the -g option to create your graph.bin after using ./main -r "likedmovies" -z "number" -g, the next time you will call the function with the same number in the z option, the process time will only be 6 seconds, as the program detects the graph.bin was created for this amount of ratings considered.
+When you use the -g option to create your graph.bin after using ./main -r "likedmovies" -z "number" -g, the next time you will call the function with the same number in the z option, the process time will only be ~0.3 seconds, as the program detects the graph.bin was created for this amount of ratings considered.
 
 Great amount of time saved, isn't it ?
 
