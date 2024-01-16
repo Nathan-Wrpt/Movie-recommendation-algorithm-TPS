@@ -121,4 +121,11 @@ void serializegraph(float** graph, char* path);
  */
 float** deserializegraph(char* path);
 
+/**
+ * @brief Frees the graph if he has been malloc'd as a whole block (done only when deserializing graph to save time).
+ *
+ * @param graph The graph to be freed.
+ */
+void freeGraphBlock(float** graph);
+
 #endif // GRAPHCREATION_H

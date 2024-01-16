@@ -108,19 +108,46 @@ void serializeMovies(movie* movies, int numMovies, const char* filename) {
         fwrite(&numMovies, sizeof(int), 1, file); // Write number of movies first
 
         for (int i = 0; i < numMovies; ++i) {
-            fwrite(&(movies[i].id), sizeof(int), 1, file);
-            fwrite(&(movies[i].release_date), sizeof(int), 1, file);
+            int titleLength = strlen(movies[i].title) + 1; // Include null terminator
 
-            // Write title length and title content separately
-            int titleLength = strlen(movies[i].title);
-            fwrite(&titleLength, sizeof(int), 1, file);
-            fwrite(movies[i].title, sizeof(char), titleLength, file);
+            // Calculate buffer size needed for each movie
+            size_t bufferSize = sizeof(int) * 4 + titleLength; // id, release_date, nb_ratings, titleLength, and title
+            bufferSize += sizeof(rating) * movies[i].nb_ratings; // for each rating
 
-            fwrite(&(movies[i].nb_ratings), sizeof(int), 1, file);
+            // Allocate buffer
+            char* buffer = (char*)malloc(bufferSize);
+            if (buffer == NULL) {
+                printf("Memory allocation failed.\n");
+                fclose(file);
+                return;
+            }
 
-            // Serialize each rating within the movie
-            fwrite(movies[i].ratings, sizeof(rating), movies[i].nb_ratings, file);
-            if(i % 5 == 0){
+            // Copy movie data to buffer
+            char* ptr = buffer;
+            memcpy(ptr, &(movies[i].id), sizeof(int));
+            ptr += sizeof(int);
+            memcpy(ptr, &(movies[i].release_date), sizeof(int));
+            ptr += sizeof(int);
+            memcpy(ptr, &titleLength, sizeof(int));
+            ptr += sizeof(int);
+            memcpy(ptr, movies[i].title, titleLength); // Include null terminator
+            ptr += titleLength;
+            memcpy(ptr, &(movies[i].nb_ratings), sizeof(int));
+            ptr += sizeof(int);
+
+            // Copy ratings data to buffer
+            if (movies[i].nb_ratings > 0 && movies[i].ratings != NULL) {
+                memcpy(ptr, movies[i].ratings, sizeof(rating) * movies[i].nb_ratings);
+            }
+
+            // Write buffer to file
+            fwrite(buffer, bufferSize, 1, file);
+
+            // Free the buffer
+            free(buffer);
+
+            // Progress update
+            if(i % 5 == 0) {
                 updateProgressBar(i * 100 / numMovies);
             }
         }
@@ -138,6 +165,11 @@ movie* deserializeMovies(const char* filename) {
 
         // Allocate memory for movies
         movie* movies = (movie*)malloc(numMovies * sizeof(movie));
+        if (movies == NULL) {
+            fclose(file);
+            printf("Memory allocation failed.\n");
+            return NULL;
+        }
 
         for (int i = 0; i < numMovies; ++i) {
             fread(&(movies[i].id), sizeof(int), 1, file);
@@ -146,16 +178,39 @@ movie* deserializeMovies(const char* filename) {
             // Read title length and allocate memory to read the title
             int titleLength;
             fread(&titleLength, sizeof(int), 1, file);
-            fread(movies[i].title, sizeof(char), titleLength, file);
-            movies[i].title[titleLength] = '\0'; // Null-terminate the string
+            char *buffer = (char*)malloc(titleLength + 1); // +1 for null terminator
+            if (buffer == NULL) {
+                fclose(file);
+                for (int j = 0; j < i; ++j) {
+                    free(movies[j].ratings);
+                }
+                free(movies);
+                printf("Memory allocation failed for title.\n");
+                return NULL;
+            }
 
+            fread(buffer, sizeof(char), titleLength, file);
+            buffer[titleLength] = '\0'; // Null-terminate the string
+            strncpy(movies[i].title, buffer, 300); // Copy to movie title
+            free(buffer); // Free temporary buffer
+
+            // Deserialize ratings
             fread(&(movies[i].nb_ratings), sizeof(int), 1, file);
-
-            // Allocate memory for ratings
             movies[i].ratings = (rating*)malloc(movies[i].nb_ratings * sizeof(rating));
+            if (movies[i].ratings == NULL && movies[i].nb_ratings > 0) {
+                fclose(file);
+                for (int j = 0; j <= i; ++j) {
+                    free(movies[j].ratings);
+                }
+                free(movies);
+                printf("Memory allocation failed for ratings.\n");
+                return NULL;
+            }
 
-            // Deserialize each rating within the movie
-            fread(movies[i].ratings, sizeof(rating), movies[i].nb_ratings, file);
+            if (movies[i].nb_ratings > 0) {
+                fread(movies[i].ratings, sizeof(rating), movies[i].nb_ratings, file);
+            }
+
             if(i % 5 == 0){
                 updateProgressBar(i * 100 / numMovies);
             }
@@ -164,7 +219,7 @@ movie* deserializeMovies(const char* filename) {
         fclose(file);
         return movies;
     } else {
-        printf("Failed to open %s. It might not exist (normal if you haven't downloaded or created the bin files using -o yet\n", filename);
+        printf("Failed to open %s. It might not exist or could not be opened.\n", filename);
         exit(1);
     }
 }

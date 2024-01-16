@@ -49,14 +49,14 @@ user* createUsersTable(movie* moviesTable) {
                 user* temp = initUser(id_user);
                 usersTable[placeInTable] = *temp;
                 free(temp);
-                usersTable[placeInTable].ratings = (rating*) malloc(100 * sizeof(rating));
+                usersTable[placeInTable].ratings = (rating*) malloc(250 * sizeof(rating));
                 usersTable[placeInTable].ratings[0] = moviesTable[movie_id].ratings[num_rating];
             } else {
                 placeInTable = seenUserTable[id_user];
                 int newNbRatings = usersTable[placeInTable].nb_ratings + 1;
                 usersTable[placeInTable].nb_ratings = newNbRatings;
-                if(newNbRatings % 100 == 0){
-                    usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 100) * sizeof(rating));
+                if(newNbRatings % 250 == 0){
+                    usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 250) * sizeof(rating));
                     if(usersTable[placeInTable].ratings == NULL){
                         printf("Error while reallocating memory for user %d\n", id_user);
                         free(usersTable[placeInTable].ratings); // Free the failed reallocation
@@ -84,13 +84,39 @@ void serializeUsers(user* users, int numUsers, const char* filename) {
     if (file != NULL) {
         fwrite(&numUsers, sizeof(int), 1, file); // Write number of users first
 
-        for (int i = 0; i < numUsers; i++) {
-            fwrite(&(users[i].id), sizeof(int), 1, file);
-            fwrite(&(users[i].nb_ratings), sizeof(int), 1, file);
+        for (int i = 0; i < numUsers; ++i) {
+            // Calculate the buffer size needed for each user
+            size_t bufferSize = sizeof(int) * 2; // for id and nb_ratings
+            bufferSize += sizeof(rating) * users[i].nb_ratings; // for each rating
 
-            // Serialize each rating within the user
-            fwrite(&(users[i].ratings), sizeof(rating), users[i].nb_ratings, file);
-            if(i % 500 == 0){
+            // Allocate buffer
+            char* buffer = (char*)malloc(bufferSize);
+            if (buffer == NULL) {
+                printf("Memory allocation failed.\n");
+                fclose(file);
+                return;
+            }
+
+            // Copy user data to buffer
+            char* ptr = buffer;
+            memcpy(ptr, &(users[i].id), sizeof(int));
+            ptr += sizeof(int);
+            memcpy(ptr, &(users[i].nb_ratings), sizeof(int));
+            ptr += sizeof(int);
+
+            // Check if there are ratings to copy
+            if (users[i].nb_ratings > 0 && users[i].ratings != NULL) {
+                memcpy(ptr, users[i].ratings, sizeof(rating) * users[i].nb_ratings);
+            }
+
+            // Write buffer to file
+            fwrite(buffer, bufferSize, 1, file);
+
+            // Free the buffer
+            free(buffer);
+
+            // Progress update
+            if(i % 500 == 0) {
                 updateProgressBar(i * 100 / numUsers);
             }
         }
@@ -113,23 +139,27 @@ user* deserializeUsers(const char* filename, int* numUsers) {
             return NULL; // Memory allocation failed
         }
 
-        for (int i = 0; i < *numUsers; i++) {
+        for (int i = 0; i < *numUsers; ++i) {
             fread(&(users[i].id), sizeof(int), 1, file);
             fread(&(users[i].nb_ratings), sizeof(int), 1, file);
 
-            users[i].ratings = (rating*)malloc(users[i].nb_ratings * sizeof(rating));
-            if (users[i].ratings == NULL) {
-                // Handle memory allocation failure
-                fclose(file);
-                for (int j = 0; j < i; ++j) {
-                    free(users[j].ratings);
+            if (users[i].nb_ratings > 0) {
+                users[i].ratings = (rating*)malloc(users[i].nb_ratings * sizeof(rating));
+                if (users[i].ratings == NULL) {
+                    // Handle memory allocation failure
+                    fclose(file);
+                    for (int j = 0; j < i; ++j) {
+                        free(users[j].ratings);
+                    }
+                    free(users);
+                    return NULL;
                 }
-                free(users);
-                return NULL;
-            }
 
-            // Deserialize each rating for the user
-            fread(users[i].ratings, sizeof(rating), users[i].nb_ratings, file);
+                // Read all ratings in a single operation
+                fread(users[i].ratings, sizeof(rating), users[i].nb_ratings, file);
+            } else {
+                users[i].ratings = NULL;
+            }
             if(i % 500 == 0){
                 updateProgressBar(i * 100 / *numUsers);
             }
