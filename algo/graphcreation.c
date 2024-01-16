@@ -13,7 +13,7 @@ float** initGraph(int nbMovies){
     return graph;
 }
 
-void freeGraph(float** graph, int nbMovies){
+void freeGraph(float** graph, int nbMovies) {
     for(int i = 0; i < nbMovies; i++){
         free(graph[i]);
     }
@@ -294,21 +294,61 @@ void serializegraph(float** graph, char* path){
 float** deserializegraph(char* path){
     FILE* file = fopen(path, "rb");
     if (file != NULL) {
-        float** graph = malloc(NBMOVIES * sizeof(float*));
-        for (int i = 0; i < NBMOVIES; i++) {
-            graph[i] = malloc(NBMOVIES * sizeof(float));
-            
-            // Batch read for improved performance
-            fread(graph[i], sizeof(float), NBMOVIES, file);
-            
-            if (i % 10 == 0) {
-                updateProgressBar((int)((float)i / NBMOVIES * 100));
-            }
+        float* dataBlock = malloc(NBMOVIES * NBMOVIES * sizeof(float));
+        if (dataBlock == NULL) {
+            printf("Memory allocation failed.\n");
+            fclose(file);
+            return NULL;
         }
+
+        float** graph = malloc(NBMOVIES * sizeof(float*));
+        if (graph == NULL) {
+            printf("Memory allocation failed.\n");
+            free(dataBlock);
+            fclose(file);
+            return NULL;
+        }
+
+        // Assign pointers
+        for (int i = 0; i < NBMOVIES; i++) {
+            graph[i] = dataBlock + i * NBMOVIES;
+        }
+
+        // Read in chunks and update progress bar
+        int chunkSize = NBMOVIES / 10; // Adjust chunk size as needed
+        size_t readItems = 0;
+        for (int i = 0; i < NBMOVIES; i += chunkSize) {
+            size_t itemsToRead = chunkSize * NBMOVIES;
+            if (i + chunkSize > NBMOVIES) {
+                itemsToRead = (NBMOVIES - i) * NBMOVIES; // Handle last chunk
+            }
+            readItems += fread(dataBlock + i * NBMOVIES, sizeof(float), itemsToRead, file);
+
+            updateProgressBar((int) (100 * (float) i / NBMOVIES));
+        }
+
+        if (readItems != NBMOVIES * NBMOVIES) {
+            printf("File read error or file is incomplete.\n");
+            free(dataBlock);
+            free(graph);
+            fclose(file);
+            return NULL;
+        }
+
         fclose(file);
         return graph;
     } else {
-        printf("Failed to open %s. It might not exist (normal if you haven't downloaded or created the bin files using -o yet\n", path);
+        printf("Failed to open %s. The graph.bin has probably not been correctly created\n", path);
         return NULL;
+    }
+}
+
+void freeGraphBlock(float** graph) {
+    if (graph != NULL) {
+        // Free the block of memory allocated for the entire matrix
+        free(graph[0]);
+
+        // Free the array of pointers
+        free(graph);
     }
 }

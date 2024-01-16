@@ -423,15 +423,15 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Serializing graph.\n");
         clock_t serializegraphtime = clock();
-        serializegraph(graph, "algo/graph.bin");
+        serializegraph(graph, pathtograph);
         clock_t serializegraphtimeend = clock();
         float serializegraphtimespent = (float)(serializegraphtimeend - serializegraphtime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
         printf("Done. (%fs)                                      \n\n", serializegraphtimespent);
-        printf("\033[1;37m"); // White Bold
-        printf("\n ──────────────────────────────────── \n");
         printf("\033[1;32m");
-        printf("✅ Binary files successfully created ✅\n\n");
+        printf("✅ Binary files successfully created ✅\n");
+        printf("\033[1;37m"); // White Bold
+        printf("\n ──────────────────────────────────── \n\n");
         free(moviesLikedParsed);
         free(clientsParsed);
         free(badReviewersParsed);
@@ -448,9 +448,12 @@ int main(int argc, char* argv[]){
 
         printf("\033[1;33m");
         printf("Deserializing movies.\n");
+        clock_t deserializemoviestime = clock();
         movie* movies = deserializeMovies("bin_creation/movies.bin");
+        clock_t deserializemoviestimeend = clock();
+        float deserializemoviestimespent = (float)(deserializemoviestimeend - deserializemoviestime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
-        printf("Done.                                      \n");
+        printf("Done. (%fs)                                      \n", deserializemoviestimespent);
 
         printf("\033[1;37m"); // White Bold
         printf("\n ────────── 📃 INFORMATIONS ───────── \n\n");
@@ -474,7 +477,11 @@ int main(int argc, char* argv[]){
         printf("\033[1;33m");
         printf("Deserializing graph.\n");
         clock_t deserializetime = clock();
-        graph = deserializegraph("algo/graphWHOLEBDD.bin");
+        if(graphexists && ratingsConsidered == 30){
+            graph = deserializegraph("algo/graphWHOLEBDD.bin");
+        }else{
+            graph = deserializegraph(pathtograph);
+        }
         clock_t deserializetimeend = clock();
         float deserializetimespent = (float)(deserializetimeend - deserializetime) / CLOCKS_PER_SEC;
         printf("\033[1;32m");
@@ -610,7 +617,12 @@ int main(int argc, char* argv[]){
     }
 
     // ---------------------Free the memory---------------------
-    freeGraph(graph, NBMOVIES);
+
+    if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ((ratingsConsidered == 30 && (graphexists)) || (graphexists2))){
+        freeGraphBlock(graph);
+    }else{
+        freeGraph(graph, NBMOVIES);
+    }
     free(recommendedMovies);
     free(moviesLikedParsed);
     free(clientsParsed);
