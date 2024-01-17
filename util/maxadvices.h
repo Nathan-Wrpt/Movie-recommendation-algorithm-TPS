@@ -42,4 +42,13 @@ int maxratings(user* users, int numUsers);
  */
 float averageRatings(user* users, int numUsers);
 
+
+/**
+ * @brief Get the size of a file.
+ *
+ * @param filename The path to the file.
+ * @return The size of the file.
+ */
+long filesize(const char* filename);
+
 #endif // MAXA_H

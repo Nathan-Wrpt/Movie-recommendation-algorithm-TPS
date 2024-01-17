@@ -471,8 +471,8 @@ int main(int argc, char* argv[]){
     int nbUsers;
     user* users = NULL;
     float **graph = NULL;
-    //If the user has downloaded the graph with the whole BDD that took 4400 seconds to create
-    bool graphexists = access("algo/graphWHOLEBDD.bin", F_OK) != -1;
+    //If the user has downloaded the graph with the whole BDD that took 4400 seconds to create and graphWHOLEBDD.bin is larger than 10Mo 
+    bool graphexists = ((access("algo/graphWHOLEBDD.bin", F_OK) != -1) && (filesize("algo/graphWHOLEBDD.bin") > 10000000));
     if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ((ratingsConsidered == 30 && (graphexists)) || (graphexists2))){
         printf("\033[1;33m");
         printf("Deserializing graph.\n");
