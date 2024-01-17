@@ -343,6 +343,8 @@ float** deserializegraph(char* path){
     }
 }
 
+
+
 void freeGraphBlock(float** graph) {
     if (graph != NULL) {
         // Free the block of memory allocated for the entire matrix
