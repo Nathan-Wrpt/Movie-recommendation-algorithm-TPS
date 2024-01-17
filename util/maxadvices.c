@@ -39,6 +39,22 @@ int getMaxAdvices(char* folderpath){
     return (max - 2); //The first line is not a rating
 }
 
+//Functions that gives the size of a file
+long filesize(const char* filename) {
+    FILE *fp = fopen(filename, "rb");
+    if (fp == NULL) {
+        perror("Error opening file");
+        return -1;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+
+    fclose(fp);
+
+    return size;
+}
+
 int maxratings(user* users, int numUsers) {
     int max = 0;
     for (int i = 0; i < numUsers; i++) {
