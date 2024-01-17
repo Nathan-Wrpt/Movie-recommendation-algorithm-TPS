@@ -157,6 +157,7 @@ void serializeMovies(movie* movies, int numMovies, const char* filename) {
     }
 }
 
+
 movie* deserializeMovies(const char* filename) {
     FILE* file = fopen(filename, "rb");
     if (file != NULL) {
@@ -223,6 +224,8 @@ movie* deserializeMovies(const char* filename) {
         exit(1);
     }
 }
+
+
 
 void freeMovies(movie* movies, int numMovies) {
     for (int i = 0; i < numMovies; i++) {

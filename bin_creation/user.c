@@ -127,6 +127,7 @@ void serializeUsers(user* users, int numUsers, const char* filename) {
 }
 
 
+
 // Function to deserialize the user array from a binary file
 user* deserializeUsers(const char* filename, int* numUsers) {
     FILE* file = fopen(filename, "rb");
@@ -172,6 +173,7 @@ user* deserializeUsers(const char* filename, int* numUsers) {
         exit(1);
     }
 }
+
 
 
 void freeUsers(user* users, int numUsers) {
