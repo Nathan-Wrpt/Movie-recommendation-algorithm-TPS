@@ -1,22 +1,24 @@
-# 💡 Movie recommendation algorithm by WURPILLOT Nathan and COUBRET Erwan
+# Movie Recommendation Algorithm based on Netflix Prize Dataser 🎬🤖
+
+Made by **WURPILLOT Nathan** and **COUBRET Erwan**
 
 ## Project Presentation
 
-This project was made for the C programming course at the Telecom Physique Strasbourg engineering school. The goal was to create a movie recommendation algorithm based on the Netflix Prize dataset.
-
-The following steps will tell you how to run the algorithm on your local pc. If you want an explanation of the fonctionning of the algorithm go to.
+This project was made for the C programming course at the [**Telecom Physique Strasbourg**](https://www.telecom-physique.fr/) engineering school. The goal was to create a movie recommendation algorithm based on a the [**Netflix Prize dataset**](https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a).
 
 ---
 
 ## Summary
 
-- [✨ How to use ?](#✨-how-to-use)
+- [**✨ How to use ?**](#✨-how-to-use)
 
-- [🎥 Video Tutorial](#🎥-video-tutorial)
+- [**⚙️ Options Command Details**](#⚙️-options-command-details)
 
-- [🌳 Project Structure And Files](#🌳-project-structure-and-files)
+- [**🎥 Video Tutorial**](#🎥-video-tutorial)
 
-- [🛠️ Algorithm Explanation](#🛠️-algorithm-explanation)
+- [**🌳 Project Structure And Files**](#🌳-project-structure-and-files)
+
+- [**🛠️ Algorithm Explanation**](#🛠️-algorithm-explanation)
 
 ---
 
@@ -24,16 +26,16 @@ The following steps will tell you how to run the algorithm on your local pc. If 
 
 ### 1 ─ Download dependencies and Install
 
-- If gcc is not installed on your computer, run these commands :
+- If gcc is not installed on your computer, run these commands because the `makefile` will use gcc as compiler.
 
 ```bash
 $ sudo apt update
 $ sudo apt install build-essential
 ```
 
-- Go to [Netflix Prize dataset](https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a) and download ` nf_prize_dataset.tar.gz`
+- Go to [Netflix Prize dataset](https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a) and download `nf_prize_dataset.tar.gz`
 
-- Extract the download file, and then extract the `training_set.tar` in it
+- Extract the download file, and then extract `training_set.tar`
 
 - Fork this project and pull it locally with git
 
@@ -61,15 +63,15 @@ This command will create :
 
 - `bin_creation/user.bin`
 
-[Details about those binary files](#details-about-the-binary-files)
+[Details about these binary files](#data-files-creation)
 
-**🚨 PS :** We highly recommend you to download the graphWHOLEBDD.bin file to obtain the best results in a tiny amount of time.
+**🚨 Important Note :** We highly recommend you to download the `graphWHOLEBDD.bin` file to obtain the best results in a tiny amount of time.
 
 ```bash
 $ git lfs pull
 ```
 
-Here's why with an example of time on a pc (CPU : AMD R9, GPU : RTX 3060, RAM : 32Go) :
+Here's why with an example of time on a pc with "good" specs for 2023 (CPU : AMD R9, GPU : RTX 3060, RAM : 32Go) :
 
 | Ratings Considered | Time to update graph |
 | ---               | ---     |
@@ -82,7 +84,7 @@ Here's why with an example of time on a pc (CPU : AMD R9, GPU : RTX 3060, RAM : 
 | `150`             | 469.266s
 | `17652 (ALL)`     | 4410.273s
 
-### 4 - Recommendation algorithm
+### 4 ─ Recommendation algorithm
 
 Run the following command to recommand films using base options :
 
@@ -90,38 +92,135 @@ Run the following command to recommand films using base options :
 $ ./main -r <id1,id2,...>
 ```
 
-### 5 - Using of Option
+### 5 ─ Using of Options
 
-You can run the following command to get detail about the different options or check the next section
+You can run the following command to get detail about the different options or check the [**⚙️ Options Command Details**](#⚙️-options-command-details) section
 
 ```bash
 $ ./main -h
 ```
 
-### 
+---
 
-UZGIFGIZGFIQGFIQ
+### ⚙️ Options Command Details
 
-### 🚀 Good to know
-When you use the -g option to create your graph.bin after using ./main -r "likedmovies" -z "number" -g, the next time you will call the function with the same number in the z option, the process time will only be ~0.3 seconds, as the program detects the graph.bin was created for this amount of ratings considered.
+Let's take a closer look about the different options you can add to the `.\main`
 
-Great amount of time saved, isn't it ?
+By the way the order isn't important
+
+#### 💕 Movies Liked (Option -r)
+
+Provide a list of movies you like (separated by commas, or in a .txt file with a single movie each line) in order to get recommandation about these
+
+Usage : `-r <movieYouLikeid1,movieYouLikeid2,...> (or the path of a .txt)`
+
+Example : `-r 1,2,3,4,5`, `-r ../moviesILikedReallyMuch.txt`
+
+#### 🔢 Number of Movies Recommended (Option -n)
+
+Specify the number of movies you want to get recommended **(by default 10)**
+
+Usage : `-n <numberOfMoviesRecommended>`
+
+Example : `-n 20`
+
+#### 📂 Folder Path (Option -f)
+
+Path to the txt where the results will be saved if you want them to
+
+Usage : `-f <path.txt>`
+
+Example : `-f /home/movieRecommended.txt`
+
+#### 📅 Limit Year (Option -l)
+
+Ignore ratings whose year is greater than `year` **(by default 2006)**
+
+**📃 Note :** ending of the database mid 2005 (so higher year will include every films)
+
+Usage : `-l <year>`
+
+Example : `-l 2002`
+
+#### 👥 Clients Considered (Option -c)
+
+Consider only ratings from clientsID given
+
+Usage : `-c <client1,client2...>`
+
+Example : `-c 1,2,3,4,5`
+
+#### ⭐ CLients Min Review Number (Option -e)
+
+Consider only elite clients who have watched a minimum of `<minMoviesReviewed>` movies
+
+Usage : `-e <minmoviesreviewed>`
+
+Example : `-e 100`
+
+#### 🚫 Reviewers Black-listed (Option -b)
+
+Exclude ratings from reviewers <bad_reviewer1>, <bad_reviewer2>, etc.
+
+Usage : `-b <bad_reviewer1,bad_reviewer2,...>`
+
+Example : `-b 1,2,3,4,5`
+
+#### ⏰ Time of the Process Indicated (Option -t)
+
+Specify the global execution time of the algorithm
+
+Usage : `-t`
+
+#### 📁 Create .bin Files (Option -o)
+
+Creates or recreates the `.bin` files : `movies.bin`, `users.bin`, `graph.bin`
+
+**📃 Pro Tip :** combine this option the [**-z option**](#📝-number-of-ratings-considered-option--z) to specify the number of ratings considered in the `graph.bin` creation this will influence the time duration of the algorithm.
+
+Usage : `-o`
+
+#### 📝 Number of Ratings Considered (Option -z)
+
+Specify the number of ratings considered for each user **(by default 30)**
+
+Usage : `-z <num>`
+
+Example : `-z 50`
+
+#### 🎲 Algorithm Chosen (Option -a)
+
+Choose the algorithm you want to use (1 or 2) (explanation of the different algorithm)[]
+
+Usage : `-a <1 or 2>`
+
+Example : `-a 2`
+
+#### 📊 Save Graph (Option -g)
+
+Save the graph in a .bin file if the following options are not used : `-l`, `-c`, `-e`, `-b`, `-s`, `-o`
+
+Usage : `-g`
+
+##### 🚀 Good to know
+
+When you use the -g option to create your graph.bin after using `./main -r "likedmovies" -z "number" -g`, the next time you will call the function with the same number in the z option, the process time will only be >1s, as the program detects the graph.bin was created for this amount of ratings considered.
 
 For your information :
 
-- average number of ratings given by users : 208.25
+- Average ratings number given by users : 208.25
 
-- Time taken to deserialize a downloaded/created updated graph instead of generating it each time we use the program : 0.300296s
+- Time taken to deserialize a downloaded/created updated graph instead of generating it each time we use the program : >1s
 
 > [Click here to see what the ratings considered mean](#ratings-considered-explanation)
 
-graphWHOLEBDD.bin is the serialized version of the updated graph with all the ratings considered. It means that to get a recommendation, it just takes 0.3s (time to deserialize the graph) instead of ~4410s
+`graphWHOLEBDD.bin` is the serialized version of the updated graph with all the ratings considered. It means that to get a recommendation, it just takes >1s (time to deserialize the graph)
 
 ---
 
 ## 🎥 Video Tutorial
 
-Here is a demonstration of the program (with the graphWHOLEBDD.bin file downloaded)
+Here is a demonstration of the program (with the `graphWHOLEBDD.bin` file downloaded)
 
 ![Alt Text](util/PROJECTDEMO.gif)
 
@@ -155,12 +254,51 @@ Here is a demonstration of the program (with the graphWHOLEBDD.bin file download
      |-- ************************************************************************
 ```
 
-### Details about the binary files
+You can use [Doxygen](https://www.doxygen.nl/) to generate documentation. Once installed, use :
 
-Structure of ratings :
+```bash
+$ make doc
+```
+
+Then open `documentation/html/index.html` in your browser
+
+---
+
+## 🛠️ Algorithm Explanation
+
+### General Idea
+
+We used our knowledge on [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) to create the recommandation algorithm. This logic will permits to create ties between every films. The "strenght" of ties will be based on weight linked to the edges to use Graph Theory vocabulary. Using user reviews, we modify this weight in order to make the films more or less distant. With $k$ given films, the algorithm will recommand the $n$ closer films based on the weights between the $k$ films to all other films.
+
+### Dataset Presentation
+
+The [Netflix Prize Dataset](https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a) contains 2 main parts :
+
+- `movie_titles.txt` containing each 17,700 movie id, the release year and the title of the movie, and a folder named training_set
+
+- `training_set` folder containing 17,770 text files, each one linked to a film. And in files related to movies, these are the user reviews on the films, with a user id, a star rating (between 1 and 5) and the date of the rating
+
+You can get more informations directly in the dataset.
+
+### Data Files Creation
+
+In order to compute things on data we needed to gather all reviews stored in the `training_set` folder. We created files that we binarized in order to reuse as we wanted the pre-processed data that will follow precise structures :
+
+- `bin_creation/movies.bin` : a table of user data, where the every 17,700 movie has stored its reviews. We used 2 structures : `movies` and `ratings` :
 
 ```c
-//Structure of a rating
+// movie structure
+typedef struct movie_temp{
+    int id;
+    int release_date;
+    char title[300];
+    int nb_ratings;
+    rating* ratings;
+} movie;
+```
+
+```c
+// rating structure
 typedef struct rating_temp{
      int id_user;
      int id_film;
@@ -171,23 +309,10 @@ typedef struct rating_temp{
 } rating;
 ```
 
-- `bin_creation/movies.bin` : a table of movies, where every movie has stored its reviews.
+- `bin_creation/movies.bin` : a table of movies data, where the every 480,189 users has stored its reviews. We reused the `rating` structure that will be associated this time to an `user` structure :
 
 ```c
-// Structure of a movie
-typedef struct movie_temp{
-    int id;
-    int release_date;
-    char title[300];
-    int nb_ratings;
-    rating* ratings;
-} movie;
-```
-
-- `bin_creation/user.bin` : a table of users, where every user has his reviews stored.
-
-```c
-//Structure of a user
+// user structure
 typedef struct user_temp{
     int id;
     int nb_ratings;
@@ -195,48 +320,50 @@ typedef struct user_temp{
 } user;
 ```
 
----
+### Graph of recommandation explained
 
-## 🛠️ Algorithm Explanation
+#### Theoretical idea
 
-### Dataset Presentation
+As we mentioned in the [General Idea section](#general-idea) we needed to create a graph that represents ties between each films so the films will be the vertices and the ties will be the weight associated to the edges.
 
-The [dataset](https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a) contains 2 main parts, a text file named `movie_titles.txt` containing the movie id, the release year and the title of the movie, and a folder named training_set containing 17,770 text files, each one containing the movie id, the user id, the rating and the date of the rating.
+Every weights are initiallized with $0$ as arbitrary value.
 
-To take advantage of the dataset, we decided to create a movie structure containing the movie id, the release year, the title, the number of ratings and an array of all the ratings (which is a structure too). Moreover, we created a user structure containing the user id, the number of ratings and an array of all the ratings.
-We then created a function to read the movie_titles.txt file and the corresponding text file in the training_set folder, and then store all the movies in an array of movie structures.
-We then made a function to create a user table containing all the users and their ratings, based on the movie table we created right before.
+Weight are updated based on user reviews. For each user, if he noted the same way two films, we reduced the weight between the two films. Otherwise, if the note is different we increased the weight between them.
 
-Having all the data we needed, we then thought about the algorithm we would use to recommend movies to a user. We decided to create a graph where each node is a movie and each edge is a similarity between two movies. The similarity is calculated by comparing the ratings of the two movies by the same user. The more the ratings are close, the more the similarity is high.
-We then created a function to create the graph with a matrix of size 17770x17770, and then we created a function to calculate the similarity between two movies iterating over all the users and their ratings with a function telling how much the distance between 2 movies should be adjusted depending on the rating of a same user on both movies.
+Nevertheless, between two good notes and two bad notes, event with a same way of noting, we wanted to increase the reduction for positive voting. We have the idea that two film badly-noted are surely less close than two film goodly-noted.
 
-With the graph updated, we could easily recommend movies to a user by looking at the movies he liked. Indeed, if the user tells us he likes a movie, we can look at the graph and find the nearest movies to the one he liked, and then recommend him the movies. 
+So we developped a two parameters function $f$ that will take this in consideration :
 
-The problem is : if he tells us he liked several movies, how to deal with the graph ? 
-We made 2 different algorithm to do so:
+$$
+f(x,y) = (1 - \frac{1}{2} | x - y | ) \times (0.75 * \frac{1}{1 - e^{-2(x + y - 4)}} + 0.25), (x,y) \in [1,5]²
+$$
 
-- The first one creating an array of size 17770 and for each movie, we add the distance of all the movies he liked. We then find the nearest movies in this new array and recommend them to the user.
+The $1 - \frac{1}{2} | x - y |$ term is based in order to be equal to $1$ when $x = y$ and to decrease the more $x$ and $y$ are different.
 
-- The second one creating an array of size 17770 and for each movie, we add the distance of all the movies he liked, but this time ponderating the distance by the celebrity of the movie. This algorithm seems to be more efficient since the first one could take too much into consideration the famous movies and not enough the less famous ones in the list of liked movies.
+And $0.75 * \frac{1}{1 - e^{-2(x + y - 4)}} + 0.25$ term is an adaptation of the [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) in oder to ponderate the weight evolution if $x$ and $y$ are low or not as we wanted
 
-### Ratings considered explanation
+Visual representation of the $f$ function with python (and plotly lib)
 
-We encountered a problem while trying to recommend movies : it takes 4400s to calculate the graph and the similarity between all the movies, which is way too much. 
-The solution we found was to create a file containing the graph and the similarity between all the movies, and then read it when we need it.
-But this solution is not perfect since we need to recreate the graph if the user uses options such as -b, -c, -l, -e... Because to update the graph, we need to know beforehand if the user wants to exclude reviewers, change the minimum amount of reviews a user has to have to be considered, etc...
-So we decided to use this file taking in account the whole dataset only when no such options are used.
+![Alt text](util/fFunctionPlot.png)
 
-To avoid waiting 4400s every time we use an option, we created a new option : -z. This option limitates the number of ratings per user taken into account to create the graph. For example, for a reviewer having 252 ratings, if the user uses -z 50, only the 50 first ratings will be used to adjust the distances between the movies.
-By default, the number of ratings taken into account is 30, taking an average time of 31s to update the whole graph, and giving pretty decent results.
+We only needed $25$ values for all the possibilities of stars combinaison (in fact the two ratings are from 1 to 5 stars). So we created a matrix of the value in order to not introduce the function in the code :
 
----
-
-## 🤔 If you are curious
-
-If further information is needed about the functions used to end up on this result, details about them are located in the documentation of the project :
-
-```bash
-$ make doc
+```c
+float weights[5][5] = {
+    {-0.25, -0.17,  0.0,   0.46,  1.0},
+    {-0.17, -0.62, -0.46,  0.0,   0.5},
+    { 0.0,  -0.46, -1.0,  -0.5,   0.0},
+    { 0.46,  0.0,  -0.5,  -1.0,  -0.5},
+    { 1.0,   0.5,   0.0,  -0.5,  -1.0}
+};
 ```
 
-Then open **documentation/html/index.html** in your browser
+For each user, for all the different film rating combinaison, the weight is updated; referred to this matrix.
+
+#### Ratings considered explanation
+
+Considering every reviews was too much time consumming for the graph creation in order to be used in the code, so we created a binary graph with the whole BDD and then we binarized it.
+
+Nevertheless, in order to recreate graph in a more acceptable time, we chosen to consider only `10` to `50` first ratings per user, and the results were quite similar.
+
+This is why when using different option that exclude some ratings (by excluding users, ratings with a certain date...), a graph recreation is needed, and the base ratings considered are `30` in our code but you can modify this with the `-z` option.
