@@ -49,14 +49,14 @@ user* createUsersTable(movie* moviesTable) {
                 user* temp = initUser(id_user);
                 usersTable[placeInTable] = *temp;
                 free(temp);
-                usersTable[placeInTable].ratings = (rating*) malloc(50 * sizeof(rating));
+                usersTable[placeInTable].ratings = (rating*) malloc(30 * sizeof(rating));
                 usersTable[placeInTable].ratings[0] = moviesTable[movie_id].ratings[num_rating];
             } else {
                 placeInTable = seenUserTable[id_user];
                 int newNbRatings = usersTable[placeInTable].nb_ratings + 1;
                 usersTable[placeInTable].nb_ratings = newNbRatings;
-                if(newNbRatings % 50 == 0){
-                    usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 50) * sizeof(rating));
+                if(newNbRatings % 30 == 0){
+                    usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 30) * sizeof(rating));
                     if(usersTable[placeInTable].ratings == NULL){
                         printf("Error while reallocating memory for user %d\n", id_user);
                         free(usersTable[placeInTable].ratings); // Free the failed reallocation
