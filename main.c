@@ -620,6 +620,12 @@ int main(int argc, char* argv[]){
 
     if(dateLimit >= 2006 && clients == NULL && bad_reviewers == NULL && minmoviesreviewed == 0 && ((ratingsConsidered == 30 && (graphexists)) || (graphexists2))){
         freeGraphBlock(graph);
+        free(nbratingscons);
+        free(pathtograph);
+        free(moviesLikedParsed);
+        free(recommendedMovies);
+        free(clientsParsed);
+        exit(0);
     }else{
         freeGraph(graph, NBMOVIES);
     }
@@ -635,6 +641,5 @@ int main(int argc, char* argv[]){
     free(pathtograph);
     free(nbratingscons);
     return 0;
-
 }
 
