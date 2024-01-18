@@ -1,4 +1,4 @@
-# Movie Recommendation Algorithm based on Netflix Prize Dataser 🎬🤖
+# Movie Recommendation Algorithm based on Netflix Prize Dataset 🎬🤖
 
 Made by **WURPILLOT Nathan** and **COUBRET Erwan**
 
