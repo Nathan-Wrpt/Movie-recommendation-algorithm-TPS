@@ -59,14 +59,20 @@ The program will then ask you to precise the path of the training_set folder.
 
 This command will create :
 
-- `bin_creation/movies.bin`
+- `bin_creation/movies.bin` (2,4 Go)
 
-- `bin_creation/user.bin`
+- `bin_creation/user.bin` (2,4 Go)
 
 [Details about these binary files](#data-files-creation)
 
-**🚨 Important Note :** We highly recommend you to download the `graphWHOLEBDD.bin` file to obtain the best results in a tiny amount of time.
+**🚨 Important Note :** We highly recommend you to download the `graphWHOLEBDD.bin`(1,3 Go) file to obtain the best results in a tiny amount of time.
 
+Install git-lfs :
+```bash
+$ sudo apt-get install git-lfs
+```
+
+Download the graph :
 ```bash
 $ git lfs pull
 ```
