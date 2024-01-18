@@ -42,7 +42,7 @@ void print_usage(){
     printf("\033[1;37m"); printf("Usage : -c <client1,client2...>\n");
     printf("\033[1;22m"); printf("Example : -c 1,2,3,4,5\n\n");
 
-    printf("\033[1;37m"); printf("⭐ CLients Min Review Number ");
+    printf("\033[1;37m"); printf("⭐ Clients Min Review Number ");
     printf("\033[1;22m"); printf("(Option -e)\n");
     printf("\033[1;22m"); printf("Consider only elite clients who have watched a minimum of <minmoviesreviewed> movies\n");
     printf("\033[1;37m"); printf("Usage : -e <minmoviesreviewed>\n");
