@@ -12,7 +12,7 @@ This project was made for the C programming course at the [**Telecom Physique St
 
 - [**✨ How to use ?**](#%E2%9C%A8-How-to-use)
 
-- [**⚙️ Options Commands Details**](#⚙️-options-command-details)
+- [**⚙️ Options Commands Details**](#options-command-details)
 
 - [**🎥 Video Tutorial**](#🎥-video-tutorial)
 
