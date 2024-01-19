@@ -253,9 +253,9 @@ Here is a demonstration of the program (with the `graphWholeDB.bin` file downloa
      |
      |-- algo/                             
      |    |-- graphcreation.c     # All the functions to create/update the graph          
-     |    |-- graphWholeDB.bin   # The updated graph of the whole dataset 
+     |    |-- graphWholeDB.bin    # The updated graph of the whole dataset 
      | 
-     |-- all.h                    # Contains all the structures/global variables     
+     |-- globalVarAndStructures.h # Contains all the structures/global variables     
      |                        
      |-- ************************************************************************
 ```

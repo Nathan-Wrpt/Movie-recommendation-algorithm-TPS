@@ -1,4 +1,4 @@
-#include "all.h"
+#include "globalVarAndStructures.h"
 #include "bin_creation/user.h"
 #include "bin_creation/movies.h"
 #include "algo/graphcreation.h"
