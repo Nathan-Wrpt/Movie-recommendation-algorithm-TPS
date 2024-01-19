@@ -10,15 +10,15 @@ This project was made for the C programming course at the [**Telecom Physique St
 
 ## Summary
 
-- [**✨ How to use ?**](#%E2%9C%A8-How-to-use)
+- **✨ How to use ?**
 
-- [**⚙️ Options Commands Details**](#%E2%9A%99%EF%B8%8F-options-command-details)
+- **⚙️ Options Commands Details**
 
-- [**🎥 Video Tutorial**](#%F0%9F%8E%A5-video-tutorial)
+- **🎥 Video Tutorial**
 
-- [**🌳 Project Structure And Files**](#%F0%9F%8C%B3-project-structure-and-files)
+- **🌳 Project Structure And Files**
 
-- [**Algorithm Explanation**](#algorithm-explanation)
+- **🛠️ Algorithm Explanation**
 
 ---
 
@@ -270,7 +270,7 @@ Then open `documentation/html/index.html` in your browser
 
 ---
 
-## Algorithm Explanation
+## 🛠️ Algorithm Explanation
 
 ### General Idea
 
@@ -341,7 +341,7 @@ Nevertheless, between two good notes and two bad notes, even with a same way of 
 So we developped a two parameters function $f$ that will take this in consideration :
 
 $$
-f(x,y) = -(1 - \frac{1}{2} | x - y | ) \times (0.75 * \frac{1}{1 - e^{-2(x + y - 4)}} + 0.25), (x,y) \in [1,5]²
+f(x,y) = -(1 - \frac{1}{2} | x - y | ) \times (0.75 * \frac{1}{1 - e^{-2(x + y - 4)}} + 0.25), (x,y) \in [1,5]^2
 $$
 
 The $1 - \frac{1}{2} | x - y |$ term is based in order to be equal to $-1$ when $x = y$ and to increase to $1$ the more $x$ and $y$ are different.
