@@ -47,8 +47,8 @@ long filesize(const char* filename) {
         return -1;
     }
 
-    fseek(fp, 0, SEEK_END);
-    long size = ftell(fp);
+    fseek(fp, 0, SEEK_END); // Go to end of file
+    long size = ftell(fp); // Get current file pointer to get the size
 
     fclose(fp);
 

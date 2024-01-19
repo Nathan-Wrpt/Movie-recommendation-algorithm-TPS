@@ -6,7 +6,7 @@
  */
 
 user* initUser(int id) {
-    user* u = (user*) malloc(sizeof(user));
+    user* u = (user*) malloc(sizeof(user)); // Allocate memory for the user
     u->id = id;
     u->nb_ratings = 0;
     u->ratings = NULL;
@@ -51,15 +51,18 @@ user* createUsersTable(movie* moviesTable) {
                 free(temp);
                 usersTable[placeInTable].ratings = (rating*) malloc(30 * sizeof(rating));
                 usersTable[placeInTable].ratings[0] = moviesTable[movie_id].ratings[num_rating];
+
             } else {
                 placeInTable = seenUserTable[id_user];
                 int newNbRatings = usersTable[placeInTable].nb_ratings + 1;
                 usersTable[placeInTable].nb_ratings = newNbRatings;
-                if(newNbRatings % 30 == 0){
+                if(newNbRatings % 30 == 0){ // Why 3O and not more ? Because of RAM usage
                     usersTable[placeInTable].ratings = realloc(usersTable[placeInTable].ratings, (newNbRatings + 30) * sizeof(rating));
+
+                    //Handle allocation failure
                     if(usersTable[placeInTable].ratings == NULL){
                         printf("Error while reallocating memory for user %d\n", id_user);
-                        free(usersTable[placeInTable].ratings); // Free the failed reallocation
+                        free(usersTable[placeInTable].ratings);
                         free(usersTable);
                         free(seenUserTable);
                         exit(1);
@@ -109,7 +112,7 @@ void serializeUsers(user* users, int numUsers, const char* filename) {
                 memcpy(ptr, users[i].ratings, sizeof(rating) * users[i].nb_ratings);
             }
 
-            // Write buffer to file
+            // Write buffer to file (buffer used to only fwrite once to reduce process time)
             fwrite(buffer, bufferSize, 1, file);
 
             // Free the buffer
@@ -132,7 +135,7 @@ void serializeUsers(user* users, int numUsers, const char* filename) {
 user* deserializeUsers(const char* filename, int* numUsers) {
     FILE* file = fopen(filename, "rb");
     if (file != NULL) {
-        fread(numUsers, sizeof(int), 1, file); // Read the number of users
+        fread(numUsers, sizeof(int), 1, file); // Read the number of users and store it in numUsers (useless but found it interesting at first)
 
         user* users = (user*)malloc((*numUsers) * sizeof(user));
         if (users == NULL) {

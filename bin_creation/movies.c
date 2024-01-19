@@ -32,7 +32,7 @@ movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
     char file_title[300];
     int curline = 0;
     while (fgets(line, sizeof(line), file)) {
-        curline++;
+        curline++; //Skip the lines until we reach the movie with id n
         if(curline == id){ //Because movie with id n is on line n
             sscanf(line, "%d,%d,%299[^\n]", &file_id, &file_release_date, file_title);
             m->id = file_id;
@@ -43,6 +43,8 @@ movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
         }
     }
     fclose(file);
+
+    //Count number of ratings and store the ratings in the ratings array
 
     char filepath[100];
     sprintf(filepath, "%s/mv_%07d.txt", trainingsetpath, id);
@@ -65,7 +67,7 @@ movie* initMovie(int id, char* movietitlespath, char* trainingsetpath){
     }
 
     int i = 0;
-    fgets(line, sizeof(line), fileRating); // Skip the first line
+    fgets(line, sizeof(line), fileRating); // Skip the first line because it's not a rating
     while (fgets(line, sizeof(line), fileRating) && i < m->nb_ratings) {
         sscanf(line, "%d,%d,%d-%d-%d", 
             &m->ratings[i].id_user, 
@@ -198,6 +200,7 @@ movie* deserializeMovies(const char* filename) {
             // Deserialize ratings
             fread(&(movies[i].nb_ratings), sizeof(int), 1, file);
             movies[i].ratings = (rating*)malloc(movies[i].nb_ratings * sizeof(rating));
+
             if (movies[i].ratings == NULL && movies[i].nb_ratings > 0) {
                 fclose(file);
                 for (int j = 0; j <= i; ++j) {
@@ -262,4 +265,5 @@ void print_movie_stats(int id, movie* movies){
     printf("📅 Release date : %d\n", movies[id - 1].release_date);
     printf("⭐ Average rating : %f\n", averageRating(id, movies));
     printf("🔢 Number of ratings : %d\n", movies[id - 1].nb_ratings);
+    
 }

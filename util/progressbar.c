@@ -16,7 +16,8 @@ void updateProgressBar(int percentage) {
         printf(" ");
     }
     printf("] %d%%", percentage);
-    printf("\r"); // Move the cursor to the beginning of the line
 
-    fflush(stdout); // Flush the output buffer
+    printf("\r"); // Move the cursor to the beginning of the line to overwrite it
+
+    fflush(stdout); // Flush the output buffer just in case
 }
