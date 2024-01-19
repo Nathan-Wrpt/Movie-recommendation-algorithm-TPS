@@ -18,7 +18,7 @@ This project was made for the C programming course at the [**Telecom Physique St
 
 - [**🌳 Project Structure And Files**](#%F0%9F%8C%B3-project-structure-and-files)
 
-- [**🛠️ Algorithm Explanation**](#%F0%9F%9B%A0%EF%B8%8F-algorithm-explanation)
+- [**Algorithm Explanation**](#algorithm-explanation)
 
 ---
 
@@ -270,7 +270,7 @@ Then open `documentation/html/index.html` in your browser
 
 ---
 
-## 🛠️ Algorithm Explanation
+## Algorithm Explanation
 
 ### General Idea
 
