@@ -10,15 +10,15 @@ This project was made for the C programming course at the [**Telecom Physique St
 
 ## Summary
 
-- [**✨ How to use ?**](#✨-how-to-use)
+- [**✨ How to use ?**](#%E2%9C%A8-How-to-use)
 
-- [**⚙️ Options Commands Details**](#⚙️-options-command-details)
+- [**⚙️ Options Commands Details**](#%E2%9A%99%EF%B8%8F-options-command-details)
 
-- [**🎥 Video Tutorial**](#🎥-video-tutorial)
+- [**🎥 Video Tutorial**](#%F0%9F%8E%A5-video-tutorial)
 
-- [**🌳 Project Structure And Files**](#🌳-project-structure-and-files)
+- [**🌳 Project Structure And Files**](#%F0%9F%8C%B3-project-structure-and-files)
 
-- [**🛠️ Algorithm Explanation**](#🛠️-algorithm-explanation)
+- [**🛠️ Algorithm Explanation**](#%F0%9F%9B%A0%EF%B8%8F-algorithm-explanation)
 
 ---
 
