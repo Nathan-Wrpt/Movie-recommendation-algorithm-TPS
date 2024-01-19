@@ -6,9 +6,9 @@
  */
 
 float** initGraph(int nbMovies){
-    float** graph = malloc(nbMovies * sizeof(float*));
+    float** graph = malloc(nbMovies * sizeof(float*)); //Allocation of the memory for the NBMOVIES "columns"
     for(int i = 0; i < nbMovies; i++){
-        graph[i] = calloc(nbMovies, sizeof(float));
+        graph[i] = calloc(nbMovies, sizeof(float)); //Allocation of the memory for the NBMOVIES "rows"
     }
     return graph;
 }
@@ -22,7 +22,7 @@ void freeGraph(float** graph, int nbMovies) {
 
 float updateWeight(int rating1, int rating2, float weights[5][5]) {
     if (rating1 >= 1 && rating1 <= 5 && rating2 >= 1 && rating2 <= 5) {
-        return weights[rating1 - 1][rating2 - 1];
+        return weights[rating1 - 1][rating2 - 1]; // Returns the weight corresponding to the ratings thanks to the matrix
     } else {
         return 0; //Default value
     }
@@ -65,7 +65,7 @@ int findIdUser(user* users, int nbUsers, int idUser){
 
 void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int nbIgnoredUsers, int* privilegedUser, int nbPrivilegedUser, int minRatings, int limitDate, float weights[5][5], int ratingsConsidered){
     
-    // We update the graph only taking in consideration the ratings of the privileged users
+    // We update the graph only taking in consideration the ratings of the privileged users if the -c option is enabled
     if(privilegedUser != NULL){
         for(int i = 0; i < nbPrivilegedUser; i++){
             int idUser = findIdUser(users, nbUsers, privilegedUser[i]);
@@ -80,8 +80,7 @@ void updateGraph(float** graph, user* users, int nbUsers, int* ignoredUsers, int
     // We update the graph for each user that has enough ratings and is not in the ignoredUsers array
     for(int i = 0; i < nbUsers; i++){
         if(isUserIgnored(ignoredUsers, nbIgnoredUsers, users[i].id)){
-            continue;
-            printf("User %d ignored\n", users[i].id);
+            continue; // We ignore the user if he is in meant to be ignored with the -b option
         }
         
         else {
@@ -206,7 +205,7 @@ float maxInv(float* values, int size) {
 }
 
 // based on nathan algorithm in order to ponderate the influence of
-// each movies liked based on the fame of the movie
+// each movies liked based on the fame of the movie in order to not "ignore" less famous movies
 int* getNClosestMovies2(int* moviesIDs, int numFilmsID, float** graph, int n) {
 
     float* ponderation = malloc(numFilmsID * sizeof(float)); 
@@ -279,7 +278,7 @@ void serializegraph(float** graph, char* path){
     FILE* file = fopen(path, "wb");
     if (file != NULL) {
         for (int i = 0; i < NBMOVIES; i++) {
-            // Batch write for improved performance
+            //Write the whole column at once to improve performance
             fwrite(graph[i], sizeof(float), NBMOVIES, file);
             if(i % 10 == 0){
                 updateProgressBar((int) (100 * (float) i / NBMOVIES));
@@ -314,7 +313,7 @@ float** deserializegraph(char* path){
             graph[i] = dataBlock + i * NBMOVIES;
         }
 
-        // Read in chunks and update progress bar
+        // Read in chunks and update progress bar (this idea of chunks is here only to display a proper progressbar here)
         int chunkSize = NBMOVIES / 10; // Adjust chunk size as needed
         size_t readItems = 0;
         for (int i = 0; i < NBMOVIES; i += chunkSize) {

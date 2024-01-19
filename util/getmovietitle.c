@@ -12,6 +12,7 @@ char* getMovieTitle(int id, char* movietitlespath){
     }
 
     FILE* file = fopen(movietitlespath, "r");
+    
     if (file == NULL) {
         printf("Can't open file\n");
         return NULL;
@@ -25,7 +26,7 @@ char* getMovieTitle(int id, char* movietitlespath){
 
         // Read the line and store the data into the variables
         sscanf(line, "%d, %d, %299[^\n]", &file_id, &date, file_title);
-        if (file_id == id) {
+        if (file_id == id) { // If the ID matches, return the title
             return strdup(file_title);
         }
     }
