@@ -9,11 +9,13 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#define NBUSERS 480189
-#define IDMAXUSER 2649429
-#define NBMOVIES 17770
-#define INIT_WEIGHT 0
+#define NBUSERS 480189 // Total number of users
+#define IDMAXUSER 2649429 // Maximum user id
+#define NBMOVIES 17770 // Total number of movies
+#define INIT_WEIGHT 0 // Initial weight between 2 movies
 
+
+//Structure of a rating
 typedef struct rating_temp{
      int id_user;
      int id_film;
@@ -34,16 +36,12 @@ typedef struct movie_temp{
 } movie;
 
 
+// Structure of a user
 typedef struct user_temp{
     int id;
     int nb_ratings;
     rating* ratings;
 } user;
-
-typedef struct movie2_temp{
-    int id;
-    char title[300];
-} movie2;
 
 #endif // ALL_H
 
