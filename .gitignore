@@ -1,8 +1,6 @@
 documentation/
 *.o
 main
-bin_creation/users.bin
-bin_creation/movies.bin
+*.bin
 input_files/
 output_files/
-algo/graph[0-9]*.bin
