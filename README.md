@@ -332,7 +332,7 @@ typedef struct user_temp{
 
 As we mentioned in the [General Idea section](#general-idea) we needed to create a graph that represents ties between each movies so the movies will be the vertices and the ties will be the weight associated to the edges.
 
-Every weights are initiallized with $0$ as arbitrary value.
+Every weights are initialized with $0$ as arbitrary value.
 
 Weights are updated based on user reviews. For each user, if he noted the same way two movies, we reduced the weight between the two movies. Otherwise, if the note is different we increased the weight between them.
 
@@ -368,7 +368,7 @@ For each user, for all the different movie rating combination, the weight is upd
 
 #### Ratings considered explanation
 
-Considering every reviews was too much time consuming for the graph creation in order to be used in the code, so we created a binary graph with the whole DB and we then binarized it.
+Considering every review was too much time consuming for the graph creation in order to be used in the code, so we created a binary graph with the whole DB and we then binarized it.
 
 Nevertheless, in order to recreate the graph in a more acceptable time, we chosen to consider only `10` to `50` first ratings per user, and the results were quite similar.
 
