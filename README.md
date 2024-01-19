@@ -4,7 +4,7 @@ Made by **WURPILLOT Nathan** and **COUBRET Erwan**
 
 ## Project Presentation
 
-This project was made for the C programming course at the [**Telecom Physique Strasbourg**](https://www.telecom-physique.fr/) engineering school. The goal was to create a movie recommendation algorithm based on a the [**Netflix Prize dataset**](https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a).
+This project was made for the C programming course at the [**Telecom Physique Strasbourg**](https://www.telecom-physique.fr/) engineering school. The goal was to create a movie recommendation algorithm based on the [**Netflix Prize dataset**](https://academictorrents.com/details/9b13183dc4d60676b773c9e2cd6de5e5542cee9a).
 
 ---
 
@@ -26,7 +26,7 @@ This project was made for the C programming course at the [**Telecom Physique St
 
 ### 1 ─ Download dependencies and Install
 
-- If gcc is not installed on your computer, run these commands because the `makefile` will use gcc as compiler.
+- If GCC is not installed on your computer, run these commands, as the `makefile` requires GCC as the compiler.
 
 ```bash
 $ sudo apt update
@@ -55,7 +55,7 @@ Execute the following command to create the binary files created in order to sav
 $ ./main -o 
 ```
 
-The program will then ask you to precise the path of the training_set folder.
+The program will then ask you to specify the path of the training_set folder.
 
 This command will create :
 
@@ -116,7 +116,7 @@ By the way the order isn't important
 
 #### 💕 Movies Liked (Option -r)
 
-Provide a list of movies you like (separated by commas, or in a .txt file with a single movie each line) in order to get recommandation about these
+Provide a list of movies you like (separated by commas, or in a .txt file with a single movie each line) in order to get recommendation about these
 
 Usage : `-r <movieYouLikeid1,movieYouLikeid2,...> (or the path of a .txt)`
 
@@ -274,7 +274,7 @@ Then open `documentation/html/index.html` in your browser
 
 ### General Idea
 
-We used our knowledge about [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) to create the recommandation algorithm. This logic will allow us to create ties between every movies. The "strength" of ties will be based on weight associated to the edges to use Graph Theory vocabulary. Using user reviews, we modify this weight in order to make the movies more or less distant. With $k$ given movies, the algorithm will recommand the $n$ closest movies based on the weights between the $k$ movies to all other movies.
+We used our knowledge about [Graph Theory](https://en.wikipedia.org/wiki/Graph_theory) to create the recommendation algorithm. This logic will allow us to create ties between every movies. The "strength" of ties will be based on weight associated to the edges to use Graph Theory vocabulary. Using user reviews, we modify this weight in order to make the movies more or less distant. With $k$ given movies, the algorithm will recommand the $n$ closest movies based on the weights between the $k$ movies to all other movies.
 
 ### Dataset Presentation
 
@@ -336,17 +336,17 @@ Every weights are initiallized with $0$ as arbitrary value.
 
 Weights are updated based on user reviews. For each user, if he noted the same way two movies, we reduced the weight between the two movies. Otherwise, if the note is different we increased the weight between them.
 
-Nevertheless, between two good notes and two bad notes, even with a same way of noting, we wanted to increase the reduction for positive voting. We have the idea that two movie badly-noted are surely less close than two movie well-noted.
+Nevertheless, between two good notes and two bad notes, even with a same way of noting, we wanted to increase the reduction for positive voting. We have the idea that two movie badly-noted are less close than two movies well-noted.
 
 So we developped a two parameters function $f$ that will take this in consideration :
 
 $$
-f(x,y) = (1 - \frac{1}{2} | x - y | ) \times (0.75 * \frac{1}{1 - e^{-2(x + y - 4)}} + 0.25), (x,y) \in [1,5]²
+f(x,y) = -(1 - \frac{1}{2} | x - y | ) \times (0.75 * \frac{1}{1 - e^{-2(x + y - 4)}} + 0.25), (x,y) \in [1,5]²
 $$
 
-The $1 - \frac{1}{2} | x - y |$ term is based in order to be equal to $1$ when $x = y$ and to decrease the more $x$ and $y$ are different.
+The $1 - \frac{1}{2} | x - y |$ term is based in order to be equal to $-1$ when $x = y$ and to increase to $1$ the more $x$ and $y$ are different.
 
-And $0.75 * \frac{1}{1 - e^{-2(x + y - 4)}} + 0.25$ term is an adaptation of the [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) in oder to ponderate the weight evolution if $x$ and $y$ are low or not as we wanted.
+And $0.75 * \frac{1}{1 - e^{-2(x + y - 4)}} + 0.25$ term is an adaptation of the [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) in order to ponderate the weight evolution if $x$ and $y$ are low or not as we wanted.
 
 Visual representation of the $f$ function with python (and plotly lib) :
 
