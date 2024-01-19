@@ -65,7 +65,7 @@ This command will create :
 
 [Details about these binary files](#data-files-creation)
 
-**🚨 Important Note :** We highly recommend you to download the `graphWHOLEBDD.bin`(1,3 Go) file to obtain the best results in a tiny amount of time.
+**🚨 Important Note :** We highly recommend you to download the `graphWholeDB.bin`(1,3 Go) file to obtain the best results in a tiny amount of time.
 
 Install git-lfs :
 ```bash
@@ -220,13 +220,13 @@ For your information :
 
 > [Click here to see what the ratings considered mean](#ratings-considered-explanation)
 
-`graphWHOLEBDD.bin` is the serialized version of the updated graph with all the ratings considered. It means that to get a recommendation, it just takes < 1s (time to deserialize the graph)
+`graphWholeDB.bin` is the serialized version of the updated graph with all the ratings considered. It means that to get a recommendation, it just takes < 1s (time to deserialize the graph)
 
 ---
 
 ## 🎥 Video Tutorial
 
-Here is a demonstration of the program (with the `graphWHOLEBDD.bin` file downloaded)
+Here is a demonstration of the program (with the `graphWholeDB.bin` file downloaded)
 
 ![Alt Text](util/PROJECTDEMO.gif)
 
@@ -253,7 +253,7 @@ Here is a demonstration of the program (with the `graphWHOLEBDD.bin` file downlo
      |
      |-- algo/                             
      |    |-- graphcreation.c     # All the functions to create/update the graph          
-     |    |-- graphWHOLEBDD.bin   # The updated graph of the whole dataset 
+     |    |-- graphWholeDB.bin   # The updated graph of the whole dataset 
      | 
      |-- all.h                    # Contains all the structures/global variables     
      |                        
