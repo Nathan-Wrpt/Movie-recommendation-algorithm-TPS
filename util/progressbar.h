@@ -1,7 +1,7 @@
 #ifndef PB_H
 #define PB_H
 
-#include "../all.h"
+#include "../globalVarAndStructures.h"
 
 /**
  * @file progressbar.h

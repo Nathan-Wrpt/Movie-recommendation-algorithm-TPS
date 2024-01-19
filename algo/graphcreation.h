@@ -1,7 +1,7 @@
 #ifndef GRAPHCREATION_H
 #define GRAPHCREATION_H
 
-#include "../all.h"
+#include "../globalVarAndStructures.h"
 #include "../util/progressbar.h"
 
 /**

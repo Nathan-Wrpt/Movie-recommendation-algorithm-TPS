@@ -1,7 +1,7 @@
 #ifndef GETMT_H
 #define GETMT_H
 
-#include "../all.h"
+#include "../globalVarAndStructures.h"
 
 /**
  * @file getmovietitle.h

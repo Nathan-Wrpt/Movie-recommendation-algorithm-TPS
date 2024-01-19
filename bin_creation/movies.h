@@ -1,7 +1,7 @@
 #ifndef MOVIES_H
 #define MOVIES_H
 
-#include "../all.h"
+#include "../globalVarAndStructures.h"
 #include "../util/maxadvices.h"
 #include "../util/progressbar.h"
 

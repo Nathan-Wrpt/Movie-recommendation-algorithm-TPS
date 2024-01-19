@@ -1,7 +1,7 @@
 #ifndef MAXA_H
 #define MAXA_H
 
-#include "../all.h"
+#include "../globalVarAndStructures.h"
 
 /**
  * @file maxadvices.h
