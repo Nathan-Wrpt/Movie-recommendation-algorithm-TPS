@@ -1,6 +1,8 @@
 documentation/
 *.o
 main
-*.bin
+graph[0-9]*.bin
+movies.bin
+users.bin
 input_files/
 output_files/
