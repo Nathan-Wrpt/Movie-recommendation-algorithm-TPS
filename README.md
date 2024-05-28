@@ -1,6 +1,6 @@
 # Movie Recommendation Algorithm based on Netflix Prize Dataset 🎬🤖
 
-Made by **WURPILLOT Nathan** and **COUBRET Erwan**
+Made by **Nathan W** and **Erwan C**
 
 ## Project Presentation
 
